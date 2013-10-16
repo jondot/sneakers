@@ -21,7 +21,7 @@ module Sneakers
   private
 
     def ensure_connection!
-      @bunny = Bunny.new(:heartbeat_interval => @opts[:heartbeat_interval])
+      @bunny = Bunny.new(:heartbeat => @opts[:heartbeat])
       @bunny.start
       @channel = @bunny.create_channel
       @exchange = @channel.exchange(@opts[:exchange], :type => :direct, :durable => @opts[:durable])

@@ -26,7 +26,6 @@ module Sneakers
     method_option :debug
     method_option :front
     method_option :require
-    method_option :amqp
 
     desc "work FirstWorker,SecondWorker ... ,NthWorker", "Run workers"
     def work(workers)
@@ -53,9 +52,7 @@ module Sneakers
       end
 
       opts = {
-        :daemonize => !options[:front],
-        :log => options[:front] ? STDOUT : Sneakers::Config[:log],
-        :amqp => (options[:amqp] || Sneakers::Config[:amqp])
+        :daemonize => !options[:front]
       }
 
       Sneakers.configure(opts)

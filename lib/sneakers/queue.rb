@@ -16,7 +16,7 @@ class Sneakers::Queue
   # :ack
   #
   def subscribe(worker)
-    @bunny = Bunny.new(@opts[:amqp], :vhost => '/', :heartbeat => @opts[:heartbeat_interval])
+    @bunny = Bunny.new(@opts[:amqp], :vhost => '/', :heartbeat => @opts[:heartbeat])
     @bunny.start
 
     @channel = @bunny.create_channel

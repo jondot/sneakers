@@ -29,7 +29,7 @@ module Sneakers
         :prefetch => opts[:prefetch],
         :durable => opts[:durable],
         :ack => @should_ack,
-        :heartbeat_interval => opts[:heartbeat_interval],
+        :heartbeat => opts[:heartbeat],
         :exchange => opts[:exchange],
         :amqp => opts[:amqp]
       )

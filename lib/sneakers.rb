@@ -29,7 +29,7 @@ module Sneakers
     :workers => 4,
     :log  => 'sneakers.log',
     :pid_path => 'sneakers.pid',
-    :amqp => 'amqp://guest:guest@localhost:55672',
+    :amqp => 'amqp://guest:guest@localhost:5672',
 
     #workers
     :timeout_job_after => 5,
@@ -38,7 +38,7 @@ module Sneakers
     :env => ENV['RACK_ENV'],
     :durable => true,
     :ack => true,
-    :heartbeat_interval => 2,
+    :heartbeat => 2,
     :exchange => 'sneakers',
     :hooks => {}
   }
@@ -47,6 +47,7 @@ module Sneakers
     # worker > userland > defaults
     Config.merge!(opts)
 
+    return if configured?
     setup_general_logger!
     setup_worker_concerns!
     setup_general_publisher!
@@ -70,7 +71,6 @@ private
 
   def self.setup_general_logger!
     @logger = Logger.new(Config[:log])
-    @logger.level = Logger::ERROR
     @logger.formatter = Sneakers::Support::ProductionFormatter
   end
 
