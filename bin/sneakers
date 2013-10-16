@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require 'sneakers'
+require 'sneakers/cli'
+
+Sneakers::CLI.start

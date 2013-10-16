@@ -1,0 +1,6 @@
+sneakers.yaml
+sneakers.log
+sneakers.pid
+pkg/
+coverage/
+tmp/

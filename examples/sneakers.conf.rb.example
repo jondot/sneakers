@@ -1,0 +1,11 @@
+workers 2
+amqp "amqp://guest:guest@localhost:55672"
+
+before_fork do
+  Sneakers::logger.info " ** im before-fork'en ** "
+end
+
+
+after_fork do
+  Sneakers::logger.info " !! im after forke'n !! "
+end
