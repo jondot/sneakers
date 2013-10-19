@@ -14,8 +14,10 @@ describe Sneakers::Queue do
         :prefetch => 25,
         :durable => true,
         :ack => true,
-        :heartbeat_interval => 2,
-        :exchange => "sneakers"
+        :heartbeat => 2,
+        :vhost => '/',
+        :exchange => "sneakers",
+        :exchange_type => :direct
       )
       mkbunny = Object.new
       mkchan = Object.new
@@ -24,7 +26,7 @@ describe Sneakers::Queue do
 
       mock(mkbunny).start {}
       mock(mkbunny).create_channel{ mkchan }
-      mock(Bunny).new(anything, :heartbeat_interval => 2){ mkbunny }
+      mock(Bunny).new(anything, :vhost => '/', :heartbeat => 2){ mkbunny }
 
       mock(mkchan).prefetch(25)
       mock(mkchan).exchange("sneakers", :type => :direct, :durable => true){ mkex }

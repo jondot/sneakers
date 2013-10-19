@@ -29,6 +29,16 @@ module Sneakers
 
     desc "work FirstWorker,SecondWorker ... ,NthWorker", "Run workers"
     def work(workers)
+      opts = {
+        :daemonize => !options[:front]
+      }
+      unless opts[:daemonize]
+        opts[:log] = STDOUT
+      end
+
+      Sneakers.configure(opts)
+      puts Sneakers::Config
+
       require_boot File.expand_path(options[:require]) if options[:require]
 
       workers, missing_workers = Sneakers::Utils.parse_workers(workers)
@@ -51,11 +61,6 @@ module Sneakers
         return
       end
 
-      opts = {
-        :daemonize => !options[:front]
-      }
-
-      Sneakers.configure(opts)
       r = Sneakers::Runner.new(workers)
 
       pid = Sneakers::Config[:pid_path]

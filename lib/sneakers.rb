@@ -29,7 +29,6 @@ module Sneakers
     :workers => 4,
     :log  => 'sneakers.log',
     :pid_path => 'sneakers.pid',
-    :amqp => 'amqp://guest:guest@localhost:5672',
 
     #workers
     :timeout_job_after => 5,
@@ -39,7 +38,10 @@ module Sneakers
     :durable => true,
     :ack => true,
     :heartbeat => 2,
+    :amqp => 'amqp://guest:guest@localhost:5672',
+    :vhost => '/',
     :exchange => 'sneakers',
+    :exchange_type => :direct,
     :hooks => {}
   }
 
@@ -47,7 +49,6 @@ module Sneakers
     # worker > userland > defaults
     Config.merge!(opts)
 
-    return if configured?
     setup_general_logger!
     setup_worker_concerns!
     setup_general_publisher!

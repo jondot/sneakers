@@ -16,13 +16,16 @@ class Sneakers::Queue
   # :ack
   #
   def subscribe(worker)
-    @bunny = Bunny.new(@opts[:amqp], :vhost => '/', :heartbeat => @opts[:heartbeat])
+    @bunny = Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat])
     @bunny.start
 
     @channel = @bunny.create_channel
     @channel.prefetch(@opts[:prefetch])
 
-    @exchange = @channel.exchange(@opts[:exchange], :type => :direct, :durable => @opts[:durable])
+    @exchange = @channel.exchange(@opts[:exchange],
+                                  :type => @opts[:exchange_type],
+                                  :durable => @opts[:durable])
+
     handler = @handler_klass.new(@channel)
 
     queue = @channel.queue(@name, :durable => @opts[:durable])

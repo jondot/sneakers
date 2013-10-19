@@ -13,7 +13,7 @@ class DummyWorker
              :prefetch => 40,
              :timeout_job_after => 1,
              :exchange => 'dummy',
-             :heartbeat_interval => 5
+             :heartbeat => 5
 
   def work(msg)
   end
@@ -127,7 +127,7 @@ describe Sneakers::Worker do
     stub(@queue).name { 'test-queue' }
     stub(@queue).opts { {} }
 
-    Sneakers.configure(:env => 'test')
+    Sneakers.configure(:env => 'test', :daemonize => true, :log => 'sneakers.log')
     Sneakers::Worker.configure_logger(Logger.new('/dev/null'))
     Sneakers::Worker.configure_metrics
   end
@@ -142,22 +142,14 @@ describe Sneakers::Worker do
       it "should build a queue with correct configuration given defaults" do
         @defaults_q.name.must_equal('defaults_test')
         @defaults_q.opts.must_equal(
-           :durable => true,
-           :ack => true,
-           :prefetch => 10,
-           :heartbeat_interval => 2,
-           :exchange => 'sneakers'
+          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>5, :prefetch=>10, :threads=>10, :env=>"test", :durable=>true, :ack=>true, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"sneakers", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat => 2}
         )
       end
 
       it "should build a queue with given configuration" do
         @dummy_q.name.must_equal('downloads_test')
         @dummy_q.opts.must_equal(
-           :durable => false,
-           :ack => false,
-           :prefetch => 40,
-           :heartbeat_interval => 5,
-           :exchange => 'dummy'
+          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>1, :prefetch=>40, :threads=>50, :env=>"test", :durable=>false, :ack=>false, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"dummy", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat =>5}
         )
       end
     end
@@ -238,18 +230,18 @@ describe Sneakers::Worker do
         @worker.do_work(@header, nil, :ack, handler)
       end
 
-      it "should work and handle nacks" do
-        handler = Object.new
-        mock(handler).reject("tag")
-
-        @worker.do_work(@header, nil, :nack, handler)
-      end
-
       it "should work and handle rejects" do
         handler = Object.new
         mock(handler).reject("tag")
 
         @worker.do_work(@header, nil, :reject, handler)
+      end
+
+      it "should work and handle requeues" do
+        handler = Object.new
+        mock(handler).reject("tag", true)
+
+        @worker.do_work(@header, nil, :requeue, handler)
       end
 
       it "should work and handle user-land timeouts" do
@@ -310,6 +302,7 @@ describe Sneakers::Worker do
       stub(@handler).reject("tag")
       stub(@handler).timeout("tag")
       stub(@handler).error("tag", anything)
+      stub(@handler).noop("tag")
 
       @header = Object.new
       stub(@header).delivery_tag { "tag" }

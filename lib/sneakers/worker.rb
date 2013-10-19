@@ -26,12 +26,7 @@ module Sneakers
 
       @queue = queue || Sneakers::Queue.new(
         queue_name,
-        :prefetch => opts[:prefetch],
-        :durable => opts[:durable],
-        :ack => @should_ack,
-        :heartbeat => opts[:heartbeat],
-        :exchange => opts[:exchange],
-        :amqp => opts[:amqp]
+        opts
       )
 
       @opts = opts
@@ -39,7 +34,6 @@ module Sneakers
     end
 
     def ack!; :ack end
-    def nack!; :nack end
     def reject!; :reject; end
     def requeue!; :requeue; end
 
