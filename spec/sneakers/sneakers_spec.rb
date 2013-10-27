@@ -43,5 +43,24 @@ describe Sneakers do
     end
   end
 
+
+  describe '#setup_general_logger' do
+    it 'should detect a string and configure a logger' do
+      Sneakers.configure(:log => 'sneakers.log')
+      Sneakers.logger.kind_of?(Logger).must_equal(true)
+    end
+
+    it 'should detect a file-like thing and configure a logger' do
+      Sneakers.configure(:log => STDOUT)
+      Sneakers.logger.kind_of?(Logger).must_equal(true)
+    end
+
+    it 'should detect an actual logger and configure it' do
+      logger = Logger.new(STDOUT)
+      Sneakers.configure(:log => logger)
+      Sneakers.logger.must_equal(logger)
+    end
+  end
+
 end
 

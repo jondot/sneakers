@@ -88,8 +88,12 @@ module Sneakers
 private
 
   def self.setup_general_logger!
-    @logger = Logger.new(Config[:log])
-    @logger.formatter = Sneakers::Support::ProductionFormatter
+    if [:info, :debug, :error, :warn].all?{ |meth| Config[:log].respond_to?(meth) }
+      @logger = Config[:log]
+    else
+      @logger = Logger.new(Config[:log])
+      @logger.formatter = Sneakers::Support::ProductionFormatter
+    end
   end
 
   def self.setup_worker_concerns!
