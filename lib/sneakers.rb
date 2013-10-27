@@ -20,7 +20,7 @@ require 'sneakers/publisher'
 
 module Sneakers
 
-  Config = {
+  DEFAULTS = {
     # runner
     :runner_config_file => nil,
     :metrics => nil,
@@ -43,7 +43,9 @@ module Sneakers
     :exchange => 'sneakers',
     :exchange_type => :direct,
     :hooks => {}
-  }
+  }.freeze
+
+  Config = DEFAULTS.dup
 
   def self.configure(opts={})
     # worker > userland > defaults
@@ -53,6 +55,21 @@ module Sneakers
     setup_worker_concerns!
     setup_general_publisher!
     @configured = true
+  end
+
+  def self.clear!
+    Config.clear
+    Config.merge!(DEFAULTS.dup)
+    @logger = nil
+    @publisher = nil
+    @configured = false
+  end
+
+  def self.run_at_front!(loglevel=Logger::INFO)
+    Config[:log] = STDOUT
+    Config[:daemonize] = false
+    setup_general_logger!
+    logger.level = loglevel
   end
 
   def self.logger
