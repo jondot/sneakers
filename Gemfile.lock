@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sneakers (0.0.5)
+    sneakers (0.0.6)
       bunny (>= 0.10.0)
       serverengine
       thor
