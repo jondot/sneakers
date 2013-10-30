@@ -84,12 +84,10 @@ Let's test it out quickly from the command line:
 
 
 ```bash
-sneakers work Processor --require boot.rb --front
+sneakers work Processor --require boot.rb
 ```
 
 We just told Sneakers to spawn a worker named `Processor`, but first `--require` a file that we dedicate to setting up environment, including workers and what-not.
-
-For simplicity, we also told Sneakers to *not* daemonize and work at the `--front`.
 
 If you go to your RabbitMQ admin now, you'll see a new queue named `logs` was created. Push a couple messages, and this is the output you should see at your terminal.
 
