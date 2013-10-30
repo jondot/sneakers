@@ -24,10 +24,10 @@ module Sneakers
     # runner
     :runner_config_file => nil,
     :metrics => nil,
-    :daemonize => true,
+    :daemonize => false,
     :start_worker_delay => 0.2,
     :workers => 4,
-    :log  => 'sneakers.log',
+    :log  => STDOUT,
     :pid_path => 'sneakers.pid',
 
     #workers
@@ -65,9 +65,9 @@ module Sneakers
     @configured = false
   end
 
-  def self.run_at_front!(loglevel=Logger::INFO)
-    Config[:log] = STDOUT
-    Config[:daemonize] = false
+  def self.daemonize!(loglevel=Logger::INFO)
+    Config[:log] = 'sneakers.log'
+    Config[:daemonize] = true
     setup_general_logger!
     logger.level = loglevel
   end

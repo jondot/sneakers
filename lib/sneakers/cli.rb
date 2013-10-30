@@ -24,20 +24,19 @@ module Sneakers
     BANNER = SNEAKERS
 
     method_option :debug
-    method_option :front
+    method_option :daemonize
     method_option :require
 
     desc "work FirstWorker,SecondWorker ... ,NthWorker", "Run workers"
     def work(workers)
       opts = {
-        :daemonize => !options[:front]
+        :daemonize => !!options[:daemonize]
       }
-      unless opts[:daemonize]
-        opts[:log] = STDOUT
-      end
+
+      opts[:log] =  opts[:daemonize] ? 'sneakers.log' : STDOUT
+
 
       Sneakers.configure(opts)
-      puts Sneakers::Config
 
       require_boot File.expand_path(options[:require]) if options[:require]
 
