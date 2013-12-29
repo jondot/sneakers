@@ -28,8 +28,10 @@ class Sneakers::Queue
 
     handler = @handler_klass.new(@channel)
 
+    routing_key = @ops[:routing_key] || @name
+
     queue = @channel.queue(@name, :durable => @opts[:durable])
-    queue.bind(@exchange, :routing_key => @name)
+    queue.bind(@exchange, :routing_key => routing_key)
 
     @consumer = queue.subscribe(:block => false, :ack => @opts[:ack]) do | hdr, props, msg | 
       worker.do_work(hdr, props, msg, handler)
