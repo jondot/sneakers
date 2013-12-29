@@ -28,7 +28,7 @@ class Sneakers::Queue
 
     handler = @handler_klass.new(@channel)
 
-    routing_key = @ops[:routing_key] || @name
+    routing_key = @opts[:routing_key] || @name
 
     queue = @channel.queue(@name, :durable => @opts[:durable])
     queue.bind(@exchange, :routing_key => routing_key)
