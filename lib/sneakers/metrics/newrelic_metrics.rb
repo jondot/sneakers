@@ -1,8 +1,13 @@
 module Sneakers
   module Metrics
     class NewrelicMetrics
-      def initialize(conn)
-        @connection = conn
+
+      def self.eagent(eagent = nil)
+        @eagent = eagent || @eagent
+      end
+
+      def initialize()
+        #@connection = conn
       end
 
       def increment(metric)
@@ -23,7 +28,7 @@ module Sneakers
 
       def stats(metric)
         metric.gsub! "\.", "\/"
-        @connection::Agent.get_stats("Custom/#{metric}")
+        NewrelicMetrics.eagent::Agent.get_stats("Custom/#{metric}")
       end
 
     end
