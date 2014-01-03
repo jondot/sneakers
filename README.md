@@ -12,6 +12,10 @@
 A high-performance RabbitMQ background processing framework for
 Ruby.
 
+
+Sneakers is being used in production for both I/O and CPU intensive workloads, and have achieved the goals of high-performance and 0-maintenance, as designed.
+
+
 Visit the [wiki](https://github.com/jondot/sneakers/wiki) for
 complete docs.
 
