@@ -35,6 +35,10 @@ module Sneakers
 
       opts[:log] =  opts[:daemonize] ? 'sneakers.log' : STDOUT
 
+      if opts[:daemonize]
+        puts "*** DEPRACATED: self-daemonization '--daemonize' is considered a bad practice, which is why this feature will be removed in future versions. Please run Sneakers in front, and use things like upstart, systemd, or supervisor to manage it as a daemon."
+      end
+
 
       Sneakers.configure(opts)
 

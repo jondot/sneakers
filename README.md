@@ -146,6 +146,14 @@ From here, you can continue over to the
 
 Fork, implement, add tests, pull request, get my everlasting thanks and a respectable place here :).
 
+
+### Thanks:
+
+* Michael Klishin - @michaelklishin 
+* Ariel Zerahia - @arielze
+
+
+
 # Copyright
 
 Copyright (c) 2013 [Dotan Nahum](http://gplus.to/dotan) [@jondot](http://twitter.com/jondot). See MIT-LICENSE for further details.
