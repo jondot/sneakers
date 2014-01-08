@@ -155,6 +155,8 @@ Fork, implement, add tests, pull request, get my everlasting thanks and a respec
 
 * Michael Klishin - @michaelklishin 
 * Ariel Zerahia - @arielze
+* @sergei-matheson
+* Sebastian Edwards - @SebastianEdwards
 
 
 

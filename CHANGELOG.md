@@ -4,6 +4,8 @@
 + Added explicit routing_key at queue (@arielze)
 + Depracating self-daemonization (@jondot)
 + updating bunny (@michaelklishin)
++ Fix reference in publisher (@sergei-matheson)
++ Allow binding of multiple routing keys (@SebastianEdwards)
 
 
 
