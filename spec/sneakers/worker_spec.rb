@@ -124,8 +124,10 @@ end
 describe Sneakers::Worker do
   before do
     @queue = Object.new
+    @exchange = Object.new
     stub(@queue).name { 'test-queue' }
     stub(@queue).opts { {} }
+    stub(@queue).exchange { @exchange }
 
     Sneakers.configure(:env => 'test', :daemonize => true, :log => 'sneakers.log')
     Sneakers::Worker.configure_logger(Logger.new('/dev/null'))
@@ -275,9 +277,8 @@ describe Sneakers::Worker do
   describe 'publish' do
     it 'should be able to publish a message from working context' do
       w = PublishingWorker.new(@queue, TestPool.new)
-      mock(w).publish('msg', :to_queue => 'target').once
+      mock(@exchange).publish('msg', :routing_key => 'target_test').once
       w.do_work(nil, nil, 'msg', nil)
-
     end
   end
 

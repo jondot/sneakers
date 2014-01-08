@@ -39,7 +39,7 @@ module Sneakers
 
     def publish(msg, routing)
       return unless routing[:to_queue]
-      @queue.exchange.publish(msg, :routing_key => QueueName.new(routing[:to_queue], @opts).to_s)
+      @queue.exchange.publish(msg, :routing_key => Support::QueueName.new(routing[:to_queue], @opts).to_s)
     end
 
     def do_work(hdr, props, msg, handler)
