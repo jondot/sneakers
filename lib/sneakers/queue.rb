@@ -29,7 +29,7 @@ class Sneakers::Queue
     handler = @handler_klass.new(@channel)
 
     routing_key = @opts[:routing_key] || @name
-    routing_keys = routing_key.respond_to?(:each) ? routing_key : [routing_key]
+    routing_keys = [*routing_key]
 
     queue = @channel.queue(@name, :durable => @opts[:durable])
 
