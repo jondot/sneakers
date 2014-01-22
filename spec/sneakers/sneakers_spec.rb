@@ -1,6 +1,13 @@
 require 'spec_helper'
 require 'sneakers'
 
+class EnvWorker
+  include Sneakers::Worker
+  from_queue 'defaults'
+
+  def work(msg)
+  end
+end
 
 
 describe Sneakers do
@@ -30,6 +37,19 @@ describe Sneakers do
     it 'should set a logger to a level given that level' do
       Sneakers.daemonize!(Logger::DEBUG)
       Sneakers.logger.level.must_equal(Logger::DEBUG)
+    end
+  end
+
+  describe '.not_environmental!' do
+    it 'should ignore environment (RACK_ENV) for all workers' do
+      Sneakers.configure(:env => 'production')
+      Sneakers.not_environmental!
+      EnvWorker.new.queue.name.must_equal('defaults')
+    end
+
+    it 'should ignore environment (RACK_ENV) for all workers' do
+      Sneakers.configure(:env => 'production')
+      EnvWorker.new.queue.name.must_equal('defaults_production')
     end
   end
 

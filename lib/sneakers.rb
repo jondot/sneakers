@@ -65,6 +65,10 @@ module Sneakers
     @configured = false
   end
 
+  def self.not_environmental!
+    Config[:env] = nil
+  end
+
   def self.daemonize!(loglevel=Logger::INFO)
     Config[:log] = 'sneakers.log'
     Config[:daemonize] = true
