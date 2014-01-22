@@ -91,6 +91,16 @@ class MetricsWorker
   end
 end
 
+class WithParamsWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+             :ack => true,
+             :timeout_job_after => 0.5
+
+  def work_with_params(msg, header, props)
+    msg
+  end
+end
 
 
 class TestPool
@@ -339,4 +349,27 @@ describe Sneakers::Worker do
     end
   end
 
+
+
+  describe 'With Params' do
+    before do
+      @handler = Object.new
+      stub(@handler).acknowledge("tag")
+      stub(@handler).reject("tag")
+      stub(@handler).timeout("tag")
+      stub(@handler).error("tag", anything)
+      stub(@handler).noop("tag")
+
+      @header = Object.new
+      stub(@header).delivery_tag { "tag" }
+
+      @w = WithParamsWorker.new(@queue, TestPool.new)
+      mock(@w.metrics).timing("work.WithParamsWorker.time").yields.once
+    end
+
+    it 'should call work_with_params and not work' do
+      mock(@w).work_with_params(:ack, @header, {:foo => 1}).once
+      @w.do_work(@header, {:foo => 1 }, :ack, @handler)
+    end
+  end
 end

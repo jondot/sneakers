@@ -23,6 +23,7 @@ module Sneakers
       @should_ack =  opts[:ack]
       @timeout_after = opts[:timeout_job_after]
       @pool = pool || Thread.pool(opts[:threads]) # XXX config threads
+      @call_with_params = respond_to?(:work_with_params)
 
       @queue = queue || Sneakers::Queue.new(
         queue_name,
@@ -53,7 +54,11 @@ module Sneakers
           metrics.increment("work.#{self.class.name}.started")
           Timeout.timeout(@timeout_after) do
             metrics.timing("work.#{self.class.name}.time") do
-              res = work(msg)
+              if @call_with_params
+                res = work_with_params(msg, hdr, props)
+              else
+                res = work(msg)
+              end
             end
           end
         rescue Timeout::Error
