@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     sneakers (0.1.0)
-      bunny (~> 1.0.7)
+      bunny (~> 1.0)
       serverengine
       thor
       thread
@@ -17,7 +17,7 @@ GEM
     arrayfields (4.9.0)
     awesome_print (1.2.0)
     bluff (0.1.0)
-    bunny (1.0.7)
+    bunny (1.1.0)
       amq-protocol (>= 1.9.2)
     cane (2.6.0)
       parallel
