@@ -1,5 +1,5 @@
 sneakers.yaml
-sneakers.log
+*.log
 sneakers.pid
 pkg/
 coverage/
