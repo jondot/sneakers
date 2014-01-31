@@ -12,12 +12,12 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{Fast background processing framework for Ruby and RabbitMQ}
   gem.homepage      = ""
 
-  gem.files         = `git ls-files`.split($/)
+  gem.files         = `git ls-files`.split($/).reject{|f| f == 'Gemfile.lock'}
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
   gem.add_dependency "serverengine"
-  gem.add_dependency "bunny", "~> 1.0.7"
+  gem.add_dependency "bunny", "~> 1.0"
   gem.add_dependency "thread"
   gem.add_dependency "thor"
 
