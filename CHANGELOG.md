@@ -8,7 +8,7 @@
 + Allow binding of multiple routing keys (@SebastianEdwards)
 + added work_with_params for advanced handling of work items with amqp
 headers. (#12)
-+ Bunny.not_environmental! will no disable auto-environment discovery.
++ Sneakers.not_environmental! will no disable auto-environment discovery.
 (#15)
 
 
