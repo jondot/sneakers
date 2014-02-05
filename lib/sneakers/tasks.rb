@@ -21,7 +21,7 @@ Error: No workers found.
 Please set the classes of the workers you want to run like so:
 
   $ export WORKERS=MyWorker,FooWorker
-  $ rake sneakers:work
+  $ rake sneakers:run
 
 EOF
       exit(1)
