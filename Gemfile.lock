@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     sneakers (0.1.0.pre)
-      bunny (~> 1.0)
+      bunny (~> 1.1.0)
       serverengine
       thor
       thread
