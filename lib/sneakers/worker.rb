@@ -116,6 +116,16 @@ module Sneakers
         @queue_name = q.to_s
         @queue_opts = opts
       end
+
+      def enqueue(msg)
+        publisher.publish(msg, :to_queue => @queue_name)
+      end
+
+      private
+
+      def publisher
+        @publisher ||= Sneakers::Publisher.new
+      end
     end
   end
 end

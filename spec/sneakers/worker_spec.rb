@@ -143,6 +143,21 @@ describe Sneakers::Worker do
     Sneakers::Worker.configure_metrics
   end
 
+  describe ".enqueue" do
+    it "publishes a message to the class queue" do
+      message = "my message"
+      mock = MiniTest::Mock.new
+
+      mock.expect(:publish, true) do |msg, opts|
+        msg.must_equal(message)
+        opts.must_equal(:to_queue => "defaults")
+      end
+
+      stub(Sneakers::Publisher).new { mock }
+      DefaultsWorker.enqueue(message)
+    end
+  end
+
   describe "#initialize" do
     describe "builds an internal queue" do
       before do
