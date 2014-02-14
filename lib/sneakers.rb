@@ -34,7 +34,6 @@ module Sneakers
     :timeout_job_after => 5,
     :prefetch => 10,
     :threads => 10,
-    :env => ENV['RACK_ENV'],
     :durable => true,
     :ack => true,
     :heartbeat => 2,
@@ -63,10 +62,6 @@ module Sneakers
     @logger = nil
     @publisher = nil
     @configured = false
-  end
-
-  def self.not_environmental!
-    Config[:env] = nil
   end
 
   def self.daemonize!(loglevel=Logger::INFO)

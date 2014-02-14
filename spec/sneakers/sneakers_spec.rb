@@ -40,18 +40,6 @@ describe Sneakers do
     end
   end
 
-  describe '.not_environmental!' do
-    it 'should ignore environment (RACK_ENV) for all workers' do
-      Sneakers.configure(:env => 'production')
-      Sneakers.not_environmental!
-      EnvWorker.new.queue.name.must_equal('defaults')
-    end
-
-    it 'should ignore environment (RACK_ENV) for all workers' do
-      Sneakers.configure(:env => 'production')
-      EnvWorker.new.queue.name.must_equal('defaults_production')
-    end
-  end
 
   describe '.clear!' do
     it 'must reset dirty configuration to default' do

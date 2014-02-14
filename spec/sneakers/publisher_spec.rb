@@ -3,14 +3,10 @@ require 'sneakers'
 
 
 describe Sneakers::Publisher do
-  before do
-    Sneakers.configure(:env => 'test')
-  end
-
   describe "#publish" do
     it "should publish a message to an exchange" do
       xchg = Object.new
-      mock(xchg).publish("test msg", :routing_key => "downloads_test")
+      mock(xchg).publish("test msg", :routing_key => "downloads")
 
       p = Sneakers::Publisher.new
       p.exchange = xchg
@@ -21,7 +17,7 @@ describe Sneakers::Publisher do
 
     it "should not reconnect if already connected" do
       xchg = Object.new
-      mock(xchg).publish("test msg", :routing_key => "downloads_test")
+      mock(xchg).publish("test msg", :routing_key => "downloads")
 
       p = Sneakers::Publisher.new
       p.exchange = xchg
@@ -31,7 +27,4 @@ describe Sneakers::Publisher do
       p.publish("test msg", :to_queue => 'downloads')
     end
   end
-
-
 end
-
