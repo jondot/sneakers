@@ -5,7 +5,7 @@ require 'sneakers'
 
 describe Sneakers::Queue do
   before do
-    Sneakers.configure(:env => 'test')
+    Sneakers.configure
   end
 
   describe "#subscribe" do

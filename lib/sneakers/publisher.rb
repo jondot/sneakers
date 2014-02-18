@@ -1,5 +1,3 @@
-require 'sneakers/support/queue_name'
-
 module Sneakers
   class Publisher
     attr_accessor :exchange
@@ -13,8 +11,8 @@ module Sneakers
       @mutex.synchronize do
         ensure_connection! unless connected?
       end
-      Sneakers.logger.info("publishing <#{msg}> to [#{Support::QueueName.new(routing[:to_queue], @opts).to_s}]")
-      @exchange.publish(msg, :routing_key => Support::QueueName.new(routing[:to_queue], @opts).to_s)
+      Sneakers.logger.info("publishing <#{msg}> to [#{routing[:to_queue]}]")
+      @exchange.publish(msg, :routing_key => routing[:to_queue])
     end
 
 

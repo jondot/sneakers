@@ -4,7 +4,6 @@ require 'sneakers'
 class WorkflowWorker
   include Sneakers::Worker
   from_queue 'downloads',
-             :env => 'test',
              :durable => false,
              :ack => true,
              :threads => 50,

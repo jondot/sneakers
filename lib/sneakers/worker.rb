@@ -1,6 +1,5 @@
 require 'sneakers/queue'
 require 'sneakers/support/utils'
-require 'sneakers/support/queue_name'
 require 'timeout'
 
 module Sneakers
@@ -15,10 +14,7 @@ module Sneakers
     def initialize(queue=nil, pool=nil, opts=nil)
       opts = self.class.queue_opts
       queue_name = self.class.queue_name
-
       opts = Sneakers::Config.merge(opts)
-
-      queue_name = Support::QueueName.new(queue_name, opts).to_s
 
       @should_ack =  opts[:ack]
       @timeout_after = opts[:timeout_job_after]
@@ -40,7 +36,7 @@ module Sneakers
 
     def publish(msg, routing)
       return unless routing[:to_queue]
-      @queue.exchange.publish(msg, :routing_key => Support::QueueName.new(routing[:to_queue], @opts).to_s)
+      @queue.exchange.publish(msg, :routing_key => routing[:to_queue])
     end
 
     def do_work(hdr, props, msg, handler)
@@ -119,6 +115,16 @@ module Sneakers
       def from_queue(q, opts={})
         @queue_name = q.to_s
         @queue_opts = opts
+      end
+
+      def enqueue(msg)
+        publisher.publish(msg, :to_queue => @queue_name)
+      end
+
+      private
+
+      def publisher
+        @publisher ||= Sneakers::Publisher.new
       end
     end
   end

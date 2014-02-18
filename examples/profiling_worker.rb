@@ -28,7 +28,6 @@ puts "done"
 class ProfilingWorker
   include Sneakers::Worker
   from_queue 'downloads',
-             :env => nil,
              :ack => true,
              :threads => 50,
              :prefetch => 50,
