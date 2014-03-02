@@ -26,5 +26,29 @@ describe Sneakers::Publisher do
 
       p.publish("test msg", :to_queue => 'downloads')
     end
+
+    it "should connect to rabbitmq configured on Sneakers.configure" do
+      Sneakers.configure(
+        :amqp => "amqp://someuser:somepassword@somehost:5672",
+        :heartbeat => 1, :exchange => 'another_exchange',
+        :exchange_type => :topic,
+        :durable => false)
+
+      channel = Object.new
+      mock(channel).exchange("another_exchange", :type => :topic, :durable => false) {
+        mock(Object.new).publish("test msg", :routing_key => "downloads")
+      }
+
+      bunny = Object.new
+      mock(bunny).start
+      mock(bunny).create_channel { channel }
+
+      mock(Bunny).new("amqp://someuser:somepassword@somehost:5672", :heartbeat => 1 ) { bunny }
+
+      p = Sneakers::Publisher.new
+
+      p.publish("test msg", :to_queue => 'downloads')
+
+    end
   end
 end
