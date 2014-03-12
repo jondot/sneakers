@@ -6,7 +6,7 @@ class Sneakers::Utils
     missing_workers = []
     workers = (workerstring || '').split(',').map do |k|
       begin
-        w = Object.const_get(k)
+        w = k.split('::').inject(Kernel){|s, c| s.const_get(c)}
       rescue
         missing_workers << k
       end
