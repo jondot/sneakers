@@ -66,6 +66,8 @@ module Sneakers
           logger.error(ex)
         end
 
+        puts "Got res #{res} and handler #{handler}"
+
         if @should_ack
           if res == :ack
             # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
