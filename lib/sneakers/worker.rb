@@ -71,15 +71,15 @@ module Sneakers
             # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
             handler.acknowledge(hdr.delivery_tag)
           elsif res == :timeout
-            handler.timeout(hdr.delivery_tag)
+            handler.timeout(hdr.delivery_tag, props, msg)
           elsif res == :error
-            handler.error(hdr.delivery_tag, error)
+            handler.error(hdr.delivery_tag, props, msg, error)
           elsif res == :reject
-            handler.reject(hdr.delivery_tag)
+            handler.reject(hdr.delivery_tag, props, msg)
           elsif res == :requeue
-            handler.reject(hdr.delivery_tag, true)
+            handler.reject(hdr.delivery_tag, props, msg, true)
           else
-            handler.noop(hdr.delivery_tag)
+            handler.noop(hdr.delivery_tag, props, msg)
           end
           metrics.increment("work.#{self.class.name}.handled.#{res || 'reject'}")
         end
