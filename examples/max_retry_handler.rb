@@ -5,7 +5,7 @@ require 'sneakers/handlers/maxretry'
 require 'logger'
 
 
-Sneakers.configure(:handler => Sneakers::Handlers::Maxretry, :workers => 1)
+Sneakers.configure(:handler => Sneakers::Handlers::Maxretry, :workers => 1, :threads => 1, :prefetch => 1)
 Sneakers.logger.level = Logger::INFO
 
 class MaxRetryWorker
@@ -23,7 +23,7 @@ class MaxRetryWorker
 
   def work(msg)
     
-    puts "Got message #{msg}"
+    puts "Got message #{msg} and rejecting now"
 
     # We always want to reject to see if we do the proper timeout
     return reject!

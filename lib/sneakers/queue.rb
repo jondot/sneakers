@@ -26,7 +26,7 @@ class Sneakers::Queue
                                   :type => @opts[:exchange_type],
                                   :durable => @opts[:durable])
 
-    handler = @handler_klass.new(@channel)
+    handler = @handler_klass.new(@channel, @opts)
 
     routing_key = @opts[:routing_key] || @name
     routing_keys = [*routing_key]
