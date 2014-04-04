@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'sneakers'
 
 describe Sneakers::Publisher do
-  overload_amqp
   describe '#publish' do
     it 'should publish a message to an exchange' do
       xchg = Object.new
