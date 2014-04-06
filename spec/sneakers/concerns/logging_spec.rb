@@ -17,7 +17,7 @@ describe Sneakers::Concerns::Logging do
       Foobar.logger.must_be_nil
       Foobar.configure_logger
       Foobar.logger.wont_be_nil
-      Foobar.logger.formatter.must_equal Sneakers::Concerns::Logging::ProductionFormatter
+      Foobar.logger.formatter.must_equal Sneakers::Support::ProductionFormatter
     end
 
     it "should supply accessible instance logger" do
