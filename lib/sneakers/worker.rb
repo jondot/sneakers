@@ -69,17 +69,17 @@ module Sneakers
         if @should_ack
           if res == :ack
             # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
-            handler.acknowledge(hdr.delivery_tag)
+            handler.acknowledge(hdr)
           elsif res == :timeout
-            handler.timeout(hdr.delivery_tag)
+            handler.timeout(hdr, props, msg)
           elsif res == :error
-            handler.error(hdr.delivery_tag, error)
+            handler.error(hdr, props, msg, error)
           elsif res == :reject
-            handler.reject(hdr.delivery_tag)
+            handler.reject(hdr, props, msg)
           elsif res == :requeue
-            handler.reject(hdr.delivery_tag, true)
+            handler.reject(hdr, props, msg, true)
           else
-            handler.noop(hdr.delivery_tag)
+            handler.noop(hdr, props, msg)
           end
           metrics.increment("work.#{self.class.name}.handled.#{res || 'reject'}")
         end
