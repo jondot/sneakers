@@ -5,3 +5,5 @@ sneakers.pid
 pkg/
 coverage/
 tmp/
+.ruby-version
+.ruby-gemset

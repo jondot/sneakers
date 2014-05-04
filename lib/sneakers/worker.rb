@@ -69,7 +69,7 @@ module Sneakers
         if @should_ack
           if res == :ack
             # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
-            handler.acknowledge(hdr)
+            handler.acknowledge(hdr, props, msg)
           elsif res == :timeout
             handler.timeout(hdr, props, msg)
           elsif res == :error
