@@ -108,13 +108,6 @@ class TestPool
   end
 end
 
-class TestHandler
-  def acknowledge(tag);  end
-  def reject(tag);  end
-  def error(tag, err); end
-  def timeout(tag); end
-end
-
 def with_test_queuefactory(ctx, ack=true, msg=nil, nowork=false)
   qf = Object.new
   q = Object.new
@@ -222,9 +215,8 @@ describe Sneakers::Worker do
       w = AcksWorker.new(@queue, TestPool.new)
       mock(w).work("msg").once{ raise "foo" }
       handler = Object.new
-      mock(handler).error("tag", anything)
       header = Object.new
-      stub(header).delivery_tag { "tag" }
+      mock(handler).error(header, nil, "msg", anything)
       w.do_work(header, nil, "msg", handler)
     end
 
@@ -233,10 +225,9 @@ describe Sneakers::Worker do
       stub(w).work("msg"){ sleep 10 }
 
       handler = Object.new
-      mock(handler).timeout("tag")
-
       header = Object.new
-      stub(header).delivery_tag { "tag" }
+
+      mock(handler).timeout(header, nil, "msg")
 
       w.do_work(header, nil, "msg", handler)
     end
@@ -251,35 +242,35 @@ describe Sneakers::Worker do
 
       it "should work and handle acks" do
         handler = Object.new
-        mock(handler).acknowledge("tag")
+        mock(handler).acknowledge(@header, nil, :ack)
 
         @worker.do_work(@header, nil, :ack, handler)
       end
 
       it "should work and handle rejects" do
         handler = Object.new
-        mock(handler).reject("tag")
+        mock(handler).reject(@header, nil, :reject)
 
         @worker.do_work(@header, nil, :reject, handler)
       end
 
       it "should work and handle requeues" do
         handler = Object.new
-        mock(handler).reject("tag", true)
+        mock(handler).reject(@header, nil, :requeue, true)
 
         @worker.do_work(@header, nil, :requeue, handler)
       end
 
       it "should work and handle user-land timeouts" do
         handler = Object.new
-        mock(handler).timeout("tag")
+        mock(handler).timeout(@header, nil, :timeout)
 
         @worker.do_work(@header, nil, :timeout, handler)
       end
 
       it "should work and handle user-land error" do
         handler = Object.new
-        mock(handler).error("tag",anything)
+        mock(handler).error(@header, nil, :error, anything)
 
         @worker.do_work(@header, nil, :error, handler)
       end
@@ -323,14 +314,14 @@ describe Sneakers::Worker do
   describe 'Metrics' do
     before do
       @handler = Object.new
-      stub(@handler).acknowledge("tag")
-      stub(@handler).reject("tag")
-      stub(@handler).timeout("tag")
-      stub(@handler).error("tag", anything)
-      stub(@handler).noop("tag")
-
       @header = Object.new
-      stub(@header).delivery_tag { "tag" }
+
+      # We don't care how these are called, we're focusing on metrics here.
+      stub(@handler).acknowledge
+      stub(@handler).reject
+      stub(@handler).timeout
+      stub(@handler).error
+      stub(@handler).noop
 
       @w = MetricsWorker.new(@queue, TestPool.new)
       mock(@w.metrics).increment("work.MetricsWorker.started").once
@@ -367,22 +358,17 @@ describe Sneakers::Worker do
 
   describe 'With Params' do
     before do
+      @props = { :foo => 1 }
       @handler = Object.new
-      stub(@handler).acknowledge("tag")
-      stub(@handler).reject("tag")
-      stub(@handler).timeout("tag")
-      stub(@handler).error("tag", anything)
-      stub(@handler).noop("tag")
-
       @header = Object.new
-      stub(@header).delivery_tag { "tag" }
+
+      stub(@handler).acknowledge(@header, @props, :ack).once
 
       @w = WithParamsWorker.new(@queue, TestPool.new)
       mock(@w.metrics).timing("work.WithParamsWorker.time").yields.once
     end
 
     it 'should call work_with_params and not work' do
-      mock(@w).work_with_params(:ack, @header, {:foo => 1}).once
       @w.do_work(@header, {:foo => 1 }, :ack, @handler)
     end
   end
