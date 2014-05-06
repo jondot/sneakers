@@ -26,6 +26,7 @@ describe Sneakers::Queue do
       @mkchan = Object.new
       @mkex = Object.new
       @mkqueue = Object.new
+      @mkworker = Object.new
 
       mock(@mkbunny).start {}
       mock(@mkbunny).create_channel{ @mkchan }
@@ -34,6 +35,8 @@ describe Sneakers::Queue do
       mock(@mkchan).prefetch(25)
       mock(@mkchan).exchange("sneakers", :type => :direct, :durable => true){ @mkex }
       mock(@mkchan).queue("downloads", :durable => true){ @mkqueue }
+
+      stub(@mkworker).opts { { :exchange => 'test-exchange' } }
     end
 
     it "should setup a bunny queue according to configuration values" do
@@ -42,7 +45,7 @@ describe Sneakers::Queue do
       mock(@mkqueue).bind(@mkex, :routing_key => "downloads")
       mock(@mkqueue).subscribe(:block => false, :ack => true)
 
-      q.subscribe(Object.new)
+      q.subscribe(@mkworker)
     end
 
     it "supports multiple routing_keys" do
@@ -53,7 +56,19 @@ describe Sneakers::Queue do
       mock(@mkqueue).bind(@mkex, :routing_key => "beta")
       mock(@mkqueue).subscribe(:block => false, :ack => true)
 
-      q.subscribe(Object.new)
+      q.subscribe(@mkworker)
+    end
+
+    it "will use whatever handler the worker specifies" do
+      @handler = Object.new
+      worker_opts = { :handler => @handler }
+      stub(@mkworker).opts { worker_opts }
+      mock(@handler).new(@mkchan, @mkqueue, worker_opts).once
+
+      stub(@mkqueue).bind
+      stub(@mkqueue).subscribe
+      q = Sneakers::Queue.new("downloads", queue_vars)
+      q.subscribe(@mkworker)
     end
   end
 

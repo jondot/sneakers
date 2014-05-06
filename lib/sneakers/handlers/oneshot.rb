@@ -1,7 +1,7 @@
 module Sneakers
   module Handlers
     class Oneshot
-      def initialize(channel, opts)
+      def initialize(channel, queue, opts)
         @channel = channel
         @opts = opts
       end

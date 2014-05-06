@@ -4,15 +4,15 @@ require 'timeout'
 
 module Sneakers
   module Worker
-    attr_reader :queue, :id
+    attr_reader :queue, :id, :opts
 
     # For now, a worker is hardly dependant on these concerns
     # (because it uses methods from them directly.)
     include Concerns::Logging
     include Concerns::Metrics
 
-    def initialize(queue=nil, pool=nil, opts=nil)
-      opts = self.class.queue_opts
+    def initialize(queue = nil, pool = nil, opts = {})
+      opts = opts.merge(self.class.queue_opts || {})
       queue_name = self.class.queue_name
       opts = Sneakers::Config.merge(opts)
 
