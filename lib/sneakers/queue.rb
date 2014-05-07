@@ -5,7 +5,6 @@ class Sneakers::Queue
   def initialize(name, opts)
     @name = name
     @opts = opts
-    @handler_klass = Sneakers::Config[:handler]
   end
 
   #
@@ -26,16 +25,24 @@ class Sneakers::Queue
                                   :type => @opts[:exchange_type],
                                   :durable => @opts[:durable])
 
-    handler = @handler_klass.new(@channel, @opts)
-
     routing_key = @opts[:routing_key] || @name
     routing_keys = [*routing_key]
 
+    # TODO: get the arguments from the handler? Retry handler wants this so you
+    # don't have to line up the queue's dead letter argument with the exchange
+    # you'll create for retry.
     queue = @channel.queue(@name, :durable => @opts[:durable], :arguments => @opts[:arguments])
 
     routing_keys.each do |key|
       queue.bind(@exchange, :routing_key => key)
     end
+
+    # NOTE: we are using the worker's options. This is necessary so the handler
+    # has the same configuration as the worker. Also pass along the exchange and
+    # queue in case the handler requires access to them (for things like binding
+    # retry queues, etc).
+    handler_klass = worker.opts[:handler] || Sneakers::Config[:handler]
+    handler = handler_klass.new(@channel, queue, worker.opts)
 
     @consumer = queue.subscribe(:block => false, :ack => @opts[:ack]) do | hdr, props, msg | 
       worker.do_work(hdr, props, msg, handler)
