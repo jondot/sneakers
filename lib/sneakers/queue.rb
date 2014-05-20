@@ -31,7 +31,7 @@ class Sneakers::Queue
     routing_key = @opts[:routing_key] || @name
     routing_keys = [*routing_key]
 
-    queue = @channel.queue(@name, :durable => @opts[:durable])
+    queue = @channel.queue(@name, :durable => @opts[:durable], :arguments => @opts[:arguments])
 
     routing_keys.each do |key|
       queue.bind(@exchange, :routing_key => key)
