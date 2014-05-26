@@ -6,7 +6,7 @@ module Sneakers
       end
 
       def increment(metric)
-        @connection.incrememnt(metric)
+        @connection.increment(metric)
       end
 
       def timing(metric, &block)

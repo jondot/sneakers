@@ -1,5 +1,6 @@
 sneakers.yaml
-sneakers.log
+Gemfile.lock
+*.log
 sneakers.pid
 pkg/
 coverage/

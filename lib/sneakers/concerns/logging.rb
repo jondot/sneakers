@@ -23,7 +23,7 @@ module Sneakers
           else
             @logger = Logger.new(STDOUT)
             @logger.level = Logger::INFO
-            @logger.formatter = ProductionFormatter
+            @logger.formatter = Sneakers::Support::ProductionFormatter
           end
         end
       end
