@@ -19,7 +19,7 @@ class MetricsWorker
 end
 
 
-Sneakers.configure( :daemonize => false, :log => STDOUT, :metrics => Sneakers::Metrics::LoggingMetrics.new)
+Sneakers.configure(:metrics => Sneakers::Metrics::LoggingMetrics.new)
 r = Sneakers::Runner.new([ MetricsWorker ])
 r.run
 

@@ -6,7 +6,6 @@ require 'timeout'
 class DummyWorker
   include Sneakers::Worker
   from_queue 'downloads',
-             :env => 'test',
              :durable => false,
              :ack => false,
              :threads => 50,
@@ -91,6 +90,16 @@ class MetricsWorker
   end
 end
 
+class WithParamsWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+             :ack => true,
+             :timeout_job_after => 0.5
+
+  def work_with_params(msg, header, props)
+    msg
+  end
+end
 
 
 class TestPool
@@ -129,9 +138,24 @@ describe Sneakers::Worker do
     stub(@queue).opts { {} }
     stub(@queue).exchange { @exchange }
 
-    Sneakers.configure(:env => 'test', :daemonize => true, :log => 'sneakers.log')
+    Sneakers.configure(:daemonize => true, :log => 'sneakers.log')
     Sneakers::Worker.configure_logger(Logger.new('/dev/null'))
     Sneakers::Worker.configure_metrics
+  end
+
+  describe ".enqueue" do
+    it "publishes a message to the class queue" do
+      message = "my message"
+      mock = MiniTest::Mock.new
+
+      mock.expect(:publish, true) do |msg, opts|
+        msg.must_equal(message)
+        opts.must_equal(:to_queue => "defaults")
+      end
+
+      stub(Sneakers::Publisher).new { mock }
+      DefaultsWorker.enqueue(message)
+    end
   end
 
   describe "#initialize" do
@@ -142,16 +166,16 @@ describe Sneakers::Worker do
       end
 
       it "should build a queue with correct configuration given defaults" do
-        @defaults_q.name.must_equal('defaults_test')
+        @defaults_q.name.must_equal('defaults')
         @defaults_q.opts.must_equal(
-          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>5, :prefetch=>10, :threads=>10, :env=>"test", :durable=>true, :ack=>true, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"sneakers", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat => 2}
+          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>5, :prefetch=>10, :threads=>10, :durable=>true, :ack=>true, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"sneakers", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat => 2}
         )
       end
 
       it "should build a queue with given configuration" do
-        @dummy_q.name.must_equal('downloads_test')
+        @dummy_q.name.must_equal('downloads')
         @dummy_q.opts.must_equal(
-          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>1, :prefetch=>40, :threads=>50, :env=>"test", :durable=>false, :ack=>false, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"dummy", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat =>5}
+          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>1, :prefetch=>40, :threads=>50, :durable=>false, :ack=>false, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"dummy", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat =>5}
         )
       end
     end
@@ -277,7 +301,7 @@ describe Sneakers::Worker do
   describe 'publish' do
     it 'should be able to publish a message from working context' do
       w = PublishingWorker.new(@queue, TestPool.new)
-      mock(@exchange).publish('msg', :routing_key => 'target_test').once
+      mock(@exchange).publish('msg', :routing_key => 'target').once
       w.do_work(nil, nil, 'msg', nil)
     end
   end
@@ -339,4 +363,27 @@ describe Sneakers::Worker do
     end
   end
 
+
+
+  describe 'With Params' do
+    before do
+      @handler = Object.new
+      stub(@handler).acknowledge("tag")
+      stub(@handler).reject("tag")
+      stub(@handler).timeout("tag")
+      stub(@handler).error("tag", anything)
+      stub(@handler).noop("tag")
+
+      @header = Object.new
+      stub(@header).delivery_tag { "tag" }
+
+      @w = WithParamsWorker.new(@queue, TestPool.new)
+      mock(@w.metrics).timing("work.WithParamsWorker.time").yields.once
+    end
+
+    it 'should call work_with_params and not work' do
+      mock(@w).work_with_params(:ack, @header, {:foo => 1}).once
+      @w.do_work(@header, {:foo => 1 }, :ack, @handler)
+    end
+  end
 end

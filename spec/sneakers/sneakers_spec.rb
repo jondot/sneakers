@@ -1,6 +1,13 @@
 require 'spec_helper'
 require 'sneakers'
 
+class EnvWorker
+  include Sneakers::Worker
+  from_queue 'defaults'
+
+  def work(msg)
+  end
+end
 
 
 describe Sneakers do
@@ -32,6 +39,7 @@ describe Sneakers do
       Sneakers.logger.level.must_equal(Logger::DEBUG)
     end
   end
+
 
   describe '.clear!' do
     it 'must reset dirty configuration to default' do

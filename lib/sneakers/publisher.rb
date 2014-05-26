@@ -1,10 +1,6 @@
-require 'sneakers/support/queue_name'
-
 module Sneakers
   class Publisher
-    attr_accessor :exchange
-
-    def initialize(opts={})
+    def initialize(opts = {})
       @mutex = Mutex.new
       @opts = Sneakers::Config.merge(opts)
     end
@@ -13,18 +9,19 @@ module Sneakers
       @mutex.synchronize do
         ensure_connection! unless connected?
       end
-      Sneakers.logger.info("publishing <#{msg}> to [#{Support::QueueName.new(routing[:to_queue], @opts).to_s}]")
-      @exchange.publish(msg, :routing_key => Support::QueueName.new(routing[:to_queue], @opts).to_s)
+      Sneakers.logger.info("publishing <#{msg}> to [#{routing[:to_queue]}]")
+      @exchange.publish(msg, routing_key: routing[:to_queue], persistence: routing[:persistence])
     end
 
+    private
 
-  private
+    attr_reader :exchange
 
     def ensure_connection!
-      @bunny = Bunny.new(:heartbeat => @opts[:heartbeat])
+      @bunny = Bunny.new(heartbeat: @opts[:heartbeat])
       @bunny.start
       @channel = @bunny.create_channel
-      @exchange = @channel.exchange(@opts[:exchange], :type => :direct, :durable => @opts[:durable])
+      @exchange = @channel.exchange(@opts[:exchange], type: @opts[:exchange_type], durable: @opts[:durable])
     end
 
     def connected?

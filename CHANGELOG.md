@@ -6,6 +6,11 @@
 + updating bunny (@michaelklishin)
 + Fix reference in publisher (@sergei-matheson)
 + Allow binding of multiple routing keys (@SebastianEdwards)
++ added work_with_params for advanced handling of work items with amqp
+headers. (#12)
++ Sneakers.not_environmental! will no disable auto-environment discovery.
+(#15)
+
 
 
 
