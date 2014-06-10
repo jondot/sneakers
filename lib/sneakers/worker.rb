@@ -63,7 +63,11 @@ module Sneakers
         rescue => ex
           res = :error
           error = ex
-          logger.error(ex)
+          log_msg = "error=#{ex.message.inspect} error_class=#{ex.class.name}"
+          unless ex.backtrace.nil?
+            log_msg += " backtrace=#{ex.backtrace.take(50).join("\n")}"
+          end
+          logger.error(log_msg)
         end
 
         if @should_ack
