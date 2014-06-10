@@ -220,6 +220,16 @@ describe Sneakers::Worker do
       w.do_work(header, nil, "msg", handler)
     end
 
+    it "should log exceptions from workers" do
+      handler = Object.new
+      header = Object.new
+      w = AcksWorker.new(@queue, TestPool.new)
+      mock(w).work("msg").once{ raise "foo" }
+      mock(w.logger).error(/error="foo" error_class=RuntimeError backtrace=/)
+      mock(handler).error(header, nil, "msg", anything)
+      w.do_work(header, nil, "msg", handler)
+    end
+
     it "should timeout if a work takes too long" do
       w = TimeoutWorker.new(@queue, TestPool.new)
       stub(w).work("msg"){ sleep 10 }
