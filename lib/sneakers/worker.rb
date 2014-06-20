@@ -85,7 +85,7 @@ module Sneakers
           else
             handler.noop(hdr, props, msg)
           end
-          metrics.increment("work.#{self.class.name}.handled.#{res || 'reject'}")
+          metrics.increment("work.#{self.class.name}.handled.#{res || 'noop'}")
         end
 
         metrics.increment("work.#{self.class.name}.ended")

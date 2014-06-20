@@ -348,7 +348,13 @@ describe Sneakers::Worker do
     it 'should be able to meter rejects' do
       mock(@w.metrics).increment("foobar").once
       mock(@w.metrics).increment("work.MetricsWorker.handled.reject").once
-      @w.do_work(@header, nil, nil, @handler)
+      @w.do_work(@header, nil, :reject, @handler)
+    end
+
+    it 'should be able to meter requeue' do
+      mock(@w.metrics).increment("foobar").once
+      mock(@w.metrics).increment("work.MetricsWorker.handled.requeue").once
+      @w.do_work(@header, nil, :requeue, @handler)
     end
 
     it 'should be able to meter errors' do
@@ -361,6 +367,12 @@ describe Sneakers::Worker do
       mock(@w.metrics).increment("work.MetricsWorker.handled.timeout").once
       mock(@w).work('msg'){ sleep 10 }
       @w.do_work(@header, nil, 'msg', @handler)
+    end
+
+    it 'defaults to noop when no response is specified' do
+      mock(@w.metrics).increment("foobar").once
+      mock(@w.metrics).increment("work.MetricsWorker.handled.noop").once
+      @w.do_work(@header, nil, nil, @handler)
     end
   end
 
