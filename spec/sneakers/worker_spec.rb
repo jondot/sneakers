@@ -132,7 +132,6 @@ describe Sneakers::Worker do
     stub(@queue).exchange { @exchange }
 
     Sneakers.configure(:daemonize => true, :log => 'sneakers.log')
-    Sneakers::Worker.configure_logger(Logger.new('/dev/null'))
     Sneakers::Worker.configure_metrics
   end
 
@@ -217,7 +216,17 @@ describe Sneakers::Worker do
       handler = Object.new
       header = Object.new
       mock(handler).error(header, nil, "msg", anything)
-      mock(w.logger).error(/unexpected error.*\[Exception: RuntimeError, foo, backtrace.*/)
+      mock(w.logger).error(/unexpected error \[Exception error="foo" error_class=RuntimeError backtrace=.*/)
+      w.do_work(header, nil, "msg", handler)
+    end
+
+    it "should log exceptions from workers" do
+      handler = Object.new
+      header = Object.new
+      w = AcksWorker.new(@queue, TestPool.new)
+      mock(w).work("msg").once{ raise "foo" }
+      mock(w.logger).error(/error="foo" error_class=RuntimeError backtrace=/)
+      mock(handler).error(header, nil, "msg", anything)
       w.do_work(header, nil, "msg", handler)
     end
 
@@ -321,7 +330,7 @@ describe Sneakers::Worker do
     describe '#worker_error' do
       it 'only logs backtraces if present' do
         w = DummyWorker.new(@queue, TestPool.new)
-        mock(w.logger).error(/cuz \[Exception: RuntimeError, boom!\]/)
+        mock(w.logger).error(/cuz \[Exception error="boom!" error_class=RuntimeError\]/)
         w.worker_error('cuz', RuntimeError.new('boom!'))
       end
     end

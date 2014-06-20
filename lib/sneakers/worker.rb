@@ -109,8 +109,8 @@ module Sneakers
     def worker_error(msg, exception = nil)
       s = log_msg(msg)
       if exception
-        s += " [Exception: #{exception.class}, #{exception.message}"
-        s += ", backtrace:#{exception.backtrace.join(',')}" if exception.backtrace
+        s += " [Exception error=#{exception.message.inspect} error_class=#{exception.class}"
+        s += " backtrace=#{exception.backtrace.take(50).join(',')}" unless exception.backtrace.nil?
         s += "]"
       end
       logger.error(s)
