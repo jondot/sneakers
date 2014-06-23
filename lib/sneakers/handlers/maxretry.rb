@@ -1,3 +1,6 @@
+require 'base64'
+require 'json'
+
 module Sneakers
   module Handlers
     #
@@ -82,41 +85,73 @@ module Sneakers
         @channel.acknowledge(hdr.delivery_tag, false)
       end
 
-      def reject(hdr, props, msg, requeue=false)
-
-        # +1 for the current attempt
-        num_attempts = failure_count(props[:headers]) + 1
-        if requeue || (num_attempts <= @max_retries)
-          # We call reject which will route the message to the
-          # x-dead-letter-exchange (ie. retry exchange)on the queue
-          Sneakers.logger.info do
-            "#{log_prefix} msg=retrying count=#{num_attempts}, headers=#{props[:headers]}"
-          end unless requeue # This is only relevant if we're in the failure path.
+      def reject(hdr, props, msg, requeue = false)
+        if requeue
+          # This was explicitly rejected specifying it be requeued so we do not
+          # want it to pass through our retry logic.
           @channel.reject(hdr.delivery_tag, requeue)
-          # TODO: metrics
         else
-          # Retried more than the max times
-          # Publish the original message with the routing_key to the error exchange
-          Sneakers.logger.info do
-            "#{log_prefix} msg=failing retry_count=#{num_attempts}"
-          end
-          @error_exchange.publish(msg, :routing_key => hdr.routing_key)
-          @channel.acknowledge(hdr.delivery_tag, false)
-          # TODO: metrics
+          handle_retry(hdr, props, msg, :reject)
         end
       end
 
+
       def error(hdr, props, msg, err)
-        reject(hdr, props, msg)
+        handle_retry(hdr, props, msg, err)
       end
 
       def timeout(hdr, props, msg)
-        reject(hdr, props, msg)
+        handle_retry(hdr, props, msg, :timeout)
       end
 
       def noop(hdr, props, msg)
 
       end
+
+      # Helper logic for retry handling. This will reject the message if there
+      # are remaining retries left on it, otherwise it will publish it to the
+      # error exchange along with the reason.
+      # @param hdr [Bunny::DeliveryInfo]
+      # @param props [Bunny::MessageProperties]
+      # @param msg [String] The message
+      # @param reason [String, Symbol, Exception] Reason for the retry, included
+      #   in the JSON we put on the error exchange.
+      def handle_retry(hdr, props, msg, reason)
+        # +1 for the current attempt
+        num_attempts = failure_count(props[:headers]) + 1
+        if num_attempts <= @max_retries
+          # We call reject which will route the message to the
+          # x-dead-letter-exchange (ie. retry exchange) on the queue
+          Sneakers.logger.info do
+            "#{log_prefix} msg=retrying, count=#{num_attempts}, headers=#{props[:headers]}"
+          end
+          @channel.reject(hdr.delivery_tag, false)
+          # TODO: metrics
+        else
+          # Retried more than the max times
+          # Publish the original message with the routing_key to the error exchange
+          Sneakers.logger.info do
+            "#{log_prefix} msg=failing, retry_count=#{num_attempts}, reason=#{reason}"
+          end
+          data = {
+            error: reason,
+            num_attempts: num_attempts,
+            failed_at: Time.now.iso8601,
+            payload: Base64.encode64(msg.to_s)
+          }.tap do |hash|
+            if reason.is_a?(Exception)
+              hash[:error_class] = reason.class
+              if reason.backtrace
+                hash[:backtrace] = reason.backtrace.take(10).join(', ')
+              end
+            end
+          end.to_json
+          @error_exchange.publish(data, :routing_key => hdr.routing_key)
+          @channel.acknowledge(hdr.delivery_tag, false)
+          # TODO: metrics
+        end
+      end
+      private :handle_retry
 
       # Uses the x-death header to determine the number of failures this job has
       # seen in the past. This does not count the current failure. So for
