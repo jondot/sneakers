@@ -33,8 +33,7 @@ module Sneakers
       def initialize(channel, queue, opts)
         @worker_queue_name = queue.name
         Sneakers.logger.debug do
-          "Creating a Maxretry handler for queue(#{@worker_queue_name}),"\
-          " opts(#{opts})"
+          "#{log_prefix} creating handler, opts=#{opts}"
         end
 
         @channel = channel
@@ -47,7 +46,7 @@ module Sneakers
 
         # Create the exchanges
         @retry_exchange, @error_exchange, @requeue_exchange = [retry_name, error_name, requeue_name].map do |name|
-          Sneakers.logger.debug { "Creating exchange #{name} for retry handler on worker queue #{@worker_queue_name}" }
+          Sneakers.logger.debug { "#{log_prefix} creating exchange=#{name}" }
           @channel.exchange(name,
                             :type => 'topic',
                             :durable => opts[:durable])
@@ -55,7 +54,7 @@ module Sneakers
 
         # Create the queues and bindings
         Sneakers.logger.debug do
-          "Creating queue #{retry_name}, dead lettering to #{requeue_name}"
+          "#{log_prefix} creating queue=#{retry_name} x-dead-letter-exchange=#{requeue_name}"
         end
         @retry_queue = @channel.queue(retry_name,
                                      :durable => opts[:durable],
@@ -66,7 +65,7 @@ module Sneakers
         @retry_queue.bind(@retry_exchange, :routing_key => '#')
 
         Sneakers.logger.debug do
-          "Creating queue #{error_name}"
+          "#{log_prefix} creating queue=#{error_name}"
         end
         @error_queue = @channel.queue(error_name,
                                       :durable => opts[:durable])
@@ -85,20 +84,22 @@ module Sneakers
 
       def reject(hdr, props, msg, requeue=false)
 
-        # Note to readers, the count of the x-death will increment by 2 for each
-        # retry, once for the reject and once for the expiration from the retry
-        # queue
-        if requeue || ((failure_count(props[:headers]) + 1) <= @max_retries)
+        # +1 for the current attempt
+        num_attempts = failure_count(props[:headers]) + 1
+        if requeue || (num_attempts <= @max_retries)
           # We call reject which will route the message to the
           # x-dead-letter-exchange (ie. retry exchange)on the queue
-          Sneakers.logger.debug do
-            "Retrying failure, count #{failure_count(props[:headers]) + 1}, headers #{props[:headers]}"
+          Sneakers.logger.info do
+            "#{log_prefix} msg=retrying count=#{num_attempts}, headers=#{props[:headers]}"
           end unless requeue # This is only relevant if we're in the failure path.
           @channel.reject(hdr.delivery_tag, requeue)
           # TODO: metrics
         else
           # Retried more than the max times
           # Publish the original message with the routing_key to the error exchange
+          Sneakers.logger.info do
+            "#{log_prefix} msg=failing retry_count=#{num_attempts}"
+          end
           @error_exchange.publish(msg, :routing_key => hdr.routing_key)
           @channel.acknowledge(hdr.delivery_tag, false)
           # TODO: metrics
@@ -134,6 +135,14 @@ module Sneakers
         end
       end
       private :failure_count
+
+      # Prefix all of our log messages so they are easier to find. We don't have
+      # the worker, so the next best thing is the queue name.
+      def log_prefix
+        "Maxretry handler [queue=#{@worker_queue_name}]"
+      end
+      private :log_prefix
+
     end
   end
 end
