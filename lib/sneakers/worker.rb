@@ -59,15 +59,11 @@ module Sneakers
           end
         rescue Timeout::Error
           res = :timeout
-          logger.error("timeout")
+          worker_error('timeout')
         rescue => ex
           res = :error
           error = ex
-          log_msg = "error=#{ex.message.inspect} error_class=#{ex.class.name}"
-          unless ex.backtrace.nil?
-            log_msg += " backtrace=#{ex.backtrace.take(50).join("\n")}"
-          end
-          logger.error(log_msg)
+          worker_error('unexpected error', ex)
         end
 
         if @should_ack
@@ -104,8 +100,24 @@ module Sneakers
       worker_trace "New worker: I'm alive."
     end
 
+    # Construct a log message with some standard prefix for this worker
+    def log_msg(msg)
+      "[#{@id}][#{Thread.current}][#{@queue.name}][#{@queue.opts}] #{msg}"
+    end
+
+    # Helper to log an error message with an optional exception
+    def worker_error(msg, exception = nil)
+      s = log_msg(msg)
+      if exception
+        s += " [Exception error=#{exception.message.inspect} error_class=#{exception.class}"
+        s += " backtrace=#{exception.backtrace.take(50).join(',')}" unless exception.backtrace.nil?
+        s += "]"
+      end
+      logger.error(s)
+    end
+
     def worker_trace(msg)
-      logger.debug "[#{@id}][#{Thread.current}][#{@queue.name}][#{@queue.opts}] #{msg}"
+      logger.debug(log_msg(msg))
     end
 
     def self.included(base)
