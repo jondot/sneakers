@@ -3,6 +3,7 @@ require 'sneakers'
 require 'timeout'
 require 'sneakers/handlers/oneshot'
 require 'sneakers/handlers/maxretry'
+require 'json'
 
 
 # Specific tests of the Handler implementations you can use to deal with job
@@ -16,9 +17,22 @@ class HandlerTestWorker
   def work(msg)
     if msg.is_a?(StandardError)
       raise msg
+    elsif msg.is_a?(String)
+      hash = maybe_json(msg)
+      if hash.is_a?(Hash)
+        hash['response'].to_sym
+      else
+        hash
+      end
     else
       msg
     end
+  end
+
+  def maybe_json(string)
+    JSON.parse(string)
+  rescue
+    string
   end
 end
 
@@ -165,6 +179,22 @@ describe 'Handlers' do
     # it 'allows overriding the retry timeout'
 
     describe '#do_work' do
+      before do
+        @now = Time.now
+      end
+
+      # Used to stub out the publish method args. Sadly RR doesn't support
+      # this, only proxying existing methods.
+      module MockPublish
+        attr_reader :data, :opts, :called
+
+        def publish(data, opts)
+          @data = data
+          @opts = opts
+          @called = true
+        end
+      end
+
       it 'should work and handle acks' do
         mock(channel).acknowledge(37, false)
 
@@ -186,9 +216,16 @@ describe 'Handlers' do
           it 'sends the rejection to the error queue' do
             mock(@header).routing_key { '#' }
             mock(channel).acknowledge(37, false)
-            mock(@error_exchange).publish(:reject, :routing_key => '#')
 
+            @error_exchange.extend MockPublish
             worker.do_work(@header, @props_with_x_death, :reject, @handler)
+            @error_exchange.called.must_equal(true)
+            @error_exchange.opts.must_equal({ :routing_key => '#' })
+            data = JSON.parse(@error_exchange.data)
+            data['error'].must_equal('reject')
+            data['num_attempts'].must_equal(2)
+            data['payload'].must_equal(Base64.encode64(:reject.to_s))
+            Time.parse(data['failed_at']).wont_be_nil
           end
 
         end
@@ -213,10 +250,64 @@ describe 'Handlers' do
 
       end
 
-      it 'should work and handle user-land timeouts' do
-        mock(channel).reject(37, false)
+      describe 'timeouts' do
+        describe 'more retries ahead' do
+          it 'should reject the message' do
+            mock(channel).reject(37, false)
 
-        worker.do_work(@header, @props, :timeout, @handler)
+            worker.do_work(@header, @props_with_x_death, :timeout, @handler)
+          end
+        end
+
+        describe 'no more retries left' do
+          let(:max_retries) { 1 }
+
+          it 'sends the rejection to the error queue' do
+            mock(@header).routing_key { '#' }
+            mock(channel).acknowledge(37, false)
+            @error_exchange.extend MockPublish
+
+            worker.do_work(@header, @props_with_x_death, :timeout, @handler)
+            @error_exchange.called.must_equal(true)
+            @error_exchange.opts.must_equal({ :routing_key => '#' })
+            data = JSON.parse(@error_exchange.data)
+            data['error'].must_equal('timeout')
+            data['num_attempts'].must_equal(2)
+            data['payload'].must_equal(Base64.encode64(:timeout.to_s))
+            Time.parse(data['failed_at']).wont_be_nil
+          end
+        end
+      end
+
+      describe 'exceptions' do
+        describe 'more retries ahead' do
+          it 'should reject the message' do
+            mock(channel).reject(37, false)
+
+            worker.do_work(@header, @props_with_x_death, StandardError.new('boom!'), @handler)
+          end
+        end
+
+        describe 'no more retries left' do
+          let(:max_retries) { 1 }
+
+          it 'sends the rejection to the error queue' do
+            mock(@header).routing_key { '#' }
+            mock(channel).acknowledge(37, false)
+            @error_exchange.extend MockPublish
+
+            worker.do_work(@header, @props_with_x_death, StandardError.new('boom!'), @handler)
+            @error_exchange.called.must_equal(true)
+            @error_exchange.opts.must_equal({ :routing_key => '#' })
+            data = JSON.parse(@error_exchange.data)
+            data['error'].must_equal('boom!')
+            data['error_class'].must_equal(StandardError.to_s)
+            data['backtrace'].wont_be_nil
+            data['num_attempts'].must_equal(2)
+            data['payload'].must_equal(Base64.encode64('boom!'))
+            Time.parse(data['failed_at']).wont_be_nil
+          end
+        end
       end
 
       it 'should work and handle user-land error' do
@@ -228,7 +319,32 @@ describe 'Handlers' do
       it 'should work and handle noops' do
         worker.do_work(@header, @props, :wait, @handler)
       end
-    end
 
+      # Since we encode in json, we want to make sure if the actual payload is
+      # json, then it's something you can get back out.
+      describe 'JSON payloads' do
+        let(:max_retries) { 1 }
+
+        it 'properly encodes the json payload' do
+          mock(@header).routing_key { '#' }
+          mock(channel).acknowledge(37, false)
+          @error_exchange.extend MockPublish
+
+          payload = {
+            data: 'hello',
+            response: :timeout
+          }
+          worker.do_work(@header, @props_with_x_death, payload.to_json, @handler)
+          @error_exchange.called.must_equal(true)
+          @error_exchange.opts.must_equal({ :routing_key => '#' })
+          data = JSON.parse(@error_exchange.data)
+          data['error'].must_equal('timeout')
+          data['num_attempts'].must_equal(2)
+          data['payload'].must_equal(Base64.encode64(payload.to_json))
+        end
+
+      end
+
+    end
   end
 end
