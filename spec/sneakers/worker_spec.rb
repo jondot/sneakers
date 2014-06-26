@@ -96,7 +96,7 @@ class WithParamsWorker
              :ack => true,
              :timeout_job_after => 0.5
 
-  def work_with_params(msg, header, props)
+  def work_with_params(msg, delivery_info, metadata)
     msg
   end
 end
@@ -243,8 +243,8 @@ describe Sneakers::Worker do
 
     describe "with ack" do
       before do
-        @header = Object.new
-        stub(@header).delivery_tag{ "tag" }
+        @delivery_info = Object.new
+        stub(@delivery_info).delivery_tag{ "tag" }
 
         @worker = AcksWorker.new(@queue, TestPool.new)
       end
@@ -253,35 +253,35 @@ describe Sneakers::Worker do
         handler = Object.new
         mock(handler).acknowledge("tag")
 
-        @worker.do_work(@header, nil, :ack, handler)
+        @worker.do_work(@delivery_info, nil, :ack, handler)
       end
 
       it "should work and handle rejects" do
         handler = Object.new
         mock(handler).reject("tag")
 
-        @worker.do_work(@header, nil, :reject, handler)
+        @worker.do_work(@delivery_info, nil, :reject, handler)
       end
 
       it "should work and handle requeues" do
         handler = Object.new
         mock(handler).reject("tag", true)
 
-        @worker.do_work(@header, nil, :requeue, handler)
+        @worker.do_work(@delivery_info, nil, :requeue, handler)
       end
 
       it "should work and handle user-land timeouts" do
         handler = Object.new
         mock(handler).timeout("tag")
 
-        @worker.do_work(@header, nil, :timeout, handler)
+        @worker.do_work(@delivery_info, nil, :timeout, handler)
       end
 
       it "should work and handle user-land error" do
         handler = Object.new
         mock(handler).error("tag",anything)
 
-        @worker.do_work(@header, nil, :error, handler)
+        @worker.do_work(@delivery_info, nil, :error, handler)
       end
     end
 
@@ -329,8 +329,8 @@ describe Sneakers::Worker do
       stub(@handler).error("tag", anything)
       stub(@handler).noop("tag")
 
-      @header = Object.new
-      stub(@header).delivery_tag { "tag" }
+      @delivery_info = Object.new
+      stub(@delivery_info).delivery_tag { "tag" }
 
       @w = MetricsWorker.new(@queue, TestPool.new)
       mock(@w.metrics).increment("work.MetricsWorker.started").once
@@ -341,25 +341,25 @@ describe Sneakers::Worker do
     it 'should be able to meter acks' do
       mock(@w.metrics).increment("foobar").once
       mock(@w.metrics).increment("work.MetricsWorker.handled.ack").once
-      @w.do_work(@header, nil, :ack, @handler)
+      @w.do_work(@delivery_info, nil, :ack, @handler)
     end
 
     it 'should be able to meter rejects' do
       mock(@w.metrics).increment("foobar").once
       mock(@w.metrics).increment("work.MetricsWorker.handled.reject").once
-      @w.do_work(@header, nil, nil, @handler)
+      @w.do_work(@delivery_info, nil, nil, @handler)
     end
 
     it 'should be able to meter errors' do
       mock(@w.metrics).increment("work.MetricsWorker.handled.error").once
       mock(@w).work('msg'){ raise :error }
-      @w.do_work(@header, nil, 'msg', @handler)
+      @w.do_work(@delivery_info, nil, 'msg', @handler)
     end
 
     it 'should be able to meter timeouts' do
       mock(@w.metrics).increment("work.MetricsWorker.handled.timeout").once
       mock(@w).work('msg'){ sleep 10 }
-      @w.do_work(@header, nil, 'msg', @handler)
+      @w.do_work(@delivery_info, nil, 'msg', @handler)
     end
   end
 
@@ -374,16 +374,16 @@ describe Sneakers::Worker do
       stub(@handler).error("tag", anything)
       stub(@handler).noop("tag")
 
-      @header = Object.new
-      stub(@header).delivery_tag { "tag" }
+      @delivery_info = Object.new
+      stub(@delivery_info).delivery_tag { "tag" }
 
       @w = WithParamsWorker.new(@queue, TestPool.new)
       mock(@w.metrics).timing("work.WithParamsWorker.time").yields.once
     end
 
     it 'should call work_with_params and not work' do
-      mock(@w).work_with_params(:ack, @header, {:foo => 1}).once
-      @w.do_work(@header, {:foo => 1 }, :ack, @handler)
+      mock(@w).work_with_params(:ack, @delivery_info, {:foo => 1}).once
+      @w.do_work(@delivery_info, {:foo => 1 }, :ack, @handler)
     end
   end
 end

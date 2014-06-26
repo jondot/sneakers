@@ -39,7 +39,7 @@ module Sneakers
       @queue.exchange.publish(msg, :routing_key => routing[:to_queue])
     end
 
-    def do_work(hdr, props, msg, handler)
+    def do_work(delivery_info, metadata, msg, handler)
       worker_trace "Working off: #{msg}"
 
       @pool.process do
@@ -51,7 +51,7 @@ module Sneakers
           Timeout.timeout(@timeout_after) do
             metrics.timing("work.#{self.class.name}.time") do
               if @call_with_params
-                res = work_with_params(msg, hdr, props)
+                res = work_with_params(msg, delivery_info, metadata)
               else
                 res = work(msg)
               end
@@ -68,19 +68,21 @@ module Sneakers
         end
 
         if @should_ack
+          delivery_tag = delivery_info.delivery_tag
+
           if res == :ack
             # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
-            handler.acknowledge(hdr.delivery_tag)
+            handler.acknowledge(delivery_tag)
           elsif res == :timeout
-            handler.timeout(hdr.delivery_tag)
+            handler.timeout(delivery_tag)
           elsif res == :error
-            handler.error(hdr.delivery_tag, error)
+            handler.error(delivery_tag, error)
           elsif res == :reject
-            handler.reject(hdr.delivery_tag)
+            handler.reject(delivery_tag)
           elsif res == :requeue
-            handler.reject(hdr.delivery_tag, true)
+            handler.reject(delivery_tag, true)
           else
-            handler.noop(hdr.delivery_tag)
+            handler.noop(delivery_tag)
           end
           metrics.increment("work.#{self.class.name}.handled.#{res || 'reject'}")
         end
