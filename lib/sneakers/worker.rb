@@ -34,9 +34,11 @@ module Sneakers
     def reject!; :reject; end
     def requeue!; :requeue; end
 
-    def publish(msg, routing)
-      return unless routing[:to_queue]
-      @queue.exchange.publish(msg, :routing_key => routing[:to_queue])
+    def publish(msg, opts)
+      to_queue = opts.delete(:to_queue)
+      opts[:routing_key] ||= to_queue
+      return unless opts[:routing_key]
+      @queue.exchange.publish(msg, opts)
     end
 
     def do_work(hdr, props, msg, handler)
