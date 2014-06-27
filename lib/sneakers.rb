@@ -20,28 +20,31 @@ require 'sneakers/publisher'
 
 module Sneakers
 
+  rabbitmq_url   = ENV.fetch('RABBITMQ_URL', 'amqp://guest:guest@localhost:5672')
+  rabbitmq_vhost = URI.parse(rabbitmq_url).path.to_s.gsub(/^\//, '')
+  rabbitmq_vhost = '/' if rabbitmq_vhost == ''
+
   DEFAULTS = {
     # runner
     :runner_config_file => nil,
-    :metrics => nil,
-    :daemonize => false,
+    :metrics            => nil,
+    :daemonize          => false,
     :start_worker_delay => 0.2,
-    :workers => 4,
-    :log  => STDOUT,
-    :pid_path => 'sneakers.pid',
-
-    #workers
-    :timeout_job_after => 5,
-    :prefetch => 10,
-    :threads => 10,
-    :durable => true,
-    :ack => true,
-    :heartbeat => 2,
-    :amqp => 'amqp://guest:guest@localhost:5672',
-    :vhost => '/',
-    :exchange => 'sneakers',
-    :exchange_type => :direct,
-    :hooks => {}
+    :workers            => 4,
+    :log                => STDOUT,
+    :pid_path           => 'sneakers.pid',
+    # workers
+    :timeout_job_after  => 5,
+    :prefetch           => 10,
+    :threads            => 10,
+    :durable            => true,
+    :ack                => true,
+    :heartbeat          => 2,
+    :amqp               => rabbitmq_url,
+    :vhost              => rabbitmq_vhost,
+    :exchange           => 'sneakers',
+    :exchange_type      => :direct,
+    :hooks              => {}
   }.freeze
 
   Config = DEFAULTS.dup
