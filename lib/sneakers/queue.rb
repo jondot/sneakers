@@ -37,8 +37,8 @@ class Sneakers::Queue
       queue.bind(@exchange, :routing_key => key)
     end
 
-    @consumer = queue.subscribe(:block => false, :ack => @opts[:ack]) do | hdr, props, msg | 
-      worker.do_work(hdr, props, msg, handler)
+    @consumer = queue.subscribe(:block => false, :ack => @opts[:ack]) do | delivery_info, metadata, msg |
+      worker.do_work(delivery_info, metadata, msg, handler)
     end
     nil
   end
