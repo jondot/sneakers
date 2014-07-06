@@ -304,6 +304,12 @@ describe Sneakers::Worker do
       mock(@exchange).publish('msg', :routing_key => 'target').once
       w.do_work(nil, nil, 'msg', nil)
     end
+
+    it 'should be able to publish arbitrary metadata' do
+      w = PublishingWorker.new(@queue, TestPool.new)
+      mock(@exchange).publish('msg', :routing_key => 'target', :expiration => 1).once
+      w.publish 'msg', :to_queue => 'target', :expiration => 1
+    end
   end
 
 

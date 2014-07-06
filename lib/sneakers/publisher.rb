@@ -5,12 +5,14 @@ module Sneakers
       @opts = Sneakers::Config.merge(opts)
     end
 
-    def publish(msg, routing)
+    def publish(msg, options = {})
       @mutex.synchronize do
         ensure_connection! unless connected?
       end
-      Sneakers.logger.info("publishing <#{msg}> to [#{routing[:to_queue]}]")
-      @exchange.publish(msg, routing_key: routing[:to_queue], persistence: routing[:persistence])
+      to_queue = options.delete(:to_queue)
+      options[:routing_key] ||= to_queue
+      Sneakers.logger.info {"publishing <#{msg}> to [#{options[:routing_key]}]"}
+      @exchange.publish(msg, options)
     end
 
     private

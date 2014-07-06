@@ -25,6 +25,17 @@ describe Sneakers::Publisher do
       p.publish('test msg', to_queue: 'downloads', persistence: true)
     end
 
+    it 'should publish with arbitrary metadata specified' do
+      xchg = Object.new
+      mock(xchg).publish('test msg', routing_key: 'downloads', expiration: 1, headers: {foo: 'bar'})
+
+      p = Sneakers::Publisher.new
+      p.instance_variable_set(:@exchange, xchg)
+
+      mock(p).ensure_connection! {}
+      p.publish('test msg', to_queue: 'downloads', expiration: 1, headers: {foo: 'bar'})
+    end
+
     it 'should not reconnect if already connected' do
       xchg = Object.new
       mock(xchg).publish('test msg', routing_key: 'downloads')
