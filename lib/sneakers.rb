@@ -19,67 +19,65 @@ require 'sneakers/worker'
 require 'sneakers/publisher'
 
 module Sneakers
+  extend self
 
   CONFIG = Configuration.new
 
-  class << self
+  def configure(opts={})
+    # worker > userland > defaults
+    CONFIG.merge!(opts)
 
-    def configure(opts={})
-      # worker > userland > defaults
-      CONFIG.merge!(opts)
+    setup_general_logger!
+    setup_worker_concerns!
+    setup_general_publisher!
+    @configured = true
+  end
 
-      setup_general_logger!
-      setup_worker_concerns!
-      setup_general_publisher!
-      @configured = true
+  def clear!
+    CONFIG.clear
+    @logger = nil
+    @publisher = nil
+    @configured = false
+  end
+
+  def daemonize!(loglevel=Logger::INFO)
+    CONFIG[:log] = 'sneakers.log'
+    CONFIG[:daemonize] = true
+    setup_general_logger!
+    logger.level = loglevel
+  end
+
+  def logger
+    @logger
+  end
+
+  def publish(msg, routing)
+    @publisher.publish(msg, routing)
+  end
+
+  def configured?
+    @configured
+  end
+
+  private
+
+  def setup_general_logger!
+    if [:info, :debug, :error, :warn].all?{ |meth| CONFIG[:log].respond_to?(meth) }
+      @logger = CONFIG[:log]
+    else
+      @logger = Logger.new(CONFIG[:log])
+      @logger.formatter = Sneakers::Support::ProductionFormatter
     end
+  end
 
-    def clear!
-      CONFIG.clear
-      @logger = nil
-      @publisher = nil
-      @configured = false
-    end
+  def setup_worker_concerns!
+    Worker.configure_logger(Sneakers::logger)
+    Worker.configure_metrics(CONFIG[:metrics])
+    CONFIG[:handler] ||= Sneakers::Handlers::Oneshot
+  end
 
-    def daemonize!(loglevel=Logger::INFO)
-      CONFIG[:log] = 'sneakers.log'
-      CONFIG[:daemonize] = true
-      setup_general_logger!
-      logger.level = loglevel
-    end
-
-    def logger
-      @logger
-    end
-
-    def publish(msg, routing)
-      @publisher.publish(msg, routing)
-    end
-
-    def configured?
-      @configured
-    end
-
-    private
-
-    def setup_general_logger!
-      if [:info, :debug, :error, :warn].all?{ |meth| CONFIG[:log].respond_to?(meth) }
-        @logger = CONFIG[:log]
-      else
-        @logger = Logger.new(CONFIG[:log])
-        @logger.formatter = Sneakers::Support::ProductionFormatter
-      end
-    end
-
-    def setup_worker_concerns!
-      Worker.configure_logger(Sneakers::logger)
-      Worker.configure_metrics(CONFIG[:metrics])
-      CONFIG[:handler] ||= Sneakers::Handlers::Oneshot
-    end
-
-    def setup_general_publisher!
-      @publisher = Sneakers::Publisher.new
-    end
+  def setup_general_publisher!
+    @publisher = Sneakers::Publisher.new
   end
 end
 
