@@ -17,7 +17,7 @@ describe Sneakers do
 
   describe 'self' do
     it 'should have defaults set up' do
-      Sneakers::Config[:log].must_equal(STDOUT)
+      Sneakers::CONFIG[:log].must_equal(STDOUT)
     end
 
     it 'should configure itself' do
@@ -29,8 +29,8 @@ describe Sneakers do
   describe '.daemonize!' do
     it 'should set a logger to a default info level and not daemonize' do
       Sneakers.daemonize!
-      Sneakers::Config[:log].must_equal('sneakers.log')
-      Sneakers::Config[:daemonize].must_equal(true)
+      Sneakers::CONFIG[:log].must_equal('sneakers.log')
+      Sneakers::CONFIG[:daemonize].must_equal(true)
       Sneakers.logger.level.must_equal(Logger::INFO)
     end
 
@@ -43,11 +43,11 @@ describe Sneakers do
 
   describe '.clear!' do
     it 'must reset dirty configuration to default' do
-      Sneakers::Config[:log].must_equal(STDOUT)
+      Sneakers::CONFIG[:log].must_equal(STDOUT)
       Sneakers.configure(:log => 'foobar.log')
-      Sneakers::Config[:log].must_equal('foobar.log')
+      Sneakers::CONFIG[:log].must_equal('foobar.log')
       Sneakers.clear!
-      Sneakers::Config[:log].must_equal(STDOUT)
+      Sneakers::CONFIG[:log].must_equal(STDOUT)
     end
   end
 

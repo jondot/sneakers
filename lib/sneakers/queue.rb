@@ -5,7 +5,7 @@ class Sneakers::Queue
   def initialize(name, opts)
     @name = name
     @opts = opts
-    @handler_klass = Sneakers::Config[:handler]
+    @handler_klass = Sneakers::CONFIG[:handler]
   end
 
   #

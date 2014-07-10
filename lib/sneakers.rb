@@ -20,13 +20,13 @@ require 'sneakers/publisher'
 
 module Sneakers
 
-  Config = Configuration.new
+  CONFIG = Configuration.new
 
   class << self
 
     def configure(opts={})
       # worker > userland > defaults
-      Config.merge!(opts)
+      CONFIG.merge!(opts)
 
       setup_general_logger!
       setup_worker_concerns!
@@ -35,15 +35,15 @@ module Sneakers
     end
 
     def clear!
-      Config.clear
+      CONFIG.clear
       @logger = nil
       @publisher = nil
       @configured = false
     end
 
     def daemonize!(loglevel=Logger::INFO)
-      Config[:log] = 'sneakers.log'
-      Config[:daemonize] = true
+      CONFIG[:log] = 'sneakers.log'
+      CONFIG[:daemonize] = true
       setup_general_logger!
       logger.level = loglevel
     end
@@ -63,18 +63,18 @@ module Sneakers
     private
 
     def setup_general_logger!
-      if [:info, :debug, :error, :warn].all?{ |meth| Config[:log].respond_to?(meth) }
-        @logger = Config[:log]
+      if [:info, :debug, :error, :warn].all?{ |meth| CONFIG[:log].respond_to?(meth) }
+        @logger = CONFIG[:log]
       else
-        @logger = Logger.new(Config[:log])
+        @logger = Logger.new(CONFIG[:log])
         @logger.formatter = Sneakers::Support::ProductionFormatter
       end
     end
 
     def setup_worker_concerns!
       Worker.configure_logger(Sneakers::logger)
-      Worker.configure_metrics(Config[:metrics])
-      Config[:handler] ||= Sneakers::Handlers::Oneshot
+      Worker.configure_metrics(CONFIG[:metrics])
+      CONFIG[:handler] ||= Sneakers::Handlers::Oneshot
     end
 
     def setup_general_publisher!
