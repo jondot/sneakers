@@ -3,7 +3,6 @@ require 'thread/pool'
 require 'bunny'
 require 'logger'
 
-
 module Sneakers
   module Handlers
   end
@@ -11,6 +10,7 @@ module Sneakers
   end
 end
 
+require 'sneakers/configuration'
 require 'sneakers/support/production_formatter'
 require 'sneakers/concerns/logging'
 require 'sneakers/concerns/metrics'
@@ -20,92 +20,66 @@ require 'sneakers/publisher'
 
 module Sneakers
 
-  rabbitmq_url   = ENV.fetch('RABBITMQ_URL', 'amqp://guest:guest@localhost:5672')
-  rabbitmq_vhost = URI.parse(rabbitmq_url).path.to_s.gsub(/^\//, '')
-  rabbitmq_vhost = '/' if rabbitmq_vhost == ''
+  Config = Configuration.new
 
-  DEFAULTS = {
-    # runner
-    :runner_config_file => nil,
-    :metrics            => nil,
-    :daemonize          => false,
-    :start_worker_delay => 0.2,
-    :workers            => 4,
-    :log                => STDOUT,
-    :pid_path           => 'sneakers.pid',
-    # workers
-    :timeout_job_after  => 5,
-    :prefetch           => 10,
-    :threads            => 10,
-    :durable            => true,
-    :ack                => true,
-    :heartbeat          => 2,
-    :amqp               => rabbitmq_url,
-    :vhost              => rabbitmq_vhost,
-    :exchange           => 'sneakers',
-    :exchange_type      => :direct,
-    :hooks              => {}
-  }.freeze
+  class << self
 
-  Config = DEFAULTS.dup
+    def configure(opts={})
+      # worker > userland > defaults
+      Config.merge!(opts)
 
-  def self.configure(opts={})
-    # worker > userland > defaults
-    Config.merge!(opts)
-
-    setup_general_logger!
-    setup_worker_concerns!
-    setup_general_publisher!
-    @configured = true
-  end
-
-  def self.clear!
-    Config.clear
-    Config.merge!(DEFAULTS.dup)
-    @logger = nil
-    @publisher = nil
-    @configured = false
-  end
-
-  def self.daemonize!(loglevel=Logger::INFO)
-    Config[:log] = 'sneakers.log'
-    Config[:daemonize] = true
-    setup_general_logger!
-    logger.level = loglevel
-  end
-
-  def self.logger
-    @logger
-  end
-
-  def self.publish(msg, routing)
-    @publisher.publish(msg, routing)
-  end
-
-  def self.configured?
-    @configured
-  end
-
-
-private
-
-  def self.setup_general_logger!
-    if [:info, :debug, :error, :warn].all?{ |meth| Config[:log].respond_to?(meth) }
-      @logger = Config[:log]
-    else
-      @logger = Logger.new(Config[:log])
-      @logger.formatter = Sneakers::Support::ProductionFormatter
+      setup_general_logger!
+      setup_worker_concerns!
+      setup_general_publisher!
+      @configured = true
     end
-  end
 
-  def self.setup_worker_concerns!
-    Worker.configure_logger(Sneakers::logger)
-    Worker.configure_metrics(Config[:metrics])
-    Config[:handler] ||= Sneakers::Handlers::Oneshot
-  end
+    def clear!
+      Config.clear
+      @logger = nil
+      @publisher = nil
+      @configured = false
+    end
 
-  def self.setup_general_publisher!
-    @publisher = Sneakers::Publisher.new
+    def daemonize!(loglevel=Logger::INFO)
+      Config[:log] = 'sneakers.log'
+      Config[:daemonize] = true
+      setup_general_logger!
+      logger.level = loglevel
+    end
+
+    def logger
+      @logger
+    end
+
+    def publish(msg, routing)
+      @publisher.publish(msg, routing)
+    end
+
+    def configured?
+      @configured
+    end
+
+    private
+
+    def setup_general_logger!
+      if [:info, :debug, :error, :warn].all?{ |meth| Config[:log].respond_to?(meth) }
+        @logger = Config[:log]
+      else
+        @logger = Logger.new(Config[:log])
+        @logger.formatter = Sneakers::Support::ProductionFormatter
+      end
+    end
+
+    def setup_worker_concerns!
+      Worker.configure_logger(Sneakers::logger)
+      Worker.configure_metrics(Config[:metrics])
+      Config[:handler] ||= Sneakers::Handlers::Oneshot
+    end
+
+    def setup_general_publisher!
+      @publisher = Sneakers::Publisher.new
+    end
   end
 end
 
