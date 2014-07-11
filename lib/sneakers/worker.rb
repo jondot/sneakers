@@ -14,7 +14,7 @@ module Sneakers
     def initialize(queue=nil, pool=nil, opts=nil)
       opts = self.class.queue_opts
       queue_name = self.class.queue_name
-      opts = Sneakers::Config.merge(opts)
+      opts = Sneakers::CONFIG.merge(opts)
 
       @should_ack =  opts[:ack]
       @timeout_after = opts[:timeout_job_after]

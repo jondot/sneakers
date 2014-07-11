@@ -2,7 +2,7 @@ module Sneakers
   class Publisher
     def initialize(opts = {})
       @mutex = Mutex.new
-      @opts = Sneakers::Config.merge(opts)
+      @opts = Sneakers::CONFIG.merge(opts)
     end
 
     def publish(msg, options = {})
