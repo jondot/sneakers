@@ -2,7 +2,7 @@ module Sneakers
   class Configuration
 
     extend Forwardable
-    def_delegators :@hash, :to_hash, :[], :[]=, :merge!, :==, :, :fetch
+    def_delegators :@hash, :to_hash, :[], :[]=, :merge!, :==, :fetch
 
     DEFAULTS = {
       # runner
