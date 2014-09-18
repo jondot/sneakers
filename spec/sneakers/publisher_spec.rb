@@ -50,10 +50,12 @@ describe Sneakers::Publisher do
     end
 
     it 'should connect to rabbitmq configured on Sneakers.configure' do
+      logger = Logger.new('/dev/null')
       Sneakers.configure(
         amqp: 'amqp://someuser:somepassword@somehost:5672',
         heartbeat: 1, exchange: 'another_exchange',
         exchange_type: :topic,
+        log: logger,
         durable: false)
 
       channel = Object.new
@@ -65,7 +67,7 @@ describe Sneakers::Publisher do
       mock(bunny).start
       mock(bunny).create_channel { channel }
 
-      mock(Bunny).new('amqp://someuser:somepassword@somehost:5672', heartbeat: 1) { bunny }
+      mock(Bunny).new('amqp://someuser:somepassword@somehost:5672', heartbeat: 1, vhost: '/', logger: logger) { bunny }
 
       p = Sneakers::Publisher.new
 
