@@ -7,7 +7,7 @@ class DummyWorker
   include Sneakers::Worker
   from_queue 'downloads',
              :durable => false,
-             :ack => false,
+             :manual_ack => false,
              :threads => 50,
              :prefetch => 40,
              :timeout_job_after => 1,
@@ -30,7 +30,7 @@ class TimeoutWorker
   include Sneakers::Worker
   from_queue 'defaults',
     :timeout_job_after => 0.5,
-    :ack => true
+    :manual_ack => true
 
   def work(msg)
   end
@@ -39,7 +39,7 @@ end
 class AcksWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => true
+             :manual_ack => true
 
   def work(msg)
     if msg == :ack
@@ -57,7 +57,7 @@ end
 class PublishingWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => false,
+             :manual_ack => false,
              :exchange => 'foochange'
 
   def work(msg)
@@ -70,7 +70,7 @@ end
 class LoggingWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => false
+             :manual_ack => false
 
   def work(msg)
     logger.info "hello"
@@ -81,7 +81,7 @@ end
 class MetricsWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => true,
+             :manual_ack => true,
              :timeout_job_after => 0.5
 
   def work(msg)
@@ -93,7 +93,7 @@ end
 class WithParamsWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => true,
+             :manual_ack => true,
              :timeout_job_after => 0.5
 
   def work_with_params(msg, delivery_info, metadata)
@@ -168,14 +168,14 @@ describe Sneakers::Worker do
       it "should build a queue with correct configuration given defaults" do
         @defaults_q.name.must_equal('defaults')
         @defaults_q.opts.to_hash.must_equal(
-          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>5, :prefetch=>10, :threads=>10, :durable=>true, :ack=>true, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"sneakers", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat => 2}
+          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>5, :prefetch=>10, :threads=>10, :durable=>true, :manual_ack=>true, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"sneakers", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat => 2}
         )
       end
 
       it "should build a queue with given configuration" do
         @dummy_q.name.must_equal('downloads')
         @dummy_q.opts.to_hash.must_equal(
-          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>1, :prefetch=>40, :threads=>50, :durable=>false, :ack=>false, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"dummy", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat =>5}
+          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>1, :prefetch=>40, :threads=>50, :durable=>false, :manual_ack=>false, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"dummy", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat =>5}
         )
       end
     end

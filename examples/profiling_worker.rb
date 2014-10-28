@@ -28,7 +28,7 @@ puts "done"
 class ProfilingWorker
   include Sneakers::Worker
   from_queue 'downloads',
-             :ack => true,
+             :manual_ack => true,
              :threads => 50,
              :prefetch => 50,
              :timeout_job_after => 1,

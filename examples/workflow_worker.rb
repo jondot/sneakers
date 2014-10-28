@@ -5,7 +5,7 @@ class WorkflowWorker
   include Sneakers::Worker
   from_queue 'downloads',
              :durable => false,
-             :ack => true,
+             :manual_ack => true,
              :threads => 50,
              :prefetch => 50,
              :timeout_job_after => 1,

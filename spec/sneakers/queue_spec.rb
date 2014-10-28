@@ -13,7 +13,7 @@ describe Sneakers::Queue do
       {
         :prefetch => 25,
         :durable => true,
-        :ack => true,
+        :manual_ack => true,
         :heartbeat => 2,
         :vhost => '/',
         :exchange => "sneakers",
@@ -40,7 +40,7 @@ describe Sneakers::Queue do
       q = Sneakers::Queue.new("downloads", queue_vars)
 
       mock(@mkqueue).bind(@mkex, :routing_key => "downloads")
-      mock(@mkqueue).subscribe(:block => false, :ack => true)
+      mock(@mkqueue).subscribe(:block => false, :manual_ack => true)
 
       q.subscribe(Object.new)
     end
@@ -51,7 +51,7 @@ describe Sneakers::Queue do
 
       mock(@mkqueue).bind(@mkex, :routing_key => "alpha")
       mock(@mkqueue).bind(@mkex, :routing_key => "beta")
-      mock(@mkqueue).subscribe(:block => false, :ack => true)
+      mock(@mkqueue).subscribe(:block => false, :manual_ack => true)
 
       q.subscribe(Object.new)
     end

@@ -13,7 +13,7 @@ class Sneakers::Queue
   # :heartbeat_interval
   # :prefetch
   # :durable
-  # :ack
+  # :manual_ack
   #
   def subscribe(worker)
     @bunny = Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat], :logger => Sneakers::logger)
@@ -37,7 +37,7 @@ class Sneakers::Queue
       queue.bind(@exchange, :routing_key => key)
     end
 
-    @consumer = queue.subscribe(:block => false, :ack => @opts[:ack]) do | delivery_info, metadata, msg |
+    @consumer = queue.subscribe(:block => false, :manual_ack => @opts[:manual_ack]) do | delivery_info, metadata, msg |
       worker.do_work(delivery_info, metadata, msg, handler)
     end
     nil

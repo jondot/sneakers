@@ -16,7 +16,7 @@ module Sneakers
       queue_name = self.class.queue_name
       opts = Sneakers::CONFIG.merge(opts)
 
-      @should_ack =  opts[:ack]
+      @should_ack =  opts[:manual_ack]
       @timeout_after = opts[:timeout_job_after]
       @pool = pool || Thread.pool(opts[:threads]) # XXX config threads
       @call_with_params = respond_to?(:work_with_params)

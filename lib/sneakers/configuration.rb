@@ -19,7 +19,7 @@ module Sneakers
       :prefetch           => 10,
       :threads            => 10,
       :durable            => true,
-      :ack                => true,
+      :manual_ack         => true,
       :heartbeat          => 2,
       :exchange           => 'sneakers',
       :exchange_type      => :direct,
