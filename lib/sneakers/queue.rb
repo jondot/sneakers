@@ -47,10 +47,10 @@ class Sneakers::Queue
     end
   end
 
-  def pop(worker)
+  def pop(worker, synchronous: false)
     connect(worker)
-    delivery_info, metadata, msg = @queue.pop(:block => true, :manual_ack => true)
-    worker.do_work(delivery_info, metadata, msg, @handler)
+    delivery_info, metadata, msg = @queue.pop(:manual_ack => true)
+    worker.do_work(delivery_info, metadata, msg, @handler, synchronous: synchronous)
   end
 
   def unsubscribe

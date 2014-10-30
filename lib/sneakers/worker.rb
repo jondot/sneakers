@@ -41,56 +41,64 @@ module Sneakers
       @queue.exchange.publish(msg, opts)
     end
 
-    def do_work(delivery_info, metadata, msg, handler)
+    def do_work(delivery_info, metadata, msg, handler, synchronous: false)
       worker_trace "Working off: #{msg}"
 
-      @pool.process do
-        res = nil
-        error = nil
+      if synchronous
+        work_on_msg(delivery_info, metadata, msg, handler)
+      else
+        @pool.process do
+          work_on_msg(delivery_info, metadata, msg, handler)
+        end
+      end
+    end
 
-        begin
-          metrics.increment("work.#{self.class.name}.started")
-          Timeout.timeout(@timeout_after) do
-            metrics.timing("work.#{self.class.name}.time") do
-              if @call_with_params
-                res = work_with_params(msg, delivery_info, metadata)
-              else
-                res = work(msg)
-              end
+    def work_on_msg(delivery_info, metadata, msg, handler)
+      res = nil
+      error = nil
+
+      begin
+        metrics.increment("work.#{self.class.name}.started")
+        Timeout.timeout(@timeout_after) do
+          metrics.timing("work.#{self.class.name}.time") do
+            if @call_with_params
+              res = work_with_params(msg, delivery_info, metadata)
+            else
+              res = work(msg)
             end
           end
-        rescue Timeout::Error
-          res = :timeout
-          logger.error("timeout")
-        rescue => ex
-          res = :error
-          error = ex
-          logger.error(ex)
-          ex.backtrace.each {|line| logger.error(line)}
         end
+      rescue Timeout::Error
+        res = :timeout
+        logger.error("timeout")
+      rescue => ex
+        res = :error
+        error = ex
+        logger.error(ex)
+        ex.backtrace.each {|line| logger.error(line)}
+      end
 
-        if @should_ack
-          delivery_tag = delivery_info.delivery_tag
+      if @should_ack
+        delivery_tag = delivery_info.delivery_tag
 
-          if res == :ack
-            # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
-            handler.acknowledge(delivery_tag)
-          elsif res == :timeout
-            handler.timeout(delivery_tag)
-          elsif res == :error
-            handler.error(delivery_tag, error)
-          elsif res == :reject
-            handler.reject(delivery_tag)
-          elsif res == :requeue
-            handler.reject(delivery_tag, true)
-          else
-            handler.noop(delivery_tag)
-          end
-          metrics.increment("work.#{self.class.name}.handled.#{res || 'reject'}")
+        if res == :ack
+          # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
+          handler.acknowledge(delivery_tag)
+        elsif res == :timeout
+          handler.timeout(delivery_tag)
+        elsif res == :error
+          handler.error(delivery_tag, error)
+        elsif res == :reject
+          handler.reject(delivery_tag)
+        elsif res == :requeue
+          handler.reject(delivery_tag, true)
+        else
+          handler.noop(delivery_tag)
         end
+        metrics.increment("work.#{self.class.name}.handled.#{res || 'reject'}")
+      end
 
-        metrics.increment("work.#{self.class.name}.ended")
-      end #process
+      metrics.increment("work.#{self.class.name}.ended")
     end
 
     def stop
@@ -105,9 +113,9 @@ module Sneakers
       worker_trace "New worker: I'm alive."
     end
 
-    def pop
+    def pop(synchronous: false)
       worker_trace "New worker: popping."
-      @queue.pop(self)
+      @queue.pop(self, synchronous: synchronous)
       @queue.unsubscribe
     end
 
