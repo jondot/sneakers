@@ -105,6 +105,12 @@ module Sneakers
       worker_trace "New worker: I'm alive."
     end
 
+    def pop
+      worker_trace "New worker: popping."
+      @queue.pop(self)
+      @queue.unsubscribe
+    end
+
     def worker_trace(msg)
       logger.debug "[#{@id}][#{Thread.current}][#{@queue.name}][#{@queue.opts}] #{msg}"
     end
