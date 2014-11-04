@@ -42,14 +42,14 @@ class Sneakers::Queue
 
   def subscribe(worker)
     connect(worker)
-    @consumer = @queue.subscribe(:block => false, :ack => @opts[:ack]) do | delivery_info, metadata, msg |
+    @consumer = @queue.subscribe(:block => false, :manual_ack => @opts[:manual_ack]) do | delivery_info, metadata, msg |
       worker.do_work(delivery_info, metadata, msg, @handler)
     end
   end
 
   def pop(worker, synchronous: false)
     connect(worker)
-    delivery_info, metadata, msg = @queue.pop(:manual_ack => true)
+    delivery_info, metadata, msg = @queue.pop(:manual_ack => @opts[:manual_ack])
     worker.do_work(delivery_info, metadata, msg, @handler, synchronous: synchronous)
   end
 
