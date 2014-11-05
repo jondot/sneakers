@@ -96,7 +96,7 @@ class WithParamsWorker
              :ack => true,
              :timeout_job_after => 0.5
 
-  def work_with_params(msg, header, props)
+  def work_with_params(msg, delivery_info, metadata)
     msg
   end
 end
@@ -159,14 +159,14 @@ describe Sneakers::Worker do
 
       it "should build a queue with correct configuration given defaults" do
         @defaults_q.name.must_equal('defaults')
-        @defaults_q.opts.must_equal(
+        @defaults_q.opts.to_hash.must_equal(
           {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>5, :prefetch=>10, :threads=>10, :durable=>true, :ack=>true, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"sneakers", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat => 2}
         )
       end
 
       it "should build a queue with given configuration" do
         @dummy_q.name.must_equal('downloads')
-        @dummy_q.opts.must_equal(
+        @dummy_q.opts.to_hash.must_equal(
           {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>1, :prefetch=>40, :threads=>50, :durable=>false, :ack=>false, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"dummy", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Oneshot, :heartbeat =>5}
         )
       end
@@ -245,45 +245,45 @@ describe Sneakers::Worker do
 
     describe "with ack" do
       before do
-        @header = Object.new
-        stub(@header).delivery_tag{ "tag" }
+        @delivery_info = Object.new
+        stub(@delivery_info).delivery_tag{ "tag" }
 
         @worker = AcksWorker.new(@queue, TestPool.new)
       end
 
       it "should work and handle acks" do
         handler = Object.new
-        mock(handler).acknowledge(@header, nil, :ack)
+        mock(handler).acknowledge(@delivery_info, nil, :ack)
 
-        @worker.do_work(@header, nil, :ack, handler)
+        @worker.do_work(@delivery_info, nil, :ack, handler)
       end
 
       it "should work and handle rejects" do
         handler = Object.new
-        mock(handler).reject(@header, nil, :reject)
+        mock(handler).reject(@delivery_info, nil, :reject)
 
-        @worker.do_work(@header, nil, :reject, handler)
+        @worker.do_work(@delivery_info, nil, :reject, handler)
       end
 
       it "should work and handle requeues" do
         handler = Object.new
-        mock(handler).reject(@header, nil, :requeue, true)
+        mock(handler).reject(@delivery_info, nil, :requeue, true)
 
-        @worker.do_work(@header, nil, :requeue, handler)
+        @worker.do_work(@delivery_info, nil, :requeue, handler)
       end
 
       it "should work and handle user-land timeouts" do
         handler = Object.new
-        mock(handler).timeout(@header, nil, :timeout)
+        mock(handler).timeout(@delivery_info, nil, :timeout)
 
-        @worker.do_work(@header, nil, :timeout, handler)
+        @worker.do_work(@delivery_info, nil, :timeout, handler)
       end
 
       it "should work and handle user-land error" do
         handler = Object.new
-        mock(handler).error(@header, nil, :error, anything)
+        mock(handler).error(@delivery_info, nil, :error, anything)
 
-        @worker.do_work(@header, nil, :error, handler)
+        @worker.do_work(@delivery_info, nil, :error, handler)
       end
     end
 
@@ -305,6 +305,12 @@ describe Sneakers::Worker do
       w = PublishingWorker.new(@queue, TestPool.new)
       mock(@exchange).publish('msg', :routing_key => 'target').once
       w.do_work(nil, nil, 'msg', nil)
+    end
+
+    it 'should be able to publish arbitrary metadata' do
+      w = PublishingWorker.new(@queue, TestPool.new)
+      mock(@exchange).publish('msg', :routing_key => 'target', :expiration => 1).once
+      w.publish 'msg', :to_queue => 'target', :expiration => 1
     end
   end
 
@@ -350,6 +356,9 @@ describe Sneakers::Worker do
       stub(@handler).error
       stub(@handler).noop
 
+      @delivery_info = Object.new
+      stub(@delivery_info).delivery_tag { "tag" }
+
       @w = MetricsWorker.new(@queue, TestPool.new)
       mock(@w.metrics).increment("work.MetricsWorker.started").once
       mock(@w.metrics).increment("work.MetricsWorker.ended").once
@@ -359,7 +368,7 @@ describe Sneakers::Worker do
     it 'should be able to meter acks' do
       mock(@w.metrics).increment("foobar").once
       mock(@w.metrics).increment("work.MetricsWorker.handled.ack").once
-      @w.do_work(@header, nil, :ack, @handler)
+      @w.do_work(@delivery_info, nil, :ack, @handler)
     end
 
     it 'should be able to meter rejects' do
@@ -377,13 +386,13 @@ describe Sneakers::Worker do
     it 'should be able to meter errors' do
       mock(@w.metrics).increment("work.MetricsWorker.handled.error").once
       mock(@w).work('msg'){ raise :error }
-      @w.do_work(@header, nil, 'msg', @handler)
+      @w.do_work(@delivery_info, nil, 'msg', @handler)
     end
 
     it 'should be able to meter timeouts' do
       mock(@w.metrics).increment("work.MetricsWorker.handled.timeout").once
       mock(@w).work('msg'){ sleep 10 }
-      @w.do_work(@header, nil, 'msg', @handler)
+      @w.do_work(@delivery_info, nil, 'msg', @handler)
     end
 
     it 'defaults to noop when no response is specified' do
@@ -401,14 +410,17 @@ describe Sneakers::Worker do
       @handler = Object.new
       @header = Object.new
 
-      stub(@handler).acknowledge(@header, @props, :ack).once
+      @delivery_info = Object.new
+
+      stub(@handler).noop(@delivery_info, {:foo => 1}, :ack)
 
       @w = WithParamsWorker.new(@queue, TestPool.new)
       mock(@w.metrics).timing("work.WithParamsWorker.time").yields.once
     end
 
     it 'should call work_with_params and not work' do
-      @w.do_work(@header, {:foo => 1 }, :ack, @handler)
+      mock(@w).work_with_params(:ack, @delivery_info, {:foo => 1}).once
+      @w.do_work(@delivery_info, {:foo => 1 }, :ack, @handler)
     end
   end
 end
