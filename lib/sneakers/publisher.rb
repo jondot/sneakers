@@ -2,15 +2,17 @@ module Sneakers
   class Publisher
     def initialize(opts = {})
       @mutex = Mutex.new
-      @opts = Sneakers::Config.merge(opts)
+      @opts = Sneakers::CONFIG.merge(opts)
     end
 
-    def publish(msg, routing)
+    def publish(msg, options = {})
       @mutex.synchronize do
         ensure_connection! unless connected?
       end
-      Sneakers.logger.info("publishing <#{msg}> to [#{routing[:to_queue]}]")
-      @exchange.publish(msg, routing_key: routing[:to_queue], persistence: routing[:persistence])
+      to_queue = options.delete(:to_queue)
+      options[:routing_key] ||= to_queue
+      Sneakers.logger.info {"publishing <#{msg}> to [#{options[:routing_key]}]"}
+      @exchange.publish(msg, options)
     end
 
     private
@@ -18,7 +20,7 @@ module Sneakers
     attr_reader :exchange
 
     def ensure_connection!
-      @bunny = Bunny.new(@opts[:amqp], heartbeat: @opts[:heartbeat], vhost: @opts[:vhost])
+      @bunny = Bunny.new(@opts[:amqp], heartbeat: @opts[:heartbeat], vhost: @opts[:vhost], :logger => Sneakers::logger)
       @bunny.start
       @channel = @bunny.create_channel
       @exchange = @channel.exchange(@opts[:exchange], type: @opts[:exchange_type], durable: @opts[:durable])

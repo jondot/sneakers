@@ -14,7 +14,7 @@ module Sneakers
     def initialize(queue = nil, pool = nil, opts = {})
       opts = opts.merge(self.class.queue_opts || {})
       queue_name = self.class.queue_name
-      opts = Sneakers::Config.merge(opts)
+      opts = Sneakers::CONFIG.merge(opts)
 
       @should_ack =  opts[:ack]
       @timeout_after = opts[:timeout_job_after]
@@ -34,12 +34,14 @@ module Sneakers
     def reject!; :reject; end
     def requeue!; :requeue; end
 
-    def publish(msg, routing)
-      return unless routing[:to_queue]
-      @queue.exchange.publish(msg, :routing_key => routing[:to_queue])
+    def publish(msg, opts)
+      to_queue = opts.delete(:to_queue)
+      opts[:routing_key] ||= to_queue
+      return unless opts[:routing_key]
+      @queue.exchange.publish(msg, opts)
     end
 
-    def do_work(hdr, props, msg, handler)
+    def do_work(delivery_info, metadata, msg, handler)
       worker_trace "Working off: #{msg}"
 
       @pool.process do
@@ -51,7 +53,7 @@ module Sneakers
           Timeout.timeout(@timeout_after) do
             metrics.timing("work.#{self.class.name}.time") do
               if @call_with_params
-                res = work_with_params(msg, hdr, props)
+                res = work_with_params(msg, delivery_info, metadata)
               else
                 res = work(msg)
               end
@@ -67,19 +69,20 @@ module Sneakers
         end
 
         if @should_ack
+
           if res == :ack
             # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
-            handler.acknowledge(hdr, props, msg)
+            handler.acknowledge(delivery_info, metadata, msg)
           elsif res == :timeout
-            handler.timeout(hdr, props, msg)
+            handler.timeout(delivery_info, metadata, msg)
           elsif res == :error
-            handler.error(hdr, props, msg, error)
+            handler.error(delivery_info, metadata, msg, error)
           elsif res == :reject
-            handler.reject(hdr, props, msg)
+            handler.reject(delivery_info, metadata, msg)
           elsif res == :requeue
-            handler.reject(hdr, props, msg, true)
+            handler.reject(delivery_info, metadata, msg, true)
           else
-            handler.noop(hdr, props, msg)
+            handler.noop(delivery_info, metadata, msg)
           end
           metrics.increment("work.#{self.class.name}.handled.#{res || 'noop'}")
         end

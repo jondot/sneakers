@@ -5,6 +5,7 @@ class Sneakers::Queue
   def initialize(name, opts)
     @name = name
     @opts = opts
+    @handler_klass = Sneakers::CONFIG[:handler]
   end
 
   #
@@ -15,7 +16,7 @@ class Sneakers::Queue
   # :ack
   #
   def subscribe(worker)
-    @bunny = Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat])
+    @bunny = Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat], :logger => Sneakers::logger)
     @bunny.start
 
     @channel = @bunny.create_channel
@@ -42,11 +43,11 @@ class Sneakers::Queue
     # has the same configuration as the worker. Also pass along the exchange and
     # queue in case the handler requires access to them (for things like binding
     # retry queues, etc).
-    handler_klass = worker.opts[:handler] || Sneakers::Config[:handler]
+    handler_klass = worker.opts[:handler] || Sneakers::CONFIG[:handler]
     handler = handler_klass.new(@channel, queue, worker.opts)
 
-    @consumer = queue.subscribe(:block => false, :ack => @opts[:ack]) do | hdr, props, msg | 
-      worker.do_work(hdr, props, msg, handler)
+    @consumer = queue.subscribe(:block => false, :ack => @opts[:ack]) do | delivery_info, metadata, msg |
+      worker.do_work(delivery_info, metadata, msg, handler)
     end
     nil
   end

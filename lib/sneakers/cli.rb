@@ -66,11 +66,11 @@ module Sneakers
 
       r = Sneakers::Runner.new(workers)
 
-      pid = Sneakers::Config[:pid_path]
+      pid = Sneakers::CONFIG[:pid_path]
 
       say SNEAKERS
       say "Workers ....: #{em workers.join(', ')}"
-      say "Log ........: #{em (Sneakers::Config[:log] == STDOUT ? 'Console' : Sneakers::Config[:log]) }"
+      say "Log ........: #{em (Sneakers::CONFIG[:log] == STDOUT ? 'Console' : Sneakers::CONFIG[:log]) }"
       say "PID ........: #{em pid}"
       say ""
       say (" "*31)+"Process control"
@@ -86,7 +86,7 @@ module Sneakers
 
       if options[:debug]
         say "==== configuration ==="
-        say Sneakers::Config.inspect
+        say Sneakers::CONFIG.inspect
         say "======================"
       end
 
