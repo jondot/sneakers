@@ -108,13 +108,6 @@ class TestPool
   end
 end
 
-class TestHandler
-  def acknowledge(tag);  end
-  def reject(tag);  end
-  def error(tag, err); end
-  def timeout(tag); end
-end
-
 def with_test_queuefactory(ctx, ack=true, msg=nil, nowork=false)
   qf = Object.new
   q = Object.new
@@ -139,7 +132,6 @@ describe Sneakers::Worker do
     stub(@queue).exchange { @exchange }
 
     Sneakers.configure(:daemonize => true, :log => 'sneakers.log')
-    Sneakers::Worker.configure_logger(Logger.new('/dev/null'))
     Sneakers::Worker.configure_metrics
   end
 
@@ -222,9 +214,19 @@ describe Sneakers::Worker do
       w = AcksWorker.new(@queue, TestPool.new)
       mock(w).work("msg").once{ raise "foo" }
       handler = Object.new
-      mock(handler).error("tag", anything)
       header = Object.new
-      stub(header).delivery_tag { "tag" }
+      mock(handler).error(header, nil, "msg", anything)
+      mock(w.logger).error(/unexpected error \[Exception error="foo" error_class=RuntimeError backtrace=.*/)
+      w.do_work(header, nil, "msg", handler)
+    end
+
+    it "should log exceptions from workers" do
+      handler = Object.new
+      header = Object.new
+      w = AcksWorker.new(@queue, TestPool.new)
+      mock(w).work("msg").once{ raise "foo" }
+      mock(w.logger).error(/error="foo" error_class=RuntimeError backtrace=/)
+      mock(handler).error(header, nil, "msg", anything)
       w.do_work(header, nil, "msg", handler)
     end
 
@@ -233,10 +235,10 @@ describe Sneakers::Worker do
       stub(w).work("msg"){ sleep 10 }
 
       handler = Object.new
-      mock(handler).timeout("tag")
-
       header = Object.new
-      stub(header).delivery_tag { "tag" }
+
+      mock(handler).timeout(header, nil, "msg")
+      mock(w.logger).error(/timeout/)
 
       w.do_work(header, nil, "msg", handler)
     end
@@ -251,35 +253,35 @@ describe Sneakers::Worker do
 
       it "should work and handle acks" do
         handler = Object.new
-        mock(handler).acknowledge("tag")
+        mock(handler).acknowledge(@delivery_info, nil, :ack)
 
         @worker.do_work(@delivery_info, nil, :ack, handler)
       end
 
       it "should work and handle rejects" do
         handler = Object.new
-        mock(handler).reject("tag")
+        mock(handler).reject(@delivery_info, nil, :reject)
 
         @worker.do_work(@delivery_info, nil, :reject, handler)
       end
 
       it "should work and handle requeues" do
         handler = Object.new
-        mock(handler).reject("tag", true)
+        mock(handler).reject(@delivery_info, nil, :requeue, true)
 
         @worker.do_work(@delivery_info, nil, :requeue, handler)
       end
 
       it "should work and handle user-land timeouts" do
         handler = Object.new
-        mock(handler).timeout("tag")
+        mock(handler).timeout(@delivery_info, nil, :timeout)
 
         @worker.do_work(@delivery_info, nil, :timeout, handler)
       end
 
       it "should work and handle user-land error" do
         handler = Object.new
-        mock(handler).error("tag",anything)
+        mock(handler).error(@delivery_info, nil, :error, anything)
 
         @worker.do_work(@delivery_info, nil, :error, handler)
       end
@@ -323,17 +325,36 @@ describe Sneakers::Worker do
       w = LoggingWorker.new(@queue, TestPool.new)
       w.do_work(nil,nil,'msg',nil)
     end
+
+    it 'has a helper to constuct log prefix values' do
+      w = DummyWorker.new(@queue, TestPool.new)
+      w.instance_variable_set(:@id, 'worker-id')
+      m = w.log_msg('foo')
+      w.log_msg('foo').must_match(/\[worker-id\]\[#<Thread:.*>\]\[test-queue\]\[\{\}\] foo/)
+    end
+
+    describe '#worker_error' do
+      it 'only logs backtraces if present' do
+        w = DummyWorker.new(@queue, TestPool.new)
+        mock(w.logger).error(/cuz \[Exception error="boom!" error_class=RuntimeError\]/)
+        w.worker_error('cuz', RuntimeError.new('boom!'))
+      end
+    end
+
   end
 
 
   describe 'Metrics' do
     before do
       @handler = Object.new
-      stub(@handler).acknowledge("tag")
-      stub(@handler).reject("tag")
-      stub(@handler).timeout("tag")
-      stub(@handler).error("tag", anything)
-      stub(@handler).noop("tag")
+      @header = Object.new
+
+      # We don't care how these are called, we're focusing on metrics here.
+      stub(@handler).acknowledge
+      stub(@handler).reject
+      stub(@handler).timeout
+      stub(@handler).error
+      stub(@handler).noop
 
       @delivery_info = Object.new
       stub(@delivery_info).delivery_tag { "tag" }
@@ -353,7 +374,13 @@ describe Sneakers::Worker do
     it 'should be able to meter rejects' do
       mock(@w.metrics).increment("foobar").once
       mock(@w.metrics).increment("work.MetricsWorker.handled.reject").once
-      @w.do_work(@delivery_info, nil, nil, @handler)
+      @w.do_work(@header, nil, :reject, @handler)
+    end
+
+    it 'should be able to meter requeue' do
+      mock(@w.metrics).increment("foobar").once
+      mock(@w.metrics).increment("work.MetricsWorker.handled.requeue").once
+      @w.do_work(@header, nil, :requeue, @handler)
     end
 
     it 'should be able to meter errors' do
@@ -367,21 +394,25 @@ describe Sneakers::Worker do
       mock(@w).work('msg'){ sleep 10 }
       @w.do_work(@delivery_info, nil, 'msg', @handler)
     end
+
+    it 'defaults to noop when no response is specified' do
+      mock(@w.metrics).increment("foobar").once
+      mock(@w.metrics).increment("work.MetricsWorker.handled.noop").once
+      @w.do_work(@header, nil, nil, @handler)
+    end
   end
 
 
 
   describe 'With Params' do
     before do
+      @props = { :foo => 1 }
       @handler = Object.new
-      stub(@handler).acknowledge("tag")
-      stub(@handler).reject("tag")
-      stub(@handler).timeout("tag")
-      stub(@handler).error("tag", anything)
-      stub(@handler).noop("tag")
+      @header = Object.new
 
       @delivery_info = Object.new
-      stub(@delivery_info).delivery_tag { "tag" }
+
+      stub(@handler).noop(@delivery_info, {:foo => 1}, :ack)
 
       @w = WithParamsWorker.new(@queue, TestPool.new)
       mock(@w.metrics).timing("work.WithParamsWorker.time").yields.once

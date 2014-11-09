@@ -4,15 +4,15 @@ require 'timeout'
 
 module Sneakers
   module Worker
-    attr_reader :queue, :id
+    attr_reader :queue, :id, :opts
 
     # For now, a worker is hardly dependant on these concerns
     # (because it uses methods from them directly.)
     include Concerns::Logging
     include Concerns::Metrics
 
-    def initialize(queue=nil, pool=nil, opts=nil)
-      opts = self.class.queue_opts
+    def initialize(queue = nil, pool = nil, opts = {})
+      opts = opts.merge(self.class.queue_opts || {})
       queue_name = self.class.queue_name
       opts = Sneakers::CONFIG.merge(opts)
 
@@ -61,32 +61,30 @@ module Sneakers
           end
         rescue Timeout::Error
           res = :timeout
-          logger.error("timeout")
+          worker_error('timeout')
         rescue => ex
           res = :error
           error = ex
-          logger.error(ex)
-          ex.backtrace.each {|line| logger.error(line)}
+          worker_error('unexpected error', ex)
         end
 
         if @should_ack
-          delivery_tag = delivery_info.delivery_tag
 
           if res == :ack
             # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
-            handler.acknowledge(delivery_tag)
+            handler.acknowledge(delivery_info, metadata, msg)
           elsif res == :timeout
-            handler.timeout(delivery_tag)
+            handler.timeout(delivery_info, metadata, msg)
           elsif res == :error
-            handler.error(delivery_tag, error)
+            handler.error(delivery_info, metadata, msg, error)
           elsif res == :reject
-            handler.reject(delivery_tag)
+            handler.reject(delivery_info, metadata, msg)
           elsif res == :requeue
-            handler.reject(delivery_tag, true)
+            handler.reject(delivery_info, metadata, msg, true)
           else
-            handler.noop(delivery_tag)
+            handler.noop(delivery_info, metadata, msg)
           end
-          metrics.increment("work.#{self.class.name}.handled.#{res || 'reject'}")
+          metrics.increment("work.#{self.class.name}.handled.#{res || 'noop'}")
         end
 
         metrics.increment("work.#{self.class.name}.ended")
@@ -105,8 +103,24 @@ module Sneakers
       worker_trace "New worker: I'm alive."
     end
 
+    # Construct a log message with some standard prefix for this worker
+    def log_msg(msg)
+      "[#{@id}][#{Thread.current}][#{@queue.name}][#{@queue.opts}] #{msg}"
+    end
+
+    # Helper to log an error message with an optional exception
+    def worker_error(msg, exception = nil)
+      s = log_msg(msg)
+      if exception
+        s += " [Exception error=#{exception.message.inspect} error_class=#{exception.class}"
+        s += " backtrace=#{exception.backtrace.take(50).join(',')}" unless exception.backtrace.nil?
+        s += "]"
+      end
+      logger.error(s)
+    end
+
     def worker_trace(msg)
-      logger.debug "[#{@id}][#{Thread.current}][#{@queue.name}][#{@queue.opts}] #{msg}"
+      logger.debug(log_msg(msg))
     end
 
     def self.included(base)

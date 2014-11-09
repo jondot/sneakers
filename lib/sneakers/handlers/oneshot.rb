@@ -1,27 +1,28 @@
 module Sneakers
   module Handlers
     class Oneshot
-      def initialize(channel)
+      def initialize(channel, queue, opts)
         @channel = channel
+        @opts = opts
       end
 
-      def acknowledge(tag)
-        @channel.acknowledge(tag, false)
+      def acknowledge(hdr, props, msg)
+        @channel.acknowledge(hdr.delivery_tag, false)
       end
 
-      def reject(tag, requeue=false)
-        @channel.reject(tag, requeue)
+      def reject(hdr, props, msg, requeue=false)
+        @channel.reject(hdr.delivery_tag, requeue)
       end
 
-      def error(tag, err)
-        reject(tag)
+      def error(hdr, props, msg, err)
+        reject(hdr, props, msg)
       end
 
-      def timeout(tag)
-        reject(tag)
+      def timeout(hdr, props, msg)
+        reject(hdr, props, msg)
       end
 
-      def noop(tag)
+      def noop(hdr, props, msg)
 
       end
     end

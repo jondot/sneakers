@@ -23,6 +23,7 @@ describe Sneakers do
     it 'should configure itself' do
       Sneakers.configure
       Sneakers.logger.wont_be_nil
+      Sneakers.configured?.must_equal(true)
     end
   end
 
