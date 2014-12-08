@@ -28,7 +28,7 @@ module Sneakers
       # end per worker
       #
       until @stop_flag.wait_for_set(10.0)
-        Sneakers.logger.info("Heartbeat: running threads [#{Thread.list.count}]")
+        Sneakers.logger.debug("Heartbeat: running threads [#{Thread.list.count}]")
         # report aggregated stats?
       end
 
