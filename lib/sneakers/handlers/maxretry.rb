@@ -141,6 +141,7 @@ module Sneakers
           }.tap do |hash|
             if reason.is_a?(Exception)
               hash[:error_class] = reason.class
+              hash[:error_message] = "#{reason}"
               if reason.backtrace
                 hash[:backtrace] = reason.backtrace.take(10).join(', ')
               end
