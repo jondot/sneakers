@@ -46,7 +46,7 @@ class Sneakers::Queue
     handler_klass = worker.opts[:handler] || Sneakers::CONFIG[:handler]
     handler = handler_klass.new(@channel, queue, worker.opts)
 
-    @consumer = queue.subscribe(:block => false, :ack => @opts[:ack]) do | delivery_info, metadata, msg |
+    @consumer = queue.subscribe(:block => false, :manual_ack => @opts[:ack]) do | delivery_info, metadata, msg |
       worker.do_work(delivery_info, metadata, msg, handler)
     end
     nil
