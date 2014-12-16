@@ -4,12 +4,14 @@ require 'sneakers/workergroup'
 module Sneakers
   class Runner
     def initialize(worker_classes, opts={})
-      @runnerconfig = RunnerConfig.new(worker_classes)
+      @runnerconfig = RunnerConfig.new(worker_classes, opts)
     end
 
     def run
       @se = ServerEngine.create(nil, WorkerGroup) { @runnerconfig.reload_config! }
+      puts "mofo"
       @se.run
+      "ugga"
     end
 
     def stop
@@ -29,9 +31,9 @@ module Sneakers
       end
     end
 
-    def initialize(worker_classes)
+    def initialize(worker_classes, opts)
       @worker_classes = worker_classes
-      @conf = {}
+      @conf = opts
     end
 
     def to_h
