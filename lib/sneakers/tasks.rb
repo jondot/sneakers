@@ -26,8 +26,8 @@ Please set the classes of the workers you want to run like so:
 EOF
       exit(1)
     end
-
-    r = Sneakers::Runner.new(workers)
+    opts = (ENV['WORKER_COUNT'].present? ? {:workers => ENV['WORKER_COUNT'].to_i} : {})
+    r = Sneakers::Runner.new(workers, opts)
 
     r.run
   end
