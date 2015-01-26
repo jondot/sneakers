@@ -20,6 +20,7 @@ module Sneakers
       :timeout_job_after  => 5,
       :prefetch           => 10,
       :threads            => 10,
+      :share_threads      => false,
       :durable            => true,
       :ack                => true,
       :heartbeat          => 2,
