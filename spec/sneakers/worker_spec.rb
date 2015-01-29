@@ -131,6 +131,7 @@ describe Sneakers::Worker do
     stub(@queue).opts { {} }
     stub(@queue).exchange { @exchange }
 
+    Sneakers.clear!
     Sneakers.configure(:daemonize => true, :log => 'sneakers.log')
     Sneakers::Worker.configure_metrics
   end
