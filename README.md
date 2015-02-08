@@ -20,6 +20,9 @@ Visit the [wiki](https://github.com/jondot/sneakers/wiki) for
 complete docs.
 
 
+![](https://travis-ci.org/jondot/sneakers.svg)
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
