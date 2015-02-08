@@ -3,6 +3,11 @@ require 'sneakers'
 
 describe Sneakers::Publisher do
   describe '#publish' do
+    before do
+      Sneakers.clear!
+      Sneakers.configure(:log => 'sneakers.log')
+    end
+
     it 'should publish a message to an exchange' do
       xchg = Object.new
       mock(xchg).publish('test msg', routing_key: 'downloads')
