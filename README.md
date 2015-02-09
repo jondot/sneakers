@@ -20,7 +20,7 @@ Visit the [wiki](https://github.com/jondot/sneakers/wiki) for
 complete docs.
 
 
-![](https://travis-ci.org/jondot/sneakers.svg)
+[![Build Status](https://travis-ci.org/jondot/sneakers.svg?branch=master)](https://travis-ci.org/jondot/sneakers)
 
 
 ## Installation
