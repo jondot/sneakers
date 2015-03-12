@@ -58,6 +58,9 @@ module Sneakers
         Sneakers::CONFIG[:hooks][hook] = config.delete(hook) if config[hook]
       end
 
+      redacted_config = config
+      password = redacted_config[:amqp].match(/\/.*@/).to_s.gsub(/\//, '').gsub(/@$/, '').gsub(/.*:/, '')
+      redacted_config[:amqp] = redacted_config[:amqp].gsub(password, "<redacted>")
 
       Sneakers.logger.info("New configuration: #{config.inspect}")
       config
