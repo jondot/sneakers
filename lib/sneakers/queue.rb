@@ -22,7 +22,8 @@ class Sneakers::Queue
     @channel = @bunny.create_channel
     @channel.prefetch(@opts[:prefetch])
 
-    @exchange = @channel.exchange(@opts[:exchange],
+    exchange_name = @opts[:exchange]
+    @exchange = @channel.exchange(exchange_name,
                                   :type => @opts[:exchange_type],
                                   :durable => @opts[:durable])
 
@@ -35,8 +36,10 @@ class Sneakers::Queue
     queue_durable = @opts[:queue_durable].nil? ? @opts[:durable] : @opts[:queue_durable]
     queue = @channel.queue(@name, :durable => queue_durable, :arguments => @opts[:arguments])
 
-    routing_keys.each do |key|
-      queue.bind(@exchange, :routing_key => key)
+    if exchange_name.length > 0
+      routing_keys.each do |key|
+        queue.bind(@exchange, :routing_key => key)
+      end
     end
 
     # NOTE: we are using the worker's options. This is necessary so the handler

@@ -8,35 +8,38 @@ describe Sneakers::Queue do
     Sneakers.configure
   end
 
-  describe "#subscribe" do
-    let :queue_vars do
-      {
-        :prefetch => 25,
-        :durable => true,
-        :ack => true,
-        :heartbeat => 2,
-        :vhost => '/',
-        :exchange => "sneakers",
-        :exchange_type => :direct
-      }
-    end
+  let :queue_vars do
+    {
+      :prefetch => 25,
+      :durable => true,
+      :ack => true,
+      :heartbeat => 2,
+      :vhost => '/',
+      :exchange => "sneakers",
+      :exchange_type => :direct
+    }
+  end
 
+  before do
+    @mkbunny = Object.new
+    @mkchan = Object.new
+    @mkex = Object.new
+    @mkqueue = Object.new
+    @mkqueue_nondurable = Object.new
+    @mkworker = Object.new
+
+    mock(@mkbunny).start {}
+    mock(@mkbunny).create_channel{ @mkchan }
+    mock(Bunny).new(anything, :vhost => '/', :heartbeat => 2){ @mkbunny }
+
+    mock(@mkchan).prefetch(25)
+
+    stub(@mkworker).opts { { :exchange => 'test-exchange' } }
+  end
+
+  describe "#subscribe with sneakers exchange" do
     before do
-      @mkbunny = Object.new
-      @mkchan = Object.new
-      @mkex = Object.new
-      @mkqueue = Object.new
-      @mkqueue_nondurable = Object.new
-      @mkworker = Object.new
-
-      mock(@mkbunny).start {}
-      mock(@mkbunny).create_channel{ @mkchan }
-      mock(Bunny).new(anything, :vhost => '/', :heartbeat => 2){ @mkbunny }
-
-      mock(@mkchan).prefetch(25)
       mock(@mkchan).exchange("sneakers", :type => :direct, :durable => true){ @mkex }
-
-      stub(@mkworker).opts { { :exchange => 'test-exchange' } }
     end
 
     it "should setup a bunny queue according to configuration values" do
@@ -84,6 +87,30 @@ describe Sneakers::Queue do
 
       q.subscribe(@mkworker)
       myqueue = q.instance_variable_get(:@queue)
+    end
+  end
+
+  describe "#subscribe with default exchange" do
+    before do
+      # expect default exchange
+      queue_vars[:exchange] = ""
+      mock(@mkchan).exchange("", :type => :direct, :durable => true){ @mkex }
+    end
+
+    it "does not bind to exchange" do
+      mock(@mkchan).queue("downloads", :durable => true) { @mkqueue }
+      @handler = Object.new
+      worker_opts = { :handler => @handler }
+      stub(@mkworker).opts { worker_opts }
+      mock(@handler).new(@mkchan, @mkqueue, worker_opts).once
+
+      stub(@mkqueue).bind do
+        raise "bind should not be called"
+      end
+
+      stub(@mkqueue).subscribe
+      q = Sneakers::Queue.new("downloads", queue_vars)
+      q.subscribe(@mkworker)
     end
   end
 end
