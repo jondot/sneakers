@@ -4,7 +4,7 @@ module Sneakers
   class Configuration
 
     extend Forwardable
-    def_delegators :@hash, :to_hash, :[], :[]=, :merge!, :==, :fetch, :delete
+    def_delegators :@hash, :to_hash, :[], :[]=, :==, :fetch, :delete
 
     DEFAULTS = {
       # runner
@@ -37,6 +37,16 @@ module Sneakers
       @hash = DEFAULTS.dup
       @hash[:amqp]  = ENV.fetch('RABBITMQ_URL', 'amqp://guest:guest@localhost:5672')
       @hash[:vhost] = AMQ::Settings.parse_amqp_url(@hash[:amqp]).fetch(:vhost, '/')
+    end
+
+    def merge!(hash)
+      # parse vhost from amqp if vhost is not specified explicitly
+      if hash[:vhost].nil? && !hash[:amqp].nil?
+        hash = hash.dup
+        hash[:vhost] = AMQ::Settings.parse_amqp_url(hash[:amqp]).fetch(:vhost, '/')
+      end
+
+      @hash.merge!(hash)
     end
 
     def merge(hash)
