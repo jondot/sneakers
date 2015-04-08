@@ -32,6 +32,39 @@ describe Sneakers::Configuration do
     end
   end
 
+  it 'should parse vhost from amqp option' do
+    env_url = 'amqp://foo:bar@localhost:5672/foobarvhost'
+    with_env('RABBITMQ_URL', env_url) do
+      url = 'amqp://foo:bar@localhost:5672/testvhost'
+      config = Sneakers::Configuration.new
+      config.merge!({ :amqp => url })
+      config[:vhost].must_equal 'testvhost'
+    end
+  end
+
+  it 'should not parse vhost from amqp option if vhost is specified explicitly' do
+    url = 'amqp://foo:bar@localhost:5672/foobarvhost'
+    config = Sneakers::Configuration.new
+    config.merge!({ :amqp => url, :vhost => 'test_host' })
+    config[:vhost].must_equal 'test_host'
+  end
+
+  it 'should use vhost option if it is specified' do
+    url = 'amqp://foo:bar@localhost:5672/foobarvhost'
+    with_env('RABBITMQ_URL', url) do
+      config = Sneakers::Configuration.new
+      config.merge!({ :vhost => 'test_host' })
+      config[:vhost].must_equal 'test_host'
+    end
+  end
+
+  it 'should use default vhost if vhost is not specified in amqp option' do
+    url = 'amqp://foo:bar@localhost:5672'
+    config = Sneakers::Configuration.new
+    config.merge!({ :amqp => url })
+    config[:vhost].must_equal '/'
+  end
+
   def with_env(key, value)
     old_value = ENV[key]
     ENV[key] = value
