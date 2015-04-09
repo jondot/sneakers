@@ -4,10 +4,6 @@ require 'sneakers'
 
 
 describe Sneakers::Queue do
-  before do
-    Sneakers.configure
-  end
-
   let :queue_vars do
     {
       :prefetch => 25,
@@ -21,6 +17,8 @@ describe Sneakers::Queue do
   end
 
   before do
+    Sneakers.configure
+
     @mkbunny = Object.new
     @mkchan = Object.new
     @mkex = Object.new

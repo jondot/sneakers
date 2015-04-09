@@ -46,7 +46,7 @@ class Sneakers::Queue
     # has the same configuration as the worker. Also pass along the exchange and
     # queue in case the handler requires access to them (for things like binding
     # retry queues, etc).
-    handler_klass = worker.opts[:handler] || Sneakers::CONFIG[:handler]
+    handler_klass = worker.opts[:handler] || Sneakers::CONFIG.fetch(:handler)
     handler = handler_klass.new(@channel, queue, worker.opts)
 
     @consumer = queue.subscribe(:block => false, :manual_ack => @opts[:ack]) do | delivery_info, metadata, msg |
