@@ -103,6 +103,31 @@ describe 'Handlers' do
 
   describe 'Maxretry' do
     let(:max_retries) { nil }
+    let(:props_with_x_death_count) {
+      {
+        :headers => {
+          "x-death" => [
+                        {
+                          "count" => 3,
+                          "reason" => "expired",
+                          "queue" => "downloads-retry",
+                          "time" => Time.now,
+                          "exchange" => "RawMail-retry",
+                          "routing-keys" => ["RawMail"]
+                        },
+                        {
+                          "count" => 3,
+                          "reason" => "rejected",
+                          "queue" => "downloads",
+                          "time" => Time.now,
+                          "exchange" => "",
+                          "routing-keys" => ["RawMail"]
+                        }
+                       ]
+        },
+        :delivery_mode => 1
+      }
+    }
 
     before(:each) do
       @opts = {
@@ -224,6 +249,21 @@ describe 'Handlers' do
             data = JSON.parse(@error_exchange.data)
             data['error'].must_equal('reject')
             data['num_attempts'].must_equal(2)
+            data['payload'].must_equal(Base64.encode64(:reject.to_s))
+            Time.parse(data['failed_at']).wont_be_nil
+          end
+
+          it 'counts the number of attempts using the count key' do
+            mock(@header).routing_key { '#' }
+            mock(channel).acknowledge(37, false)
+
+            @error_exchange.extend MockPublish
+            worker.do_work(@header, props_with_x_death_count, :reject, @handler)
+            @error_exchange.called.must_equal(true)
+            @error_exchange.opts.must_equal({ :routing_key => '#' })
+            data = JSON.parse(@error_exchange.data)
+            data['error'].must_equal('reject')
+            data['num_attempts'].must_equal(4)
             data['payload'].must_equal(Base64.encode64(:reject.to_s))
             Time.parse(data['failed_at']).wont_be_nil
           end

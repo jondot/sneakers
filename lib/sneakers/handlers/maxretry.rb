@@ -171,7 +171,7 @@ module Sneakers
           if x_death_array.count != 1
             x_death_array.count
           else
-            x_death_array.first['count']
+            x_death_array.first['count'] || 1
           end
         end
       end
