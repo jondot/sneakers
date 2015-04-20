@@ -165,9 +165,14 @@ module Sneakers
         if headers.nil? || headers['x-death'].nil?
           0
         else
-          headers['x-death'].select do |x_death|
+          x_death_array = headers['x-death'].select do |x_death|
             x_death['queue'] == @worker_queue_name
-          end.count
+          end
+          if x_death_array.count != 1
+            x_death_array.count
+          else
+            x_death_array.first['count']
+          end
         end
       end
       private :failure_count
