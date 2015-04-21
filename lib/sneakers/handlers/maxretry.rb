@@ -168,10 +168,12 @@ module Sneakers
           x_death_array = headers['x-death'].select do |x_death|
             x_death['queue'] == @worker_queue_name
           end
-          if x_death_array.count != 1
-            x_death_array.count
+          if x_death_array.count > 0 && x_death_array.first['count']
+            # Newer versions of RabbitMQ return headers with a count key
+            x_death_array.inject(0) {|sum, x_death| sum + x_death['count']}
           else
-            x_death_array.first['count'] || 1
+            # Older versions return a separate x-death header for each failure
+            x_death_array.count
           end
         end
       end
