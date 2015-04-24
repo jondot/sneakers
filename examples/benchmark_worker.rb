@@ -10,7 +10,8 @@ class BenchmarkWorker
              :prefetch => 50,
              :timeout_job_after => 1,
              :exchange => 'dummy',
-             :heartbeat => 5
+             :heartbeat => 5,
+             :amqp_heartbeat => 10
   def work(msg)
     ack!
   end

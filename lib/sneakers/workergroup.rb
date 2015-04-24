@@ -27,7 +27,7 @@ module Sneakers
       end
       # end per worker
       #
-      until @stop_flag.wait_for_set(10.0)
+      until @stop_flag.wait_for_set(Sneakers::CONFIG[:amqp_heartbeat])
         Sneakers.logger.debug("Heartbeat: running threads [#{Thread.list.count}]")
         # report aggregated stats?
       end
@@ -44,4 +44,3 @@ module Sneakers
 
   end
 end
-

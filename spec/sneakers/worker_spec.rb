@@ -180,7 +180,8 @@ describe Sneakers::Worker do
           :exchange_arguments => {},
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
-          :heartbeat  =>  2
+          :heartbeat => 2,
+          :amqp_heartbeat => 10
         )
       end
 
@@ -206,7 +207,8 @@ describe Sneakers::Worker do
           :exchange_arguments => {},
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
-          :heartbeat => 5
+          :heartbeat => 5,
+          :amqp_heartbeat => 10
         )
       end
     end
