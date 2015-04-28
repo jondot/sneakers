@@ -15,10 +15,10 @@ module Sneakers
       @exchange.publish(msg, options)
     end
 
-    private
 
     attr_reader :exchange
 
+  private
     def ensure_connection!
       @bunny = Bunny.new(@opts[:amqp], heartbeat: @opts[:heartbeat], vhost: @opts[:vhost], :logger => Sneakers::logger)
       @bunny.start
