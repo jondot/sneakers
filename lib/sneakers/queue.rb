@@ -16,7 +16,10 @@ class Sneakers::Queue
   # :ack
   #
   def subscribe(worker)
-    @bunny = Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat], :logger => Sneakers::logger)
+    # If we've already got a bunny object, use it.  This allows people to
+    # specify all kinds of options we don't need to know about (e.g. for ssl).
+    @bunny = @opts[:bunny]
+    @bunny ||= Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat], :logger => Sneakers::logger)
     @bunny.start
 
     @channel = @bunny.create_channel
