@@ -2,67 +2,89 @@ require 'spec_helper'
 
 describe Sneakers::Configuration do
 
-  it 'should assign a default value for :amqp' do
-    with_env('RABBITMQ_URL', nil) do
+  describe 'with a Bunny object' do
+    let(:bunny) { Object.new }
+
+    it 'does not use vhost option if it is specified' do
+      url = 'amqp://foo:bar@localhost:5672/foobarvhost'
+      with_env('RABBITMQ_URL', url) do
+        config = Sneakers::Configuration.new
+        config.merge!({ :vhost => 'test_host', :bunny => bunny })
+        config.has_key?(:vhost).must_equal false
+      end
+    end
+
+    it 'does not amqp option if it is specified' do
+      url = 'amqp://foo:bar@localhost:5672'
       config = Sneakers::Configuration.new
-      config[:amqp].must_equal 'amqp://guest:guest@localhost:5672'
+      config.merge!({ :amqp => url, :bunny => bunny })
+      config.has_key?(:vhost).must_equal false
     end
   end
 
-  it 'should assign a default value for :vhost' do
-    with_env('RABBITMQ_URL', nil) do
-      config = Sneakers::Configuration.new
-      config[:vhost].must_equal '/'
+  describe 'without a Bunny object' do
+    it 'should assign a default value for :amqp' do
+      with_env('RABBITMQ_URL', nil) do
+        config = Sneakers::Configuration.new
+        config[:amqp].must_equal 'amqp://guest:guest@localhost:5672'
+      end
     end
-  end
 
-  it 'should read the value for amqp from RABBITMQ_URL' do
-    url = 'amqp://foo:bar@localhost:5672'
-    with_env('RABBITMQ_URL', url) do
-      config = Sneakers::Configuration.new
-      config[:amqp].must_equal url
+    it 'should assign a default value for :vhost' do
+      with_env('RABBITMQ_URL', nil) do
+        config = Sneakers::Configuration.new
+        config[:vhost].must_equal '/'
+      end
     end
-  end
 
-  it 'should read the value for vhost from RABBITMQ_URL' do
-    url = 'amqp://foo:bar@localhost:5672/foobarvhost'
-    with_env('RABBITMQ_URL', url) do
-      config = Sneakers::Configuration.new
-      config[:vhost].must_equal 'foobarvhost'
+    it 'should read the value for amqp from RABBITMQ_URL' do
+      url = 'amqp://foo:bar@localhost:5672'
+      with_env('RABBITMQ_URL', url) do
+        config = Sneakers::Configuration.new
+        config[:amqp].must_equal url
+      end
     end
-  end
 
-  it 'should parse vhost from amqp option' do
-    env_url = 'amqp://foo:bar@localhost:5672/foobarvhost'
-    with_env('RABBITMQ_URL', env_url) do
-      url = 'amqp://foo:bar@localhost:5672/testvhost'
-      config = Sneakers::Configuration.new
-      config.merge!({ :amqp => url })
-      config[:vhost].must_equal 'testvhost'
+    it 'should read the value for vhost from RABBITMQ_URL' do
+      url = 'amqp://foo:bar@localhost:5672/foobarvhost'
+      with_env('RABBITMQ_URL', url) do
+        config = Sneakers::Configuration.new
+        config[:vhost].must_equal 'foobarvhost'
+      end
     end
-  end
 
-  it 'should not parse vhost from amqp option if vhost is specified explicitly' do
-    url = 'amqp://foo:bar@localhost:5672/foobarvhost'
-    config = Sneakers::Configuration.new
-    config.merge!({ :amqp => url, :vhost => 'test_host' })
-    config[:vhost].must_equal 'test_host'
-  end
+    it 'should parse vhost from amqp option' do
+      env_url = 'amqp://foo:bar@localhost:5672/foobarvhost'
+      with_env('RABBITMQ_URL', env_url) do
+        url = 'amqp://foo:bar@localhost:5672/testvhost'
+        config = Sneakers::Configuration.new
+        config.merge!({ :amqp => url })
+        config[:vhost].must_equal 'testvhost'
+      end
+    end
 
-  it 'should use vhost option if it is specified' do
-    url = 'amqp://foo:bar@localhost:5672/foobarvhost'
-    with_env('RABBITMQ_URL', url) do
+    it 'should not parse vhost from amqp option if vhost is specified explicitly' do
+      url = 'amqp://foo:bar@localhost:5672/foobarvhost'
       config = Sneakers::Configuration.new
-      config.merge!({ :vhost => 'test_host' })
+      config.merge!({ :amqp => url, :vhost => 'test_host' })
       config[:vhost].must_equal 'test_host'
     end
-  end
 
-  it 'should use default vhost if vhost is not specified in amqp option' do
-    url = 'amqp://foo:bar@localhost:5672'
-    config = Sneakers::Configuration.new
-    config.merge!({ :amqp => url })
-    config[:vhost].must_equal '/'
+    it 'should use vhost option if it is specified' do
+      url = 'amqp://foo:bar@localhost:5672/foobarvhost'
+      with_env('RABBITMQ_URL', url) do
+        config = Sneakers::Configuration.new
+        config.merge!({ :vhost => 'test_host' })
+        config[:vhost].must_equal 'test_host'
+      end
+    end
+
+    it 'should use default vhost if vhost is not specified in amqp option' do
+      url = 'amqp://foo:bar@localhost:5672'
+      config = Sneakers::Configuration.new
+      config.merge!({ :amqp => url })
+      config[:vhost].must_equal '/'
+    end
   end
 
   def with_env(key, value)
