@@ -43,8 +43,8 @@ module Sneakers
       hash = hash.dup
 
       # parse vhost from amqp if vhost is not specified explicitly, only
-      # if we're not given a Bunny object.
-      if hash[:bunny].nil?
+      # if we're not given a connection to use.
+      if hash[:connection].nil?
         if hash[:vhost].nil? && !hash[:amqp].nil?
           hash[:vhost] = AMQ::Settings.parse_amqp_url(hash[:amqp]).fetch(:vhost, '/')
         end

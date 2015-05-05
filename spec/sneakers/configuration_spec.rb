@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe Sneakers::Configuration do
 
-  describe 'with a Bunny object' do
-    let(:bunny) { Object.new }
+  describe 'with a connection' do
+    let(:connection) { Object.new }
 
     it 'does not use vhost option if it is specified' do
       url = 'amqp://foo:bar@localhost:5672/foobarvhost'
       with_env('RABBITMQ_URL', url) do
         config = Sneakers::Configuration.new
-        config.merge!({ :vhost => 'test_host', :bunny => bunny })
+        config.merge!({ :vhost => 'test_host', :connection => connection })
         config.has_key?(:vhost).must_equal false
       end
     end
@@ -17,12 +17,12 @@ describe Sneakers::Configuration do
     it 'does not amqp option if it is specified' do
       url = 'amqp://foo:bar@localhost:5672'
       config = Sneakers::Configuration.new
-      config.merge!({ :amqp => url, :bunny => bunny })
+      config.merge!({ :amqp => url, :connection => connection })
       config.has_key?(:vhost).must_equal false
     end
   end
 
-  describe 'without a Bunny object' do
+  describe 'without a connection' do
     it 'should assign a default value for :amqp' do
       with_env('RABBITMQ_URL', nil) do
         config = Sneakers::Configuration.new

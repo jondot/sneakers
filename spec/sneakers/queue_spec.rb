@@ -113,12 +113,12 @@ describe Sneakers::Queue do
     end
   end
 
-  describe 'with an externally-provided Bunny object' do
+  describe 'with an externally-provided connection' do
     describe '#subscribe' do
       before do
-        @external_bunny = Bunny.new
-        mock(@external_bunny).start {}
-        mock(@external_bunny).create_channel{ @mkchan }
+        @external_connection = Bunny.new
+        mock(@external_connection).start {}
+        mock(@external_connection).create_channel{ @mkchan }
         mock(@mkchan).exchange("sneakers", :type => :direct, :durable => true){ @mkex }
 
         queue_name = 'foo'
@@ -126,13 +126,13 @@ describe Sneakers::Queue do
         mock(@mkqueue).bind(@mkex, :routing_key => queue_name)
         mock(@mkqueue).subscribe(:block => false, :manual_ack => true)
 
-        my_vars = queue_vars.merge(:bunny => @external_bunny)
+        my_vars = queue_vars.merge(:connection => @external_connection)
         @q = Sneakers::Queue.new(queue_name, my_vars)
       end
 
       it 'uses that object' do
         @q.subscribe(@mkworker)
-        @q.instance_variable_get(:@bunny).must_equal @external_bunny
+        @q.instance_variable_get(:@bunny).must_equal @external_connection
       end
     end
   end
