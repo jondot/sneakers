@@ -4,7 +4,7 @@ module Sneakers
   class Configuration
 
     extend Forwardable
-    def_delegators :@hash, :to_hash, :[], :[]=, :==, :fetch, :delete
+    def_delegators :@hash, :to_hash, :[], :[]=, :==, :fetch, :delete, :has_key?
 
     DEFAULTS = {
       # runner
@@ -40,10 +40,23 @@ module Sneakers
     end
 
     def merge!(hash)
-      # parse vhost from amqp if vhost is not specified explicitly
-      if hash[:vhost].nil? && !hash[:amqp].nil?
-        hash = hash.dup
-        hash[:vhost] = AMQ::Settings.parse_amqp_url(hash[:amqp]).fetch(:vhost, '/')
+      hash = hash.dup
+
+      # parse vhost from amqp if vhost is not specified explicitly, only
+      # if we're not given a connection to use.
+      if hash[:connection].nil?
+        if hash[:vhost].nil? && !hash[:amqp].nil?
+          hash[:vhost] = AMQ::Settings.parse_amqp_url(hash[:amqp]).fetch(:vhost, '/')
+        end
+      else
+        # If we are given a Bunny object, ignore params we'd otherwise use to
+        # create one.  This removes any question about where config params are
+        # coming from, and makes it more likely that downstream code that needs
+        # this info gets it from the right place.
+        [:vhost, :amqp, :heartbeat].each do |k|
+          hash.delete(k)
+          @hash.delete(k)
+        end
       end
 
       @hash.merge!(hash)
