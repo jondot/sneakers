@@ -14,7 +14,11 @@ module Sneakers
       worker_config = YAML.load(File.read(worker_group_config_file))
       worker_config.keys.each do |group_name|
         @pids << fork do
-          @exec_hash = {"WORKERS"=> worker_config[group_name]['classes'], "WORKER_COUNT" => worker_config[group_name]["workers"].to_s}
+          @exec_hash = {
+            "WORKERS"=> worker_config[group_name]['classes'],
+            "WORKER_COUNT" => worker_config[group_name]["workers"].to_s,
+            "PID_PATH" => worker_config[group_name]['pid_path'].to_s
+          }
           Kernel.exec(@exec_hash, @exec_string)
         end
       end
