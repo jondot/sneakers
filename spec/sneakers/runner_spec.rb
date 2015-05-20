@@ -24,3 +24,21 @@ describe Sneakers::Runner do
     end
   end
 end
+
+describe Sneakers::RunnerConfig do
+  let(:logger) { Logger.new("logtest.log") }
+  let(:runner_config) { Sneakers::Runner.new([]).instance_variable_get("@runnerconfig") }
+
+  before { Sneakers.configure(log: logger) }
+
+
+  describe "#reload_config!" do
+    it "must not have :log key" do
+      runner_config.reload_config!.has_key?(:log).must_equal false
+    end
+
+    it "must have :logger key as an instance of Logger" do
+      runner_config.reload_config![:logger].is_a?(Logger).must_equal true
+    end
+  end
+end
