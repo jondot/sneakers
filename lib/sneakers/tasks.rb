@@ -5,7 +5,9 @@ task :environment
 
 namespace :sneakers do
   desc "Start work (set $WORKERS=Klass1,Klass2)"
-  task :run  => :environment do
+  task :run do
+    Sneakers.server = true
+    Rake::Task['environment'].invoke
 
     workers, missing_workers = Sneakers::Utils.parse_workers(ENV['WORKERS'])
 
