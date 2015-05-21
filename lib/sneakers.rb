@@ -47,6 +47,10 @@ module Sneakers
     logger.level = loglevel
   end
 
+  def logger=(logger)
+    @logger = logger
+  end
+
   def logger
     @logger
   end
@@ -57,6 +61,18 @@ module Sneakers
 
   def configured?
     @configured
+  end
+
+  def server=(server)
+    @server = server
+  end
+
+  def server?
+    @server
+  end
+
+  def configure_server
+    yield self if server?
   end
 
   private
