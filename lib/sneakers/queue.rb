@@ -28,7 +28,8 @@ class Sneakers::Queue
     exchange_name = @opts[:exchange]
     @exchange = @channel.exchange(exchange_name,
                                   :type => @opts[:exchange_type],
-                                  :durable => @opts[:durable])
+                                  :durable => @opts[:durable],
+                                  :arguments => @opts[:exchange_arguments])
 
     routing_key = @opts[:routing_key] || @name
     routing_keys = [*routing_key]

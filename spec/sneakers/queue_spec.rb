@@ -10,7 +10,8 @@ describe Sneakers::Queue do
       :heartbeat => 2,
       :vhost => '/',
       :exchange => "sneakers",
-      :exchange_type => :direct
+      :exchange_type => :direct,
+      :exchange_arguments => { 'x-arg' => 'value' }
     }
   end
 
@@ -37,7 +38,10 @@ describe Sneakers::Queue do
 
     describe "#subscribe with sneakers exchange" do
       before do
-        mock(@mkchan).exchange("sneakers", :type => :direct, :durable => true){ @mkex }
+        mock(@mkchan).exchange("sneakers",
+                               :type => :direct,
+                               :durable => true,
+                               :arguments => { 'x-arg' => 'value' }){ @mkex }
       end
 
       it "should setup a bunny queue according to configuration values" do
@@ -119,7 +123,10 @@ describe Sneakers::Queue do
         @external_connection = Bunny.new
         mock(@external_connection).start {}
         mock(@external_connection).create_channel{ @mkchan }
-        mock(@mkchan).exchange("sneakers", :type => :direct, :durable => true){ @mkex }
+        mock(@mkchan).exchange("sneakers",
+                               :type => :direct,
+                               :durable => true,
+                               :arguments => { 'x-arg' => 'value' }){ @mkex }
 
         queue_name = 'foo'
         mock(@mkchan).queue(queue_name, :durable => true) { @mkqueue }

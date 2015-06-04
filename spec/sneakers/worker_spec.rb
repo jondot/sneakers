@@ -177,6 +177,7 @@ describe Sneakers::Worker do
           :vhost => "/",
           :exchange => "sneakers",
           :exchange_type => :direct,
+          :exchange_arguments => {},
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
           :heartbeat  =>  2
@@ -202,6 +203,7 @@ describe Sneakers::Worker do
           :vhost => "/",
           :exchange => "dummy",
           :exchange_type => :direct,
+          :exchange_arguments => {},
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
           :heartbeat => 5
