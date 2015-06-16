@@ -79,9 +79,7 @@ class Processor
 end
 ```
 
-
-As an example, make a message look like this:
-We'll count errors and error types with Redis. Specifically for an error that looks like this:
+We'll count errors and error types with Redis. As an example, make a message that looks like this:
 
 ```javascript
 {
@@ -147,8 +145,7 @@ Now push a message again and you'll see:
 2013-10-11T19:44:37Z p-9219 t-oxh8owywg INFO: INC: work.Processor.handled.ack
 ```
 
-Which increments start + end, and times the work unit.
-
+Which increments `started` and `handled.ack`, and times the work unit.
 
 
 From here, you can continue over to the
