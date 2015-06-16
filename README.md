@@ -27,16 +27,21 @@ complete docs.
 
 Add this line to your application's Gemfile:
 
-    gem 'sneakers'
+``` ruby
+gem 'sneakers'
+```
 
 And then execute:
 
-    $ bundle
+``` shell-session
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install sneakers
-
+``` shell-session
+$ gem install sneakers
+```
 
 ## Quick start 
 
@@ -90,8 +95,8 @@ We'll count errors and error types with Redis. Specifically for an error that lo
 Let's test it out quickly from the command line:
 
 
-```bash
-sneakers work Processor --require boot.rb
+```shell-session
+$ sneakers work Processor --require boot.rb
 ```
 
 We just told Sneakers to spawn a worker named `Processor`, but first `--require` a file that we dedicate to setting up environment, including workers and what-not.
@@ -109,8 +114,8 @@ If you go to your RabbitMQ admin now, you'll see a new queue named `logs` was cr
 And redis will show this: 
 
 
-```
-➜  ~  redis-cli monitor
+``` shell-session
+$ redis-cli monitor
 1381520329.888581 [0 127.0.0.1:49182] "incr" "processor:CODE001"
 ```
 
@@ -162,11 +167,4 @@ To all Sneakers [Contributors](https://github.com/jondot/sneakers/graphs/contrib
 
 # Copyright
 
-Copyright (c) 2015 [Dotan Nahum](http://gplus.to/dotan) [@jondot](http://twitter.com/jondot). See MIT-LICENSE for further details.
-
-
-
-
-
-
-
+Copyright (c) 2015 [Dotan Nahum](http://gplus.to/dotan) [@jondot](http://twitter.com/jondot). See [LICENSE](LICENSE.txt) for further details.
