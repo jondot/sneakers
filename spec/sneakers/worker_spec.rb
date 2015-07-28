@@ -145,9 +145,12 @@ describe Sneakers::Worker do
         msg.must_equal(message)
         opts.must_equal(:to_queue => "defaults")
       end
+    end
 
-      stub(Sneakers::Publisher).new { mock }
-      DefaultsWorker.enqueue(message)
+    it "passes the configuration to the publisher" do
+      opts = DummyWorker.queue_opts
+      mock(Sneakers::Publisher).new(opts) { mock(Object.new).publish(anything, anything) }
+      DummyWorker.enqueue(message)
     end
   end
 

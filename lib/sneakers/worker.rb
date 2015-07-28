@@ -143,7 +143,7 @@ module Sneakers
       private
 
       def publisher
-        @publisher ||= Sneakers::Publisher.new
+        @publisher ||= Sneakers::Publisher.new(queue_opts)
       end
     end
   end
