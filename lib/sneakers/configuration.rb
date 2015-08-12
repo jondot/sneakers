@@ -15,6 +15,7 @@ module Sneakers
       :workers            => 4,
       :log                => STDOUT,
       :pid_path           => 'sneakers.pid',
+      :amqp_heartbeat     => 10,
 
       # workers
       :timeout_job_after  => 5,
