@@ -58,6 +58,15 @@ describe Sneakers::CLI do
       out.must_match(/Missing workers: TitleScraper/)
     end
 
+    it "should run all workers when run without specifying any" do
+      out = capture_io{ Sneakers::CLI.start [
+        "work",
+        "--require=#{File.expand_path("../fixtures/require_worker.rb", File.dirname(__FILE__))}"
+      ]}.join ''
+
+      out.must_match(/Workers.*:.*TitleScraper.*/)
+    end
+
   end
 end
 

@@ -2,6 +2,8 @@ require 'sneakers/queue'
 require 'sneakers/support/utils'
 require 'timeout'
 
+puts "hello, world!"
+
 module Sneakers
   module Worker
     attr_reader :queue, :id, :opts
@@ -123,8 +125,11 @@ module Sneakers
       logger.debug(log_msg(msg))
     end
 
+    Classes = []
+
     def self.included(base)
       base.extend ClassMethods
+      Classes << base if base.is_a? Class
     end
 
     module ClassMethods
