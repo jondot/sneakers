@@ -71,5 +71,16 @@ module Sneakers
       instance.merge! hash
       instance
     end
+
+    def inspect_with_redaction
+      redacted = self.class.new
+      redacted.merge! to_hash
+
+      # redact passwords
+      redacted[:amqp] = redacted[:amqp].sub(/(?<=\Aamqp:\/)[^@]+(?=@)/, "<redacted>")
+      return redacted.inspect_without_redaction
+    end
+    alias_method :inspect_without_redaction, :inspect
+    alias_method :inspect, :inspect_with_redaction
   end
 end
