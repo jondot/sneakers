@@ -2,8 +2,6 @@ require 'sneakers/queue'
 require 'sneakers/support/utils'
 require 'timeout'
 
-puts "hello, world!"
-
 module Sneakers
   module Worker
     attr_reader :queue, :id, :opts
