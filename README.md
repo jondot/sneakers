@@ -151,6 +151,11 @@ Which increments `started` and `handled.ack`, and times the work unit.
 From here, you can continue over to the
 [Wiki](https://github.com/jondot/sneakers/wiki)
 
+# Compatibility
+
+* Sneakers 1.1.x and up (using the new generation Bunny 2.x) - Ruby 2.x.x
+* Sneakers 1.x.x and down - Ruby 1.9.x, 2.x.x
+
 # Contributing
 
 Fork, implement, add tests, pull request, get my everlasting thanks and a respectable place here :).
