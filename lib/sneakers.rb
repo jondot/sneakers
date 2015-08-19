@@ -17,6 +17,7 @@ require 'sneakers/concerns/metrics'
 require 'sneakers/handlers/oneshot'
 require 'sneakers/worker'
 require 'sneakers/publisher'
+require 'sneakers/deserializer'
 
 module Sneakers
   extend self
