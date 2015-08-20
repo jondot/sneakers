@@ -29,11 +29,19 @@ describe Sneakers::ContentType do
     end
   end
 
-  describe '.[]' do
-    it 'returns a pass through (de)serializer by default' do
+  describe '.serialize' do
+    it 'returns a pass through by default' do
       payload = "just some text"
-      Sneakers::ContentType['unknown/type'].serialize(payload).must_equal(payload)
-      Sneakers::ContentType['unknown/type'].deserialize(payload).must_equal(payload)
+      Sneakers::ContentType.serialize(payload, 'unknown/type').must_equal(payload)
+      Sneakers::ContentType.deserialize(payload, 'unknown/type').must_equal(payload)
+    end
+
+    it 'returns a pass through if not found type' do
+      Sneakers::ContentType.register(content_type: 'found/type')
+      payload = "just some text"
+
+      Sneakers::ContentType.serialize(payload, 'unknown/type').must_equal(payload)
+      Sneakers::ContentType.deserialize(payload, 'unknown/type').must_equal(payload)
     end
   end
 
@@ -45,8 +53,8 @@ describe Sneakers::ContentType do
         deserializer: ->(payload) { Base64.decode64(payload) },
       )
 
-      mime = Sneakers::ContentType['text/base64']
-      mime.deserialize(mime.serialize('hello world')).must_equal('hello world')
+      ct = Sneakers::ContentType
+      ct.deserialize(ct.serialize('hello world', 'text/base64'), 'text/base64').must_equal('hello world')
     end
   end
 end

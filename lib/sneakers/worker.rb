@@ -40,7 +40,7 @@ module Sneakers
       to_queue = opts.delete(:to_queue)
       opts[:routing_key] ||= to_queue
       return unless opts[:routing_key]
-      @queue.exchange.publish(Sneakers::ContentType[opts[:content_type]].serialize(msg), opts)
+      @queue.exchange.publish(Sneakers::ContentType.serialize(msg, opts[:content_type]), opts)
     end
 
     def do_work(delivery_info, metadata, msg, handler)
@@ -54,7 +54,7 @@ module Sneakers
           metrics.increment("work.#{self.class.name}.started")
           Timeout.timeout(@timeout_after, WorkerTimeout) do
             metrics.timing("work.#{self.class.name}.time") do
-              deserialized_msg = ContentType[@content_type || metadata && metadata[:content_type]].deserialize(msg)
+              deserialized_msg = ContentType.deserialize(msg, @content_type || metadata && metadata[:content_type])
               if @call_with_params
                 res = work_with_params(deserialized_msg, delivery_info, metadata)
               else
