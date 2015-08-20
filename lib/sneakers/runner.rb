@@ -74,7 +74,13 @@ module Sneakers
       serverengine_config.merge!(
         :logger => Sneakers.logger,
         :worker_type => 'process',
-        :worker_classes => @worker_classes
+        :worker_classes => @worker_classes,
+
+        # Turning off serverengine internal logging infra, causes
+        # livelock and hang.
+        # see https://github.com/jondot/sneakers/issues/153
+        :log_stdout => false,
+        :log_stderr => false
       )
       serverengine_config.delete(:log)
 
