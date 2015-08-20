@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'sneakers'
 require 'timeout'
+require 'serverengine'
 
 class DummyWorker
   include Sneakers::Worker
@@ -75,6 +76,17 @@ class PublishingWorker
   end
 end
 
+class JSONPublishingWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+             :ack => false,
+             :exchange => 'foochange'
+
+  def work(msg)
+    publish msg, :to_queue => 'target', :content_type => 'application/json'
+  end
+end
+
 
 
 class LoggingWorker
@@ -84,6 +96,16 @@ class LoggingWorker
 
   def work(msg)
     logger.info "hello"
+  end
+end
+
+class JSONWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+             :ack => false,
+             :content_type => 'application/json'
+
+  def work(msg)
   end
 end
 
@@ -164,7 +186,8 @@ describe Sneakers::Worker do
       mock(Sneakers::Publisher).new(DummyWorker.queue_opts) do
         mock(Object.new).publish(message, {
           :routing_key => 'test.routing.key',
-          :to_queue    => 'downloads'
+          :to_queue    => 'downloads',
+          :content_type => nil,
         })
       end
 
@@ -330,6 +353,37 @@ describe Sneakers::Worker do
       w.do_work(nil, nil, "msg", nil)
     end
 
+    describe 'content type based deserialization' do
+      before do
+        Sneakers::ContentType.register(
+          content_type: 'application/json',
+          deserializer: ->(payload) { JSON.parse(payload) },
+        )
+      end
+
+      after do
+        Sneakers::ContentType.reset!
+      end
+
+      it 'should use the registered deserializer if the content type is in the metadata' do
+        w = DummyWorker.new(@queue, TestPool.new)
+        mock(w).work({'foo' => 'bar'}).once
+        w.do_work(nil, { content_type: 'application/json' }, '{"foo":"bar"}', nil)
+      end
+
+      it 'should use the registered deserializer if the content type is in the queue options' do
+        w = JSONWorker.new(@queue, TestPool.new)
+        mock(w).work({'foo' => 'bar'}).once
+        w.do_work(nil, {}, '{"foo":"bar"}', nil)
+      end
+
+      it 'should use the deserializer from the queue options even if the metadata has a different content type' do
+        w = JSONWorker.new(@queue, TestPool.new)
+        mock(w).work({'foo' => 'bar'}).once
+        w.do_work(nil, { content_type: 'not/real' }, '{"foo":"bar"}', nil)
+      end
+    end
+
     it "should catch runtime exceptions from a bad work" do
       w = AcksWorker.new(@queue, TestPool.new)
       mock(w).work("msg").once{ raise "foo" }
@@ -432,6 +486,26 @@ describe Sneakers::Worker do
       mock(@exchange).publish('msg', :routing_key => 'target', :expiration => 1).once
       w.publish 'msg', :to_queue => 'target', :expiration => 1
     end
+
+    describe 'content_type based serialization' do
+      before do
+        Sneakers::ContentType.register(
+          content_type: 'application/json',
+          serializer: ->(payload) { JSON.dump(payload) },
+        )
+      end
+
+      after do
+        Sneakers::ContentType.reset!
+      end
+
+      it 'should be able to publish a message from working context' do
+        w = JSONPublishingWorker.new(@queue, TestPool.new)
+        mock(@exchange).publish('{"foo":"bar"}', :routing_key => 'target', :content_type => 'application/json').once
+        w.do_work(nil, {}, {'foo' => 'bar'}, nil)
+      end
+    end
+
   end
 
 
