@@ -5,10 +5,12 @@ module Sneakers
     end
 
     def self.serialize(payload, content_type)
+      return payload unless content_type
       @_types[content_type].serializer.(payload)
     end
 
     def self.deserialize(payload, content_type)
+      return payload unless content_type
       @_types[content_type].deserializer.(payload)
     end
 
