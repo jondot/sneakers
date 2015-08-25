@@ -357,6 +357,7 @@ describe Sneakers::Worker do
       before do
         Sneakers::ContentType.register(
           content_type: 'application/json',
+          serializer: ->(_) {},
           deserializer: ->(payload) { JSON.parse(payload) },
         )
       end
@@ -492,6 +493,7 @@ describe Sneakers::Worker do
         Sneakers::ContentType.register(
           content_type: 'application/json',
           serializer: ->(payload) { JSON.dump(payload) },
+          deserializer: ->(_) {},
         )
       end
 

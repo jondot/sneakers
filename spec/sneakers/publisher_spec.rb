@@ -128,6 +128,7 @@ describe Sneakers::Publisher do
       Sneakers::ContentType.register(
         content_type: 'application/json',
         serializer: ->(payload) { JSON.dump(payload) },
+        deserializer: ->(_) {},
       )
 
       xchg = Object.new

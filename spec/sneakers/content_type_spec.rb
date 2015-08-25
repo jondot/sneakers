@@ -11,6 +11,7 @@ describe Sneakers::ContentType do
     it 'uses the given deserializer' do
       Sneakers::ContentType.register(
         content_type: 'application/json',
+        serializer: ->(_) {},
         deserializer: ->(payload) { JSON.parse(payload) },
       )
 
@@ -23,6 +24,7 @@ describe Sneakers::ContentType do
       Sneakers::ContentType.register(
         content_type: 'application/json',
         serializer: ->(payload) { JSON.dump(payload) },
+        deserializer: ->(_) {},
       )
 
       Sneakers::ContentType.serialize({ 'foo' => 'bar' }, 'application/json').must_equal('{"foo":"bar"}')
@@ -37,7 +39,7 @@ describe Sneakers::ContentType do
     end
 
     it 'passes the payload through if type not found' do
-      Sneakers::ContentType.register(content_type: 'found/type')
+      Sneakers::ContentType.register(content_type: 'found/type', serializer: ->(_) {}, deserializer: ->(_) {})
       payload = "just some text"
 
       Sneakers::ContentType.serialize(payload, 'unknown/type').must_equal(payload)
@@ -58,7 +60,22 @@ describe Sneakers::ContentType do
     end
 
     it 'requires a content type' do
-      proc { Sneakers::ContentType.register }.must_raise ArgumentError
+      proc { Sneakers::ContentType.register(serializer: -> { }, deserializer: -> { }) }.must_raise ArgumentError
+    end
+
+    it 'expects serializer and deserializer to be present' do
+      proc { Sneakers::ContentType.register(content_type: 'foo', deserializer: -> { }) }.must_raise ArgumentError
+      proc { Sneakers::ContentType.register(content_type: 'foo', serializer: -> { }) }.must_raise ArgumentError
+    end
+
+    it 'expects serializer and deserializer to be a proc' do
+      proc { Sneakers::ContentType.register(content_type: 'foo', serializer: 'not a proc', deserializer: ->(_) { }) }.must_raise ArgumentError
+      proc { Sneakers::ContentType.register(content_type: 'foo', serializer: ->(_) {}, deserializer: 'not a proc' ) }.must_raise ArgumentError
+    end
+
+    it 'expects serializer and deserializer to have the correct arity' do
+      proc { Sneakers::ContentType.register(content_type: 'foo', serializer: ->(_,_) {}, deserializer: ->(_) {}) }.must_raise ArgumentError
+      proc { Sneakers::ContentType.register(content_type: 'foo', serializer: ->(_) {}, deserializer: ->() {} ) }.must_raise ArgumentError
     end
   end
 end
