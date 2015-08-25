@@ -1,6 +1,7 @@
 module Sneakers
   class ContentType
     def self.register(content_type: nil, serializer: nil, deserializer: nil)
+      fail ArgumentError, 'missing keyword: content_type' unless content_type
       @_types[content_type] = new(serializer, deserializer)
     end
 

@@ -56,5 +56,9 @@ describe Sneakers::ContentType do
       ct = Sneakers::ContentType
       ct.deserialize(ct.serialize('hello world', 'text/base64'), 'text/base64').must_equal('hello world')
     end
+
+    it 'requires a content type' do
+      proc { Sneakers::ContentType.register }.must_raise ArgumentError
+    end
   end
 end
