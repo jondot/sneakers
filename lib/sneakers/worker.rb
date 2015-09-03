@@ -42,7 +42,7 @@ module Sneakers
     end
 
     def do_work(delivery_info, metadata, msg, handler)
-      worker_trace "Working off: #{msg}"
+      worker_trace "Working off: #{msg.inspect}"
 
       @pool.process do
         res = nil
