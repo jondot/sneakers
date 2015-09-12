@@ -1,6 +1,5 @@
 env:
-  - INTEGRATION=1
-  - INTEGRATION_LOG=1
+  - INTEGRATION_LOG=1 INTEGRATION=1
 services:
   - rabbitmq
   - redis-server
