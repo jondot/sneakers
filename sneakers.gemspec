@@ -22,9 +22,11 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'thread', '~> 0.1.7'
   gem.add_dependency 'thor'
 
+  # for integration environment (see .travis.yml and integration_spec)
   gem.add_development_dependency 'rabbitmq_http_api_client'
-  gem.add_development_dependency 'rr'
   gem.add_development_dependency 'redis'
+
+  gem.add_development_dependency 'rr'
   gem.add_development_dependency 'ruby-prof'
   gem.add_development_dependency 'nokogiri'
   gem.add_development_dependency 'guard-minitest'
