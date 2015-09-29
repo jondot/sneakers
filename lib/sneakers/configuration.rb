@@ -77,7 +77,7 @@ module Sneakers
       redacted.merge! to_hash
 
       # redact passwords
-      redacted[:amqp] = redacted[:amqp].sub(/(?<=\Aamqp:\/)[^@]+(?=@)/, "<redacted>")
+      redacted[:amqp] = redacted[:amqp].sub(/(?<=\Aamqp:\/)[^@]+(?=@)/, "<redacted>") if redacted.has_key?(:amqp)
       return redacted.inspect_without_redaction
     end
     alias_method :inspect_without_redaction, :inspect
