@@ -29,16 +29,37 @@ describe Sneakers::RunnerConfig do
   let(:logger) { Logger.new("logtest.log") }
   let(:runner_config) { Sneakers::Runner.new([]).instance_variable_get("@runnerconfig") }
 
-  before { Sneakers.configure(log: logger) }
 
 
-  describe "#reload_config!" do
-    it "must not have :log key" do
-      runner_config.reload_config!.has_key?(:log).must_equal false
+  describe "with a connection" do
+    before { Sneakers.configure(log: logger, connection: Object.new) }
+
+    describe "#reload_config!" do
+      it "does not throw exception" do
+        runner_config.reload_config!
+      end
+
+      it "must not have :log key" do
+        runner_config.reload_config!.has_key?(:log).must_equal false
+      end
+
+      it "must have :logger key as an instance of Logger" do
+        runner_config.reload_config![:logger].is_a?(Logger).must_equal true
+      end
     end
+  end
 
-    it "must have :logger key as an instance of Logger" do
-      runner_config.reload_config![:logger].is_a?(Logger).must_equal true
+  describe "without a connection" do
+    before { Sneakers.configure(log: logger) }
+
+    describe "#reload_config!" do
+      it "must not have :log key" do
+        runner_config.reload_config!.has_key?(:log).must_equal false
+      end
+
+      it "must have :logger key as an instance of Logger" do
+        runner_config.reload_config![:logger].is_a?(Logger).must_equal true
+      end
     end
   end
 end
