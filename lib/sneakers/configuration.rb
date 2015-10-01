@@ -1,10 +1,18 @@
 require 'forwardable'
+require 'active_support/core_ext/hash/deep_merge'
 
 module Sneakers
   class Configuration
 
     extend Forwardable
     def_delegators :@hash, :to_hash, :[], :[]=, :==, :fetch, :delete, :has_key?
+
+    EXCHANGE_OPTION_DEFAULTS = {
+      :type               => :direct,
+      :durable            => true,
+      :auto_delete        => false,
+      :arguments => {} # Passed as :arguments to Bunny::Channel#exchange
+    }.freeze
 
     DEFAULTS = {
       # runner
@@ -22,13 +30,11 @@ module Sneakers
       :prefetch           => 10,
       :threads            => 10,
       :share_threads      => false,
-      :durable            => true,
       :ack                => true,
       :heartbeat          => 2,
+      :hooks              => {},
       :exchange           => 'sneakers',
-      :exchange_type      => :direct,
-      :exchange_arguments => {}, # Passed as :arguments to Bunny::Channel#exchange
-      :hooks              => {}
+      :exchange_options   => EXCHANGE_OPTION_DEFAULTS
     }.freeze
 
 
@@ -44,6 +50,9 @@ module Sneakers
 
     def merge!(hash)
       hash = hash.dup
+      hash = map_deprecated_exchange_options_key(hash, :exchange_type, :type)
+      hash = map_deprecated_exchange_options_key(hash, :exchange_arguments, :arguments)
+      hash = map_deprecated_exchange_options_key(hash, :durable, :durable)
 
       # parse vhost from amqp if vhost is not specified explicitly, only
       # if we're not given a connection to use.
@@ -62,7 +71,7 @@ module Sneakers
         end
       end
 
-      @hash.merge!(hash)
+      @hash.deep_merge!(hash)
     end
 
     def merge(hash)
@@ -82,5 +91,12 @@ module Sneakers
     end
     alias_method :inspect_without_redaction, :inspect
     alias_method :inspect, :inspect_with_redaction
+
+    def map_deprecated_exchange_options_key(hash = {}, deprecated_key, key)
+      return hash if hash[deprecated_key].nil?
+      hash = { exchange_options: { key => hash[deprecated_key] } }.deep_merge(hash)
+      hash.delete(deprecated_key)
+      hash
+    end
   end
 end

@@ -5,13 +5,15 @@ describe Sneakers::Queue do
   let :queue_vars do
     {
       :prefetch => 25,
-      :durable => true,
       :ack => true,
       :heartbeat => 2,
       :vhost => '/',
       :exchange => "sneakers",
-      :exchange_type => :direct,
-      :exchange_arguments => { 'x-arg' => 'value' }
+      :exchange_options => {
+        :type => :direct,
+        durable: true,
+        :arguments => { 'x-arg' => 'value' }
+      }
     }
   end
 

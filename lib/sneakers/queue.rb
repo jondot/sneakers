@@ -26,10 +26,7 @@ class Sneakers::Queue
     @channel.prefetch(@opts[:prefetch])
 
     exchange_name = @opts[:exchange]
-    @exchange = @channel.exchange(exchange_name,
-                                  :type => @opts[:exchange_type],
-                                  :durable => @opts[:durable],
-                                  :arguments => @opts[:exchange_arguments])
+    @exchange = @channel.exchange(exchange_name, @opts[:exchange_options])
 
     routing_key = @opts[:routing_key] || @name
     routing_keys = [*routing_key]
@@ -37,7 +34,7 @@ class Sneakers::Queue
     # TODO: get the arguments from the handler? Retry handler wants this so you
     # don't have to line up the queue's dead letter argument with the exchange
     # you'll create for retry.
-    queue_durable = @opts[:queue_durable].nil? ? @opts[:durable] : @opts[:queue_durable]
+    queue_durable = @opts[:queue_durable].nil? ? @opts[:exchange_options][:durable] : @opts[:queue_durable]
     queue = @channel.queue(@name, :durable => queue_durable, :arguments => @opts[:arguments])
 
     if exchange_name.length > 0
