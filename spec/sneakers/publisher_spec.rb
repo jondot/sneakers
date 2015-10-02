@@ -103,7 +103,7 @@ describe Sneakers::Publisher do
       mock(existing_session).start
       mock(existing_session).create_channel { channel }
 
-      mock(channel).exchange('another_exchange', type: :topic, durable: false, arguments: { 'x-arg' => 'value' }) do
+      mock(channel).exchange('another_exchange', type: :topic, durable: false, :auto_delete => false, arguments: { 'x-arg' => 'value' }) do
         exchange
       end
 
