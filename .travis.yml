@@ -1,11 +1,15 @@
-env:
-  - INTEGRATION_LOG=1 INTEGRATION=1
 services:
   - rabbitmq
   - redis-server
 language: ruby
 rvm:
+- ruby-head
 - 2.2
 - 2.1
 - 2.0.0
+matrix:
+  include:
+    - rvm: 2.2
+      env: INTEGRATION_LOG=1 INTEGRATION=1
+
 
