@@ -34,8 +34,7 @@ class Sneakers::Queue
     # TODO: get the arguments from the handler? Retry handler wants this so you
     # don't have to line up the queue's dead letter argument with the exchange
     # you'll create for retry.
-    queue_durable = @opts[:queue_durable].nil? ? @opts[:exchange_options][:durable] : @opts[:queue_durable]
-    queue = @channel.queue(@name, :durable => queue_durable, :arguments => @opts[:arguments])
+    queue = @channel.queue(@name, @opts[:queue_options])
 
     if exchange_name.length > 0
       routing_keys.each do |key|

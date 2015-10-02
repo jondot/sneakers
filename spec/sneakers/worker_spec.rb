@@ -12,6 +12,12 @@ class DummyWorker
                :auto_delete => true,
                :arguments => { 'x-arg' => 'value' }
              },
+             :queue_options => {
+               :durable => false,
+               :auto_delete => true,
+               :exclusive => true,
+               :arguments => { 'x-arg' => 'value' }
+             },
              :ack => false,
              :threads => 50,
              :prefetch => 40,
@@ -193,6 +199,12 @@ describe Sneakers::Worker do
             :auto_delete => false,
             :arguments => {}
           },
+          :queue_options => {
+            :durable => true,
+            :auto_delete => false,
+            :exclusive => false,
+            :arguments => {}
+          },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
           :heartbeat => 2,
@@ -223,6 +235,12 @@ describe Sneakers::Worker do
             :type => :topic,
             :durable => false,
             :auto_delete => true,
+            :arguments => { 'x-arg' => 'value' }
+          },
+          :queue_options => {
+            :durable => false,
+            :auto_delete => true,
+            :exclusive => true,
             :arguments => { 'x-arg' => 'value' }
           },
           :hooks => {},
@@ -256,6 +274,12 @@ describe Sneakers::Worker do
             :durable => false,
             :auto_delete => false,
             :arguments => { 'x-arg' => 'value' }
+          },
+          :queue_options => {
+            :durable => false,
+            :auto_delete => false,
+            :exclusive => false,
+            :arguments => {}
           },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,

@@ -14,6 +14,13 @@ module Sneakers
       :arguments => {} # Passed as :arguments to Bunny::Channel#exchange
     }.freeze
 
+    QUEUE_OPTION_DEFAULTS = {
+      :durable            => true,
+      :auto_delete        => false,
+      :exclusive          => false,
+      :arguments => {}
+    }.freeze
+
     DEFAULTS = {
       # runner
       :runner_config_file => nil,
@@ -34,7 +41,8 @@ module Sneakers
       :heartbeat          => 2,
       :hooks              => {},
       :exchange           => 'sneakers',
-      :exchange_options   => EXCHANGE_OPTION_DEFAULTS
+      :exchange_options   => EXCHANGE_OPTION_DEFAULTS,
+      :queue_options      => QUEUE_OPTION_DEFAULTS
     }.freeze
 
 
@@ -95,6 +103,7 @@ module Sneakers
     def map_deprecated_exchange_options_key(hash = {}, deprecated_key, key)
       return hash if hash[deprecated_key].nil?
       hash = { exchange_options: { key => hash[deprecated_key] } }.deep_merge(hash)
+      hash = { queue_options: { key => hash[deprecated_key] } }.deep_merge(hash) if deprecated_key == :durable
       hash.delete(deprecated_key)
       hash
     end
