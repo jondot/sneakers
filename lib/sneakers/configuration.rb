@@ -1,5 +1,4 @@
 require 'forwardable'
-require 'active_support/core_ext/hash/deep_merge'
 
 module Sneakers
   class Configuration
@@ -79,7 +78,7 @@ module Sneakers
         end
       end
 
-      @hash.deep_merge!(hash)
+      @hash = deep_merge(@hash, hash)
     end
 
     def merge(hash)
@@ -102,10 +101,15 @@ module Sneakers
 
     def map_deprecated_exchange_options_key(hash = {}, deprecated_key, key)
       return hash if hash[deprecated_key].nil?
-      hash = { exchange_options: { key => hash[deprecated_key] } }.deep_merge(hash)
-      hash = { queue_options: { key => hash[deprecated_key] } }.deep_merge(hash) if deprecated_key == :durable
+      hash = deep_merge({ exchange_options: { key => hash[deprecated_key] } }, hash)
+      hash = deep_merge({ queue_options: { key => hash[deprecated_key] } }, hash) if deprecated_key == :durable
       hash.delete(deprecated_key)
       hash
+    end
+
+    def deep_merge(first, second)
+      merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+      first.merge(second, &merger)
     end
   end
 end
