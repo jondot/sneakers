@@ -6,7 +6,18 @@ require 'timeout'
 class DummyWorker
   include Sneakers::Worker
   from_queue 'downloads',
-             :durable => false,
+             :exchange_options => {
+               :type => :topic,
+               :durable => false,
+               :auto_delete => true,
+               :arguments => { 'x-arg' => 'value' }
+             },
+             :queue_options => {
+               :durable => false,
+               :auto_delete => true,
+               :exclusive => true,
+               :arguments => { 'x-arg' => 'value' }
+             },
              :ack => false,
              :threads => 50,
              :prefetch => 40,
@@ -101,6 +112,16 @@ class WithParamsWorker
   end
 end
 
+class WithDeprecatedExchangeOptionsWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+             :durable => false,
+             :exchange_type => :topic,
+             :exchange_arguments => { 'x-arg' => 'value' }
+
+  def work(msg)
+  end
+end
 
 class TestPool
   def process(*args,&block)
@@ -153,12 +174,8 @@ describe Sneakers::Worker do
 
   describe "#initialize" do
     describe "builds an internal queue" do
-      before do
-        @dummy_q = DummyWorker.new.queue
-        @defaults_q = DefaultsWorker.new.queue
-      end
-
       it "should build a queue with correct configuration given defaults" do
+        @defaults_q = DefaultsWorker.new.queue
         @defaults_q.name.must_equal('defaults')
         @defaults_q.opts.to_hash.must_equal(
           :runner_config_file => nil,
@@ -172,13 +189,22 @@ describe Sneakers::Worker do
           :prefetch => 10,
           :threads => 10,
           :share_threads => false,
-          :durable => true,
           :ack => true,
           :amqp => "amqp://guest:guest@localhost:5672",
           :vhost => "/",
           :exchange => "sneakers",
-          :exchange_type => :direct,
-          :exchange_arguments => {},
+          :exchange_options => {
+            :type => :direct,
+            :durable => true,
+            :auto_delete => false,
+            :arguments => {}
+          },
+          :queue_options => {
+            :durable => true,
+            :auto_delete => false,
+            :exclusive => false,
+            :arguments => {}
+          },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
           :heartbeat => 2,
@@ -187,6 +213,7 @@ describe Sneakers::Worker do
       end
 
       it "should build a queue with given configuration" do
+        @dummy_q = DummyWorker.new.queue
         @dummy_q.name.must_equal('downloads')
         @dummy_q.opts.to_hash.must_equal(
           :runner_config_file => nil,
@@ -200,16 +227,63 @@ describe Sneakers::Worker do
           :prefetch => 40,
           :threads => 50,
           :share_threads => false,
-          :durable => false,
           :ack => false,
           :amqp => "amqp://guest:guest@localhost:5672",
           :vhost => "/",
           :exchange => "dummy",
-          :exchange_type => :direct,
-          :exchange_arguments => {},
+          :exchange_options => {
+            :type => :topic,
+            :durable => false,
+            :auto_delete => true,
+            :arguments => { 'x-arg' => 'value' }
+          },
+          :queue_options => {
+            :durable => false,
+            :auto_delete => true,
+            :exclusive => true,
+            :arguments => { 'x-arg' => 'value' }
+          },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
           :heartbeat => 5,
+          :amqp_heartbeat => 10
+        )
+      end
+
+      it "should build a queue with correct configuration given deprecated exchange options" do
+        @deprecated_exchange_opts_q = WithDeprecatedExchangeOptionsWorker.new.queue
+        @deprecated_exchange_opts_q.name.must_equal('defaults')
+        @deprecated_exchange_opts_q.opts.to_hash.must_equal(
+          :runner_config_file => nil,
+          :metrics => nil,
+          :daemonize => true,
+          :start_worker_delay => 0.2,
+          :workers => 4,
+          :log => "sneakers.log",
+          :pid_path => "sneakers.pid",
+          :timeout_job_after => 5,
+          :prefetch => 10,
+          :threads => 10,
+          :share_threads => false,
+          :ack => true,
+          :amqp => "amqp://guest:guest@localhost:5672",
+          :vhost => "/",
+          :exchange => "sneakers",
+          :exchange_options => {
+            :type => :topic,
+            :durable => false,
+            :auto_delete => false,
+            :arguments => { 'x-arg' => 'value' }
+          },
+          :queue_options => {
+            :durable => false,
+            :auto_delete => false,
+            :exclusive => false,
+            :arguments => {}
+          },
+          :hooks => {},
+          :handler => Sneakers::Handlers::Oneshot,
+          :heartbeat => 2,
           :amqp_heartbeat => 10
         )
       end

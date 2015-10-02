@@ -4,7 +4,8 @@ require 'sneakers'
 class BenchmarkWorker
   include Sneakers::Worker
   from_queue 'downloads',
-             :durable => false,
+             exchange_options: { durable: false },
+             queue_options: { durable: false },
              :ack => true,
              :threads => 50,
              :prefetch => 50,

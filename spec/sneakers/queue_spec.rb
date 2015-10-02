@@ -5,13 +5,18 @@ describe Sneakers::Queue do
   let :queue_vars do
     {
       :prefetch => 25,
-      :durable => true,
       :ack => true,
       :heartbeat => 2,
       :vhost => '/',
       :exchange => "sneakers",
-      :exchange_type => :direct,
-      :exchange_arguments => { 'x-arg' => 'value' }
+      :exchange_options => {
+        :type => :direct,
+        durable: true,
+        :arguments => { 'x-arg' => 'value' }
+      },
+      queue_options: {
+        durable: true
+      }
     }
   end
 
@@ -81,7 +86,7 @@ describe Sneakers::Queue do
 
       it "creates a non-durable queue if :queue_durable => false" do
         mock(@mkchan).queue("test_nondurable", :durable => false) { @mkqueue_nondurable }
-        queue_vars[:queue_durable] = false
+        queue_vars[:queue_options][:durable] = false
         q = Sneakers::Queue.new("test_nondurable", queue_vars)
 
         mock(@mkqueue_nondurable).bind(@mkex, :routing_key => "test_nondurable")
@@ -144,4 +149,3 @@ describe Sneakers::Queue do
     end
   end
 end
-

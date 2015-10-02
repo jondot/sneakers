@@ -27,7 +27,6 @@ module Sneakers
   def configure(opts={})
     # worker > userland > defaults
     CONFIG.merge!(opts)
-
     setup_general_logger!
     setup_worker_concerns!
     setup_general_publisher!
