@@ -85,6 +85,7 @@ module Sneakers
             handler.noop(delivery_info, metadata, msg)
           end
           metrics.increment("work.#{self.class.name}.handled.#{res || 'noop'}")
+          trigger_hook(res)
         end
 
         metrics.increment("work.#{self.class.name}.ended")
@@ -121,6 +122,12 @@ module Sneakers
 
     def worker_trace(msg)
       logger.debug(log_msg(msg))
+    end
+
+    def trigger_hook(result)
+      hooks = @opts[:hooks]
+      hook_name = "on_#{result}".to_sym
+      hooks[hook_name].call if hooks[hook_name]
     end
 
     def self.included(base)
