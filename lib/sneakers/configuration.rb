@@ -57,9 +57,7 @@ module Sneakers
 
     def merge!(hash)
       hash = hash.dup
-      hash = map_deprecated_exchange_options_key(hash, :exchange_type, :type)
-      hash = map_deprecated_exchange_options_key(hash, :exchange_arguments, :arguments)
-      hash = map_deprecated_exchange_options_key(hash, :durable, :durable)
+      hash = map_all_deprecated_options(hash)
 
       # parse vhost from amqp if vhost is not specified explicitly, only
       # if we're not given a connection to use.
@@ -99,16 +97,24 @@ module Sneakers
     alias_method :inspect_without_redaction, :inspect
     alias_method :inspect, :inspect_with_redaction
 
-    def map_deprecated_exchange_options_key(hash = {}, deprecated_key, key)
+    def map_all_deprecated_options(hash)
+      hash = map_deprecated_options_key(:exchange_options, :exchange_type, :type, true, hash)
+      hash = map_deprecated_options_key(:exchange_options, :exchange_arguments, :arguments, true, hash)
+      hash = map_deprecated_options_key(:exchange_options, :durable, :durable, false, hash)
+      hash = map_deprecated_options_key(:queue_options, :durable, :durable, true, hash)
+      hash = map_deprecated_options_key(:queue_options, :arguments, :arguments, true, hash)
+      hash
+    end
+
+    def map_deprecated_options_key(target_key, deprecated_key, key, delete_deprecated_key, hash = {})
       return hash if hash[deprecated_key].nil?
-      hash = deep_merge({ exchange_options: { key => hash[deprecated_key] } }, hash)
-      hash = deep_merge({ queue_options: { key => hash[deprecated_key] } }, hash) if deprecated_key == :durable
-      hash.delete(deprecated_key)
+      hash = deep_merge({ target_key => { key => hash[deprecated_key] } }, hash)
+      hash.delete(deprecated_key) if delete_deprecated_key
       hash
     end
 
     def deep_merge(first, second)
-      merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+      merger = proc { |_, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
       first.merge(second, &merger)
     end
   end
