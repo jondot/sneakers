@@ -117,7 +117,8 @@ class WithDeprecatedExchangeOptionsWorker
   from_queue 'defaults',
              :durable => false,
              :exchange_type => :topic,
-             :exchange_arguments => { 'x-arg' => 'value' }
+             :exchange_arguments => { 'x-arg' => 'value' },
+             :arguments => { 'x-arg2' => 'value2' }
 
   def work(msg)
   end
@@ -279,7 +280,7 @@ describe Sneakers::Worker do
             :durable => false,
             :auto_delete => false,
             :exclusive => false,
-            :arguments => {}
+            :arguments => { 'x-arg2' => 'value2' }
           },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
