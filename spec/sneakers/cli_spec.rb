@@ -11,12 +11,12 @@ describe Sneakers::CLI do
       end
     end
 
-    describe 'with dirty class loading' do
-      after do
-        # require cleanup
-        Object.send(:remove_const, :TitleScraper)
-      end
+    after do
+      # require cleanup
+      Object.send(:remove_const, :TitleScraper) if Object.constants.include?(:TitleScraper)
+    end
 
+    describe 'with dirty class loading' do
       it "should perform a run" do
         any_instance_of(Sneakers::Runner) do |runner|
           mock(runner).run{ true }
@@ -67,6 +67,9 @@ describe Sneakers::CLI do
       out.must_match(/Workers.*:.*TitleScraper.*/)
     end
 
+    after do
+      # require cleanup
+      Object.send(:remove_const, :TitleScraper) if Object.constants.include?(:TitleScraper)
+    end
   end
 end
-
