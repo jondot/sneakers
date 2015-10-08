@@ -13,9 +13,13 @@ namespace :sneakers do
       ::Rails.application.eager_load!
     end
 
-    workers, missing_workers = Sneakers::Utils.parse_workers(ENV['WORKERS'])
+    if ENV["WORKERS"].nil?
+      workers = Sneakers::Workers::Classes
+    else
+      workers, missing_workers = Sneakers::Utils.parse_workers(ENV['WORKERS'])
+    end
 
-    unless missing_workers.empty?
+    unless missing_workers.nil? || missing_workers.empty?
       puts "Missing workers: #{missing_workers.join(', ')}" if missing_workers
       puts "Did you `require` properly?"
       exit(1)
