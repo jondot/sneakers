@@ -132,7 +132,9 @@ describe 'Handlers' do
     before(:each) do
       @opts = {
         :exchange => 'sneakers',
-        :durable => 'true',
+        :queue_options => {
+          :durable => 'true',
+        }
       }.tap do |opts|
         opts[:retry_max_times] = max_retries unless max_retries.nil?
       end
