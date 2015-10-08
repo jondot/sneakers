@@ -123,8 +123,11 @@ module Sneakers
       logger.debug(log_msg(msg))
     end
 
+    Classes = []
+
     def self.included(base)
       base.extend ClassMethods
+      Classes << base if base.is_a? Class
     end
 
     module ClassMethods
