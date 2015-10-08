@@ -52,7 +52,7 @@ module Sneakers
           Sneakers.logger.debug { "#{log_prefix} creating exchange=#{name}" }
           @channel.exchange(name,
                             :type => 'topic',
-                            :durable => opts[:durable])
+                            :durable => exchange_durable?)
         end
 
         # Create the queues and bindings
@@ -60,7 +60,7 @@ module Sneakers
           "#{log_prefix} creating queue=#{retry_name} x-dead-letter-exchange=#{requeue_name}"
         end
         @retry_queue = @channel.queue(retry_name,
-                                     :durable => opts[:durable],
+                                     :durable => queue_durable?,
                                      :arguments => {
                                        :'x-dead-letter-exchange' => requeue_name,
                                        :'x-message-ttl' => @opts[:retry_timeout] || 60000
@@ -71,7 +71,7 @@ module Sneakers
           "#{log_prefix} creating queue=#{error_name}"
         end
         @error_queue = @channel.queue(error_name,
-                                      :durable => opts[:durable])
+                                      :durable => queue_durable?)
         @error_queue.bind(@error_exchange, :routing_key => '#')
 
         # Finally, bind the worker queue to our requeue exchange
@@ -186,6 +186,15 @@ module Sneakers
       end
       private :log_prefix
 
+      private
+
+      def queue_durable?
+        @opts.fetch(:queue_options, {}).fetch(:durable, false)
+      end
+
+      def exchange_durable?
+        queue_durable?
+      end
     end
   end
 end
