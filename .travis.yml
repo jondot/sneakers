@@ -1,6 +1,7 @@
 services:
   - rabbitmq
   - redis-server
+sudo: false
 language: ruby
 rvm:
 - ruby-head
