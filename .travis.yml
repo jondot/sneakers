@@ -2,6 +2,7 @@ services:
   - rabbitmq
   - redis-server
 sudo: false
+cache: bundler
 language: ruby
 rvm:
 - ruby-head
