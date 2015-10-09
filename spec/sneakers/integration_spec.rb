@@ -34,7 +34,7 @@ describe "integration" do
         puts "Rabbitmq admin seems to not exist? you better be running this on Travis or Docker. proceeding.\n#{$!}"
       end
 
-
+      Sneakers.clear!
       Sneakers.configure
       Sneakers.logger.level = Logger::ERROR
 
