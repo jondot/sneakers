@@ -14,7 +14,7 @@ namespace :sneakers do
     end
 
     if ENV["WORKERS"].nil?
-      workers = Sneakers::Workers::Classes
+      workers = Sneakers::Worker::Classes
     else
       workers, missing_workers = Sneakers::Utils.parse_workers(ENV['WORKERS'])
     end
