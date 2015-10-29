@@ -255,7 +255,7 @@ describe Sneakers::Worker do
       handler = Object.new
       header = Object.new
       mock(handler).error(header, nil, "msg", anything)
-      mock(w.logger).error(/unexpected error \[Exception error="foo" error_class=RuntimeError backtrace=.*/)
+      mock(w.logger).error(/error:'unexpected error' message:'msg' \[Exception error="foo" error_class=RuntimeError backtrace=.*/)
       w.do_work(header, nil, "msg", handler)
     end
 
@@ -375,8 +375,8 @@ describe Sneakers::Worker do
     describe '#worker_error' do
       it 'only logs backtraces if present' do
         w = DummyWorker.new(@queue, TestPool.new)
-        mock(w.logger).error(/cuz \[Exception error="boom!" error_class=RuntimeError\]/)
-        w.worker_error('cuz', RuntimeError.new('boom!'))
+        mock(w.logger).error(/error:'cuz' message:'some json' \[Exception error="boom!" error_class=RuntimeError\]/)
+        w.worker_error('cuz', 'some json', RuntimeError.new('boom!'))
       end
     end
 

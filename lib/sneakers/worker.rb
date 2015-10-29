@@ -61,11 +61,11 @@ module Sneakers
           end
         rescue Timeout::Error
           res = :timeout
-          worker_error('timeout')
+          worker_error('timeout',msg)
         rescue => ex
           res = :error
           error = ex
-          worker_error('unexpected error', ex)
+          worker_error('unexpected error', msg, ex)
         end
 
         if @should_ack
@@ -109,8 +109,8 @@ module Sneakers
     end
 
     # Helper to log an error message with an optional exception
-    def worker_error(msg, exception = nil)
-      s = log_msg(msg)
+    def worker_error(error_msg, queue_message, exception = nil)
+      s = log_msg("error:'#{error_msg}' message:'#{queue_message}'")
       if exception
         s += " [Exception error=#{exception.message.inspect} error_class=#{exception.class}"
         s += " backtrace=#{exception.backtrace.take(50).join(',')}" unless exception.backtrace.nil?
