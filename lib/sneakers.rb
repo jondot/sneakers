@@ -2,7 +2,6 @@ require "sneakers/version"
 require 'thread/pool'
 require 'bunny'
 require 'logger'
-require 'serverengine'
 
 module Sneakers
   module Handlers
@@ -81,7 +80,7 @@ module Sneakers
     if [:info, :debug, :error, :warn].all?{ |meth| CONFIG[:log].respond_to?(meth) }
       @logger = CONFIG[:log]
     else
-      @logger = ServerEngine::DaemonLogger.new(CONFIG[:log])
+      @logger = Logger.new(CONFIG[:log])
       @logger.formatter = Sneakers::Support::ProductionFormatter
     end
   end

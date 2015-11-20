@@ -182,7 +182,6 @@ describe Sneakers::Worker do
         @defaults_q = DefaultsWorker.new.queue
         @defaults_q.name.must_equal('defaults')
         @defaults_q.opts.to_hash.must_equal(
-          :runner_config_file => nil,
           :metrics => nil,
           :daemonize => true,
           :start_worker_delay => 0.2,
@@ -220,7 +219,6 @@ describe Sneakers::Worker do
         @dummy_q = DummyWorker.new.queue
         @dummy_q.name.must_equal('downloads')
         @dummy_q.opts.to_hash.must_equal(
-          :runner_config_file => nil,
           :metrics => nil,
           :daemonize => true,
           :start_worker_delay => 0.2,
@@ -258,7 +256,6 @@ describe Sneakers::Worker do
         @deprecated_exchange_opts_q = WithDeprecatedExchangeOptionsWorker.new.queue
         @deprecated_exchange_opts_q.name.must_equal('defaults')
         @deprecated_exchange_opts_q.opts.to_hash.must_equal(
-          :runner_config_file => nil,
           :metrics => nil,
           :daemonize => true,
           :start_worker_delay => 0.2,

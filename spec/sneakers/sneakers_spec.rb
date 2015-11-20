@@ -54,7 +54,7 @@ describe Sneakers do
 
 
   describe '#setup_general_logger' do
-    let(:logger_class) { ServerEngine::DaemonLogger }
+    let(:logger_class) { Logger }
 
     it 'should detect a string and configure a logger' do
       Sneakers.configure(:log => 'sneakers.log')
