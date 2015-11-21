@@ -18,6 +18,10 @@ module Sneakers
         reject(hdr, props, msg)
       end
 
+      def fatal(hdr, props, msg, err)
+        error(hdr, props, msg, err)
+      end
+
       def timeout(hdr, props, msg)
         reject(hdr, props, msg)
       end
