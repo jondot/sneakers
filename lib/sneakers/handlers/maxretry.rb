@@ -95,9 +95,12 @@ module Sneakers
         end
       end
 
-
       def error(hdr, props, msg, err)
         handle_retry(hdr, props, msg, err)
+      end
+
+      def fatal(hdr, props, msg, err)
+        handle_failure(hdr, props, msg, err)
       end
 
       def timeout(hdr, props, msg)
@@ -128,31 +131,38 @@ module Sneakers
           @channel.reject(hdr.delivery_tag, false)
           # TODO: metrics
         else
-          # Retried more than the max times
-          # Publish the original message with the routing_key to the error exchange
-          Sneakers.logger.info do
-            "#{log_prefix} msg=failing, retry_count=#{num_attempts}, reason=#{reason}"
-          end
-          data = {
-            error: reason,
-            num_attempts: num_attempts,
-            failed_at: Time.now.iso8601,
-            payload: Base64.encode64(msg.to_s)
-          }.tap do |hash|
-            if reason.is_a?(Exception)
-              hash[:error_class] = reason.class
-              hash[:error_message] = "#{reason}"
-              if reason.backtrace
-                hash[:backtrace] = reason.backtrace.take(10).join(', ')
-              end
-            end
-          end.to_json
-          @error_exchange.publish(data, :routing_key => hdr.routing_key)
-          @channel.acknowledge(hdr.delivery_tag, false)
-          # TODO: metrics
+          handle_failure(hdr, props, msg, reason, num_attempts)
         end
       end
       private :handle_retry
+
+      def handle_failure(hdr, props, msg, reason, num_attempts = nil)
+        # +1 for the current attempt
+        num_attempts ||= failure_count(props[:headers]) + 1
+        # Retried more than the max times
+        # Publish the original message with the routing_key to the error exchange
+        Sneakers.logger.info do
+          "#{log_prefix} msg=failing, retry_count=#{num_attempts}, reason=#{reason}"
+        end
+        data = {
+          error: reason,
+          num_attempts: num_attempts,
+          failed_at: Time.now.iso8601,
+          payload: Base64.encode64(msg.to_s)
+        }.tap do |hash|
+          if reason.is_a?(Exception)
+            hash[:error_class] = reason.class.to_s
+            hash[:error_message] = "#{reason}"
+            if reason.backtrace
+              hash[:backtrace] = reason.backtrace.take(10).join(', ')
+            end
+          end
+        end.to_json
+        @error_exchange.publish(data, :routing_key => hdr.routing_key)
+        @channel.acknowledge(hdr.delivery_tag, false)
+        # TODO: metrics
+      end
+      private :handle_failure
 
       # Uses the x-death header to determine the number of failures this job has
       # seen in the past. This does not count the current failure. So for

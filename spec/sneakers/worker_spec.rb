@@ -59,6 +59,8 @@ class AcksWorker
       nack!
     elsif msg == :reject
       reject!
+    elsif msg == :fatal
+      fatal!
     else
       msg
     end
@@ -406,6 +408,13 @@ describe Sneakers::Worker do
 
         @worker.do_work(@delivery_info, nil, :error, handler)
       end
+
+      it "should work and handle user-land fatal errors" do
+        handler = Object.new
+        mock(handler).fatal(@delivery_info, nil, :fatal, anything)
+
+        @worker.do_work(@delivery_info, nil, :fatal, handler)
+      end
     end
 
     describe "without ack" do
@@ -475,6 +484,7 @@ describe Sneakers::Worker do
       stub(@handler).reject
       stub(@handler).timeout
       stub(@handler).error
+      stub(@handler).fatal
       stub(@handler).noop
 
       @delivery_info = Object.new
@@ -507,6 +517,12 @@ describe Sneakers::Worker do
     it 'should be able to meter errors' do
       mock(@w.metrics).increment("work.MetricsWorker.handled.error").once
       mock(@w).work('msg'){ raise :error }
+      @w.do_work(@delivery_info, nil, 'msg', @handler)
+    end
+
+    it 'should be able to meter fatal errors' do
+      mock(@w.metrics).increment("work.MetricsWorker.handled.fatal").once
+      mock(@w).work('msg'){ raise Sneakers::FatalError }
       @w.do_work(@delivery_info, nil, 'msg', @handler)
     end
 

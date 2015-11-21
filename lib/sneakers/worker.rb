@@ -3,6 +3,8 @@ require 'sneakers/support/utils'
 require 'timeout'
 
 module Sneakers
+  FatalError = Class.new(StandardError)
+
   module Worker
     attr_reader :queue, :id, :opts
 
@@ -33,6 +35,7 @@ module Sneakers
     def ack!; :ack end
     def reject!; :reject; end
     def requeue!; :requeue; end
+    def fatal!; :fatal; end
 
     def publish(msg, opts)
       to_queue = opts.delete(:to_queue)
@@ -62,6 +65,10 @@ module Sneakers
         rescue Timeout::Error
           res = :timeout
           worker_error('timeout')
+        rescue FatalError => ex
+          res = :fatal
+          error = ex.respond_to?(:cause) && ex.cause ? ex.cause : ex
+          worker_error('fatal error', ex)
         rescue => ex
           res = :error
           error = ex
@@ -77,6 +84,8 @@ module Sneakers
             handler.timeout(delivery_info, metadata, msg)
           elsif res == :error
             handler.error(delivery_info, metadata, msg, error)
+          elsif res == :fatal
+            handler.fatal(delivery_info, metadata, msg, error)
           elsif res == :reject
             handler.reject(delivery_info, metadata, msg)
           elsif res == :requeue
