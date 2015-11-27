@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'sneakers'
 require 'timeout'
 
-
 class DummyWorker
   include Sneakers::Worker
   from_queue 'downloads',
@@ -182,6 +181,7 @@ describe Sneakers::Worker do
         @defaults_q = DefaultsWorker.new.queue
         @defaults_q.name.must_equal('defaults')
         @defaults_q.opts.to_hash.must_equal(
+          :error_reporters => [Sneakers.error_reporters.last],
           :runner_config_file => nil,
           :metrics => nil,
           :daemonize => true,
@@ -220,6 +220,7 @@ describe Sneakers::Worker do
         @dummy_q = DummyWorker.new.queue
         @dummy_q.name.must_equal('downloads')
         @dummy_q.opts.to_hash.must_equal(
+          :error_reporters => [Sneakers.error_reporters.last],
           :runner_config_file => nil,
           :metrics => nil,
           :daemonize => true,
@@ -258,6 +259,7 @@ describe Sneakers::Worker do
         @deprecated_exchange_opts_q = WithDeprecatedExchangeOptionsWorker.new.queue
         @deprecated_exchange_opts_q.name.must_equal('defaults')
         @deprecated_exchange_opts_q.opts.to_hash.must_equal(
+          :error_reporters => [Sneakers.error_reporters.last],
           :runner_config_file => nil,
           :metrics => nil,
           :daemonize => true,
@@ -337,7 +339,7 @@ describe Sneakers::Worker do
       handler = Object.new
       header = Object.new
       mock(handler).error(header, nil, "msg", anything)
-      mock(w.logger).error(/unexpected error \[Exception error="foo" error_class=RuntimeError backtrace=.*/)
+      mock(w.logger).error(/\[Exception error="foo" error_class=RuntimeError backtrace=.*/)
       w.do_work(header, nil, "msg", handler)
     end
 
@@ -359,7 +361,7 @@ describe Sneakers::Worker do
       header = Object.new
 
       mock(handler).timeout(header, nil, "msg")
-      mock(w.logger).error(/timeout/)
+      mock(w.logger).error(/error="execution expired" error_class=Timeout::Error backtrace=/)
 
       w.do_work(header, nil, "msg", handler)
     end
@@ -457,8 +459,9 @@ describe Sneakers::Worker do
     describe '#worker_error' do
       it 'only logs backtraces if present' do
         w = DummyWorker.new(@queue, TestPool.new)
-        mock(w.logger).error(/cuz \[Exception error="boom!" error_class=RuntimeError\]/)
-        w.worker_error('cuz', RuntimeError.new('boom!'))
+        mock(w.logger).warn('cuz')
+        mock(w.logger).error(/\[Exception error="boom!" error_class=RuntimeError\]/)
+        w.worker_error(RuntimeError.new('boom!'), 'cuz')
       end
     end
 

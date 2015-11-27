@@ -10,6 +10,7 @@ module Sneakers
     # (because it uses methods from them directly.)
     include Concerns::Logging
     include Concerns::Metrics
+    include Sneakers::ErrorReporter
 
     def initialize(queue = nil, pool = nil, opts = {})
       opts = opts.merge(self.class.queue_opts || {})
@@ -59,13 +60,13 @@ module Sneakers
               end
             end
           end
-        rescue Timeout::Error
+        rescue Timeout::Error => ex
           res = :timeout
-          worker_error('timeout')
+          worker_error(ex, log_msg: log_msg(msg), message: msg)
         rescue => ex
           res = :error
           error = ex
-          worker_error('unexpected error', ex)
+          worker_error(ex, log_msg: log_msg(msg), message: msg)
         end
 
         if @should_ack
@@ -106,17 +107,6 @@ module Sneakers
     # Construct a log message with some standard prefix for this worker
     def log_msg(msg)
       "[#{@id}][#{Thread.current}][#{@queue.name}][#{@queue.opts}] #{msg}"
-    end
-
-    # Helper to log an error message with an optional exception
-    def worker_error(msg, exception = nil)
-      s = log_msg(msg)
-      if exception
-        s += " [Exception error=#{exception.message.inspect} error_class=#{exception.class}"
-        s += " backtrace=#{exception.backtrace.take(50).join(',')}" unless exception.backtrace.nil?
-        s += "]"
-      end
-      logger.error(s)
     end
 
     def worker_trace(msg)
