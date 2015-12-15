@@ -32,7 +32,6 @@ module Sneakers
     #   back to the worker queue.
     #
     class Maxretry
-
       def initialize(channel, queue, opts)
         @worker_queue_name = queue.name
         Sneakers.logger.debug do
@@ -40,45 +39,61 @@ module Sneakers
         end
 
         @channel = channel
-        @opts = opts
+        @opts    = opts
 
         # Construct names, defaulting where suitable
         retry_name = @opts[:retry_exchange] || "#{@worker_queue_name}-retry"
         error_name = @opts[:retry_error_exchange] || "#{@worker_queue_name}-error"
         requeue_name = @opts[:retry_requeue_exchange] || "#{@worker_queue_name}-retry-requeue"
 
+        retry_routing_key   = @opts[:retry_routing_key] || '#'
+        requeue_routing_key = @opts[:requeue_routing_key] || '#'
+        error_routing_key   = @opts[:error_routing_key] || '#'
+
+        retry_queue_name = @opts[:retry_queue_name] || retry_name
+        error_queue_name = @opts[:error_queue_name] || error_name
+
         # Create the exchanges
         @retry_exchange, @error_exchange, @requeue_exchange = [retry_name, error_name, requeue_name].map do |name|
           Sneakers.logger.debug { "#{log_prefix} creating exchange=#{name}" }
-          @channel.exchange(name,
-                            :type => 'topic',
-                            :durable => exchange_durable?)
+
+          @channel.exchange(
+            name,
+            type:    'topic',
+            durable: exchange_durable?
+          )
         end
 
         # Create the queues and bindings
         Sneakers.logger.debug do
           "#{log_prefix} creating queue=#{retry_name} x-dead-letter-exchange=#{requeue_name}"
         end
-        @retry_queue = @channel.queue(retry_name,
-                                     :durable => queue_durable?,
-                                     :arguments => {
-                                       :'x-dead-letter-exchange' => requeue_name,
-                                       :'x-message-ttl' => @opts[:retry_timeout] || 60000
-                                     })
-        @retry_queue.bind(@retry_exchange, :routing_key => '#')
+
+        @retry_queue = @channel.queue(
+          retry_queue_name,
+          durable:   queue_durable?,
+          arguments: {
+            'x-dead-letter-exchange':    requeue_name,
+            'x-message-ttl':             @opts[:retry_timeout] || 60000,
+            'x-dead-letter-routing-key': requeue_routing_key
+          }
+        )
+        @retry_queue.bind(@retry_exchange, routing_key: retry_routing_key)
 
         Sneakers.logger.debug do
           "#{log_prefix} creating queue=#{error_name}"
         end
-        @error_queue = @channel.queue(error_name,
-                                      :durable => queue_durable?)
-        @error_queue.bind(@error_exchange, :routing_key => '#')
+
+        @error_queue = @channel.queue(
+          error_queue_name,
+          durable: queue_durable?
+        )
+        @error_queue.bind(@error_exchange, routing_key: error_routing_key)
 
         # Finally, bind the worker queue to our requeue exchange
-        queue.bind(@requeue_exchange, :routing_key => '#')
+        queue.bind(@requeue_exchange, routing_key: requeue_routing_key)
 
         @max_retries = @opts[:retry_max_times] || 5
-
       end
 
       def acknowledge(hdr, props, msg)
