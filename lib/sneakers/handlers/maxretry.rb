@@ -73,9 +73,9 @@ module Sneakers
           retry_queue_name,
           durable:   queue_durable?,
           arguments: {
-            'x-dead-letter-exchange':    requeue_name,
-            'x-message-ttl':             @opts[:retry_timeout] || 60000,
-            'x-dead-letter-routing-key': requeue_routing_key
+            :'x-dead-letter-exchange'    => requeue_name,
+            :'x-message-ttl'             => @opts[:retry_timeout] || 60000,
+            :'x-dead-letter-routing-key' => requeue_routing_key
           }
         )
         @retry_queue.bind(@retry_exchange, routing_key: retry_routing_key)
