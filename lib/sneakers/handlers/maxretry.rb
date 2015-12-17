@@ -48,7 +48,7 @@ module Sneakers
 
         retry_routing_key   = @opts[:retry_routing_key] || '#'
         requeue_routing_key = @opts[:requeue_routing_key] || '#'
-        error_routing_key   = @opts[:error_routing_key] || '#'
+        @error_routing_key  = @opts[:error_routing_key] || '#'
 
         retry_queue_name = @opts[:retry_queue_name] || retry_name
         error_queue_name = @opts[:error_queue_name] || error_name
@@ -88,7 +88,7 @@ module Sneakers
           error_queue_name,
           durable: queue_durable?
         )
-        @error_queue.bind(@error_exchange, routing_key: error_routing_key)
+        @error_queue.bind(@error_exchange, routing_key: @error_routing_key)
 
         # Finally, bind the worker queue to our requeue exchange
         queue.bind(@requeue_exchange, routing_key: requeue_routing_key)
@@ -162,7 +162,7 @@ module Sneakers
               end
             end
           end.to_json
-          @error_exchange.publish(data, :routing_key => hdr.routing_key)
+          @error_exchange.publish(data, :routing_key => @error_routing_key)
           @channel.acknowledge(hdr.delivery_tag, false)
           # TODO: metrics
         end
