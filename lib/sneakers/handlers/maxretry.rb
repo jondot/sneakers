@@ -57,10 +57,9 @@ module Sneakers
         # Create the exchanges
         @retry_exchange, @error_exchange, @requeue_exchange = [retry_name, error_name, requeue_name].map do |name|
           Sneakers.logger.debug { "#{log_prefix} creating exchange=#{name}" }
-
           @channel.exchange(name,
-                  :type => 'topic',
-                  :durable => exchange_durable?)
+                            :type => 'topic',
+                            :durable => exchange_durable?)
         end
 
         # Create the queues and bindings
@@ -69,25 +68,26 @@ module Sneakers
         end
 
         @retry_queue = @channel.queue(retry_queue_name,
-                             :durable => queue_durable?,
-                             :arguments => {
-                               :'x-dead-letter-exchange' => requeue_name,
-                               :'x-message-ttl' => @opts[:retry_timeout] || 60000,
-                               :'x-dead-letter-routing-key' => requeue_routing_key
-                             })
+                                      :durable => queue_durable?,
+                                      :arguments => {
+                                       :'x-dead-letter-exchange' => requeue_name,
+                                       :'x-message-ttl' => @opts[:retry_timeout] || 60000,
+                                       :'x-dead-letter-routing-key' => requeue_routing_key
+                                      })
         @retry_queue.bind(@retry_exchange, :routing_key => retry_routing_key)
 
         Sneakers.logger.debug do
           "#{log_prefix} creating queue=#{error_name}"
         end
         @error_queue = @channel.queue(error_queue_name,
-                              :durable => queue_durable?)
+                                      :durable => queue_durable?)
         @error_queue.bind(@error_exchange, :routing_key => @error_routing_key)
 
         # Finally, bind the worker queue to our requeue exchange
-        queue.bind(@requeue_exchange, routing_key: requeue_routing_key)
+        queue.bind(@requeue_exchange, :routing_key => requeue_routing_key)
 
         @max_retries = @opts[:retry_max_times] || 5
+
       end
 
       def acknowledge(hdr, props, msg)
