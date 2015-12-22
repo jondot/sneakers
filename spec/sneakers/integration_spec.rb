@@ -6,6 +6,7 @@ require 'fixtures/maxretry_worker'
 
 require "rabbitmq/http/client"
 
+REQUEUING_WAIT_TIME = 1
 
 describe "integration" do
   describe 'first' do
@@ -183,7 +184,7 @@ describe "integration" do
 
         it 'has a message in the error queue' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = get_message_from_queue("#{queue_name}-error")
 
@@ -192,7 +193,7 @@ describe "integration" do
 
         it 'has been retried twice' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = get_message_from_queue("#{queue_name}-error")
 
@@ -215,7 +216,7 @@ describe "integration" do
 
         it 'has no message in the error queue' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = get_message_from_queue("#{queue_name}-error")
 
@@ -224,7 +225,7 @@ describe "integration" do
 
         it 'consumes the requeued message' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = redis.get(queue_name)
 
@@ -233,32 +234,42 @@ describe "integration" do
 
         it 'it has been routed to retry exchange once' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = JSON.load(redis.get(queue_name))
           message_headers = message['message_properties']['headers']
-          consumer_x_death = message_headers['x-death'].detect do |x|
-            x['queue'] == queue_name
-          end
+          consumer_x_death_array = x_death_array(message_headers, queue_name)
 
-          assert_equal(1, consumer_x_death['count'])
-          assert_equal('rejected', consumer_x_death['reason'])
-          assert_equal(exchange_name, consumer_x_death['exchange'])
+          assert_equal(
+            1,
+            consumer_x_death_array.first['count'] ||
+            consumer_x_death_array.count
+          )
+          assert_equal('rejected', consumer_x_death_array.first['reason'])
+          assert_equal(exchange_name, consumer_x_death_array.first['exchange'])
         end
 
         it 'it has been routed to requeue exchange once' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = JSON.load(redis.get(queue_name))
           message_headers = message['message_properties']['headers']
-          consumer_x_death = message_headers['x-death'].detect do |x|
-            x['queue'] == "#{queue_name}-retry"
-          end
+          consumer_x_death_array = x_death_array(
+            message_headers,
+            "#{queue_name}-retry"
+          )
 
-          assert_equal(1, consumer_x_death['count'])
-          assert_equal('expired', consumer_x_death['reason'])
-          assert_equal("#{queue_name}-retry", consumer_x_death['exchange'])
+          assert_equal(
+            1,
+            consumer_x_death_array.first['count'] ||
+            consumer_x_death_array.count
+          )
+          assert_equal('expired', consumer_x_death_array.first['reason'])
+          assert_equal(
+            "#{queue_name}-retry",
+            consumer_x_death_array.first['exchange']
+          )
         end
       end
     end
@@ -335,7 +346,7 @@ describe "integration" do
 
         it 'has a message in the error queue' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = get_message_from_queue(error_queue_name)
 
@@ -344,7 +355,7 @@ describe "integration" do
 
         it 'has been retried twice' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = get_message_from_queue(error_queue_name)
 
@@ -367,7 +378,7 @@ describe "integration" do
 
         it 'has no message in the error queue' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = get_message_from_queue(error_queue_name)
 
@@ -376,7 +387,7 @@ describe "integration" do
 
         it 'consumes the requeued message' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = redis.get(queue_name)
 
@@ -385,34 +396,47 @@ describe "integration" do
 
         it 'it has been routed to retry exchange once' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = JSON.load(redis.get(queue_name))
           message_headers = message['message_properties']['headers']
-          consumer_x_death = message_headers['x-death'].detect do |x|
-            x['queue'] == queue_name
-          end
+          consumer_x_death_array = x_death_array(message_headers, queue_name)
 
-          assert_equal(1, consumer_x_death['count'])
-          assert_equal('rejected', consumer_x_death['reason'])
-          assert_equal(exchange_name, consumer_x_death['exchange'])
+          assert_equal(
+            1,
+            consumer_x_death_array.first['count'] ||
+            consumer_x_death_array.count
+          )
+          assert_equal('rejected', consumer_x_death_array.first['reason'])
+          assert_equal(exchange_name, consumer_x_death_array.first['exchange'])
         end
 
         it 'it has been routed to requeue exchange once' do
           # wait for failing message
-          sleep 1
+          sleep REQUEUING_WAIT_TIME
 
           message = JSON.load(redis.get(queue_name))
           message_headers = message['message_properties']['headers']
-          consumer_x_death = message_headers['x-death'].detect do |x|
-            x['queue'] == retry_queue_name
-          end
+          consumer_x_death_array = x_death_array(
+            message_headers,
+            retry_queue_name
+          )
 
-          assert_equal(1, consumer_x_death['count'])
-          assert_equal('expired', consumer_x_death['reason'])
-          assert_equal(retry_exchange, consumer_x_death['exchange'])
+          assert_equal(
+            1,
+            consumer_x_death_array.first['count'] ||
+            consumer_x_death_array.count
+          )
+          assert_equal('expired', consumer_x_death_array.first['reason'])
+          assert_equal(retry_exchange, consumer_x_death_array.first['exchange'])
         end
       end
+    end
+  end
+
+  def x_death_array(message_headers, queue_name)
+    message_headers['x-death'].select do |x|
+      x['queue'] == queue_name
     end
   end
 
