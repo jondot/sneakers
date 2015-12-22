@@ -241,9 +241,9 @@ describe "integration" do
             x['queue'] == queue_name
           end
 
-          assert_equal(consumer_x_death['count'], 1)
-          assert_equal(consumer_x_death['reason'], 'rejected')
-          assert_equal(consumer_x_death['exchange'], exchange_name)
+          assert_equal(1, consumer_x_death['count'])
+          assert_equal('rejected', consumer_x_death['reason'])
+          assert_equal(exchange_name, consumer_x_death['exchange'])
         end
 
         it 'it has been routed to requeue exchange once' do
@@ -256,9 +256,9 @@ describe "integration" do
             x['queue'] == "#{queue_name}-retry"
           end
 
-          assert_equal(consumer_x_death['count'], 1)
-          assert_equal(consumer_x_death['reason'], 'expired')
-          assert_equal(consumer_x_death['exchange'], "#{queue_name}-retry")
+          assert_equal(1, consumer_x_death['count'])
+          assert_equal('expired', consumer_x_death['reason'])
+          assert_equal("#{queue_name}-retry", consumer_x_death['exchange'])
         end
       end
     end
@@ -349,7 +349,7 @@ describe "integration" do
           message = get_message_from_queue(error_queue_name)
 
           # Hmmmmm... should be 2
-          assert_equal(JSON.load(message[2])['num_attempts'], 3)
+          assert_equal(3, JSON.load(message[2])['num_attempts'])
         end
       end
 
@@ -393,9 +393,9 @@ describe "integration" do
             x['queue'] == queue_name
           end
 
-          assert_equal(consumer_x_death['count'], 1)
-          assert_equal(consumer_x_death['reason'], 'rejected')
-          assert_equal(consumer_x_death['exchange'], exchange_name)
+          assert_equal(1, consumer_x_death['count'])
+          assert_equal('rejected', consumer_x_death['reason'])
+          assert_equal(exchange_name, consumer_x_death['exchange'])
         end
 
         it 'it has been routed to requeue exchange once' do
@@ -408,9 +408,9 @@ describe "integration" do
             x['queue'] == retry_queue_name
           end
 
-          assert_equal(consumer_x_death['count'], 1)
-          assert_equal(consumer_x_death['reason'], 'expired')
-          assert_equal(consumer_x_death['exchange'], retry_exchange)
+          assert_equal(1, consumer_x_death['count'])
+          assert_equal('expired', consumer_x_death['reason'])
+          assert_equal(retry_exchange, consumer_x_death['exchange'])
         end
       end
     end
