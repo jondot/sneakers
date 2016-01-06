@@ -131,7 +131,7 @@ describe "integration" do
     end
 
     describe 'with defaults for maxretry handler' do
-      let(:worker) { MaxretryWorker }
+      let(:worker) { AlwaysAckWorker }
       let(:worker_opts) do
         {
           handler:         Sneakers::Handlers::Maxretry,
@@ -171,7 +171,7 @@ describe "integration" do
       end
 
       describe 'when worker allways fails' do
-        let(:worker) { FailingMaxretryWorker }
+        let(:worker) { AlwaysRejectWorker }
 
         before do
           Sneakers::Publisher.new(
@@ -197,13 +197,12 @@ describe "integration" do
 
           message = get_message_from_queue("#{queue_name}-error")
 
-          # Hmmmmm... should be 2
           assert_equal(JSON.load(message[2])['num_attempts'], 3)
         end
       end
 
       describe 'when worker fails once' do
-        let(:worker) { RetryOnceWorker }
+        let(:worker) { RejectOnceWorker }
 
         before do
           Sneakers::Publisher.new(
@@ -275,7 +274,7 @@ describe "integration" do
     end
 
     describe 'with customized config for maxretry handler' do
-      let(:worker) { MaxretryWorker }
+      let(:worker) { AlwaysAckWorker }
       let(:retry_exchange) { 'integration_retry_exchange' }
       let(:retry_error_exchange) { 'integration_error_exchange' }
       let(:retry_requeue_exchange) { 'integration_requeue_exchange' }
@@ -333,7 +332,7 @@ describe "integration" do
       end
 
       describe 'when worker allways fails' do
-        let(:worker) { FailingMaxretryWorker }
+        let(:worker) { AlwaysRejectWorker }
 
         before do
           Sneakers::Publisher.new(
@@ -359,13 +358,12 @@ describe "integration" do
 
           message = get_message_from_queue(error_queue_name)
 
-          # Hmmmmm... should be 2
           assert_equal(3, JSON.load(message[2])['num_attempts'])
         end
       end
 
       describe 'when worker fails once' do
-        let(:worker) { RetryOnceWorker }
+        let(:worker) { RejectOnceWorker }
 
         before do
           Sneakers::Publisher.new(
@@ -429,6 +427,169 @@ describe "integration" do
           )
           assert_equal('expired', consumer_x_death_array.first['reason'])
           assert_equal(retry_exchange, consumer_x_death_array.first['exchange'])
+        end
+      end
+    end
+
+    describe 'with config for only one additional exchange' do
+      let(:worker) { AlwaysAckWorker }
+      let(:retry_error_exchange) { 'integration_error_exchange' }
+      let(:retry_routing_key) { 'foo' }
+      let(:requeue_routing_key) { 'bar' }
+      let(:error_routing_key) { 'baz' }
+      let(:retry_queue_name) { 'integration_retry_queue' }
+      let(:error_queue_name) { 'integration_error_queue' }
+
+      let(:worker_opts) do
+        {
+          handler:                Sneakers::Handlers::Maxretry,
+          retry_max_times:        2,
+          retry_timeout:          100,
+          retry_exchange:         exchange_name,
+          retry_error_exchange:   retry_error_exchange,
+          retry_requeue_exchange: exchange_name,
+          retry_routing_key:      retry_routing_key,
+          requeue_routing_key:    requeue_routing_key,
+          error_routing_key:      error_routing_key,
+          retry_queue_name:       retry_queue_name,
+          error_queue_name:       error_queue_name,
+          exchange_options:       {
+            type: :topic
+          },
+          arguments:              {
+            'x-dead-letter-exchange'    => exchange_name,
+            'x-dead-letter-routing-key' => retry_routing_key
+          }
+        }
+      end
+
+      it 'creates the required exchanges' do
+        expected_exchange_names = [
+          exchange_name,
+          retry_error_exchange
+        ]
+        exchange_names = rabbitmq_client.list_exchanges.map(&:name)
+
+        expected_exchange_names.each do |expected_exchange_name|
+          assert_includes(exchange_names, expected_exchange_name)
+        end
+      end
+
+      it 'creates the required queues' do
+        expected_queue_names = [
+          queue_name,
+          retry_queue_name,
+          error_queue_name
+        ]
+        queue_names = rabbitmq_client.list_queues.map(&:name)
+
+        expected_queue_names.each do |expected_queue_name|
+          assert_includes(queue_names, expected_queue_name)
+        end
+      end
+
+      describe 'when worker allways fails' do
+        let(:worker) { AlwaysRejectWorker }
+
+        before do
+          Sneakers::Publisher.new(
+            exchange: exchange_name,
+            exchange_options: {
+              type: :topic
+            }
+          ).publish(
+            'foo',
+            routing_key: queue_name
+          )
+        end
+
+        it 'has a message in the error queue' do
+          # wait for failing message
+          sleep REQUEUING_WAIT_TIME
+
+          message = get_message_from_queue(error_queue_name)
+
+          refute_nil(message.first)
+        end
+
+        it 'has been retried twice' do
+          # wait for failing message
+          sleep REQUEUING_WAIT_TIME
+
+          message = get_message_from_queue(error_queue_name)
+
+          assert_equal(3, JSON.load(message[2])['num_attempts'])
+        end
+      end
+
+      describe 'when worker fails once' do
+        let(:worker) { RejectOnceWorker }
+
+        before do
+          Sneakers::Publisher.new(
+            exchange: exchange_name,
+            exchange_options: {
+              type: :topic
+            }
+          ).publish(
+            'foo',
+            routing_key: queue_name
+          )
+        end
+
+        it 'has no message in the error queue' do
+          # wait for failing message
+          sleep REQUEUING_WAIT_TIME
+
+          message = get_message_from_queue(error_queue_name)
+
+          assert_nil(message.first)
+        end
+
+        it 'consumes the requeued message' do
+          # wait for failing message
+          sleep REQUEUING_WAIT_TIME
+
+          message = redis.get(queue_name)
+
+          refute_nil(message)
+        end
+
+        it 'it has been routed to retry exchange once' do
+          # wait for failing message
+          sleep REQUEUING_WAIT_TIME
+
+          message = JSON.load(redis.get(queue_name))
+          message_headers = message['message_properties']['headers']
+          consumer_x_death_array = x_death_array(message_headers, queue_name)
+
+          assert_equal(
+            1,
+            consumer_x_death_array.first['count'] ||
+            consumer_x_death_array.count
+          )
+          assert_equal('rejected', consumer_x_death_array.first['reason'])
+          assert_equal(exchange_name, consumer_x_death_array.first['exchange'])
+        end
+
+        it 'it has been routed to requeue exchange once' do
+          # wait for failing message
+          sleep REQUEUING_WAIT_TIME
+
+          message = JSON.load(redis.get(queue_name))
+          message_headers = message['message_properties']['headers']
+          consumer_x_death_array = x_death_array(
+            message_headers,
+            retry_queue_name
+          )
+
+          assert_equal(
+            1,
+            consumer_x_death_array.first['count'] ||
+            consumer_x_death_array.count
+          )
+          assert_equal('expired', consumer_x_death_array.first['reason'])
+          assert_equal(exchange_name, consumer_x_death_array.first['exchange'])
         end
       end
     end

@@ -5,7 +5,7 @@ require 'redis'
 require 'sneakers/handlers/maxretry'
 
 # This worker ... works
-class MaxretryWorker
+class AlwaysAckWorker
   include Sneakers::Worker
 
   def work(_)
@@ -14,7 +14,7 @@ class MaxretryWorker
 end
 
 # This worker fails
-class FailingMaxretryWorker
+class AlwaysRejectWorker
   include Sneakers::Worker
 
   def work(_)
@@ -23,7 +23,7 @@ class FailingMaxretryWorker
 end
 
 # This worker fails once
-class RetryOnceWorker
+class RejectOnceWorker
   include Sneakers::Worker
 
   def work_with_params(_, delivery_info, message_properties)
