@@ -139,7 +139,7 @@ describe 'Handlers' do
         opts[:retry_max_times] = max_retries unless max_retries.nil?
       end
 
-      mock(queue).name { 'downloads' }
+      stub(queue).name { 'downloads' }
 
       @retry_exchange = Object.new
       @error_exchange = Object.new
@@ -241,7 +241,6 @@ describe 'Handlers' do
           let(:max_retries) { 1 }
 
           it 'sends the rejection to the error queue' do
-            mock(@header).routing_key { '#' }
             mock(channel).acknowledge(37, false)
 
             @error_exchange.extend MockPublish
@@ -256,7 +255,6 @@ describe 'Handlers' do
           end
 
           it 'counts the number of attempts using the count key' do
-            mock(@header).routing_key { '#' }
             mock(channel).acknowledge(37, false)
 
             @error_exchange.extend MockPublish
@@ -305,7 +303,6 @@ describe 'Handlers' do
           let(:max_retries) { 1 }
 
           it 'sends the rejection to the error queue' do
-            mock(@header).routing_key { '#' }
             mock(channel).acknowledge(37, false)
             @error_exchange.extend MockPublish
 
@@ -334,7 +331,6 @@ describe 'Handlers' do
           let(:max_retries) { 1 }
 
           it 'sends the rejection to the error queue' do
-            mock(@header).routing_key { '#' }
             mock(channel).acknowledge(37, false)
             @error_exchange.extend MockPublish
 
@@ -368,7 +364,6 @@ describe 'Handlers' do
         let(:max_retries) { 1 }
 
         it 'properly encodes the json payload' do
-          mock(@header).routing_key { '#' }
           mock(channel).acknowledge(37, false)
           @error_exchange.extend MockPublish
 
