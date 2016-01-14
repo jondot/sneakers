@@ -59,6 +59,8 @@ class Sneakers::Queue
     # XXX can we cancel bunny and channel too?
     @consumer.cancel if @consumer
     @consumer = nil
+  rescue Bunny::ConnectionClosedError
+    sleep @bunny.instance_variable_get(:@network_recovery_interval)
   end
 
   def create_bunny_connection
