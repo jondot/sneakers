@@ -7,16 +7,31 @@ module Sneakers
       @runnerconfig = RunnerConfig.new(worker_classes, opts)
     end
 
-    def run
-      @se = ServerEngine.create(nil, WorkerGroup) { @runnerconfig.reload_config! }
-      @se.run
+    def run(config={}, &block)
+      self.server_engine = ServerEngine.create(nil, WorkerGroup) { @runnerconfig.reload_config!.merge!(config) }
+
+      server_engine(&block) if block_given?
+
+      server_engine.run
     end
 
     def stop
-      @se.stop
+      server_engine.stop
     end
-  end
 
+    def server_engine(&block)
+      # Handle no block reader method behaviour
+      return @server_engine unless block_given?
+      # Handle no @server_engine to instance_exec into
+      return @server_engine unless @server_engine
+
+      runner = self
+      server_engine.tap{|o| @server_engine = o }.instance_exec(&proc{ block[runner] })
+    end
+
+    private
+    attr_writer :server_engine
+  end
 
   class RunnerConfig
     def method_missing(meth, *args, &block)
@@ -37,7 +52,6 @@ module Sneakers
     def to_h
       @conf
     end
-
 
     def reload_config!
       Sneakers.logger.warn("Loading runner configuration...")
@@ -87,5 +101,4 @@ module Sneakers
       serverengine_config
     end
   end
-
 end
