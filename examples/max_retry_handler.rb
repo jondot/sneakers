@@ -9,9 +9,8 @@ Sneakers.configure(:handler => Sneakers::Handlers::Maxretry,
                    :threads => 1,
                    :prefetch => 1,
                    :exchange => 'sneakers',
-                   :exchange_type => 'topic',
-                   :routing_key => ['#', 'something'],
-                   :durable => true,
+                   :exchange_options => { :type => 'topic', durable: true },
+                   :routing_key => ['#', 'something']
                    )
 Sneakers.logger.level = Logger::DEBUG
 
@@ -21,6 +20,7 @@ WORKER_OPTIONS = {
   :prefetch => 1,
   :timeout_job_after => 60,
   :heartbeat => 5,
+  :amqp_heartbeat => 10,
   :retry_timeout => 5000
 }
 

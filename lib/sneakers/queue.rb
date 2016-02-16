@@ -16,16 +16,17 @@ class Sneakers::Queue
   # :ack
   #
   def subscribe(worker)
-    @bunny = Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat], :logger => Sneakers::logger)
+    # If we've already got a bunny object, use it.  This allows people to
+    # specify all kinds of options we don't need to know about (e.g. for ssl).
+    @bunny = @opts[:connection]
+    @bunny ||= create_bunny_connection
     @bunny.start
 
     @channel = @bunny.create_channel
     @channel.prefetch(@opts[:prefetch])
 
     exchange_name = @opts[:exchange]
-    @exchange = @channel.exchange(exchange_name,
-                                  :type => @opts[:exchange_type],
-                                  :durable => @opts[:durable])
+    @exchange = @channel.exchange(exchange_name, @opts[:exchange_options])
 
     routing_key = @opts[:routing_key] || @name
     routing_keys = [*routing_key]
@@ -33,8 +34,7 @@ class Sneakers::Queue
     # TODO: get the arguments from the handler? Retry handler wants this so you
     # don't have to line up the queue's dead letter argument with the exchange
     # you'll create for retry.
-    queue_durable = @opts[:queue_durable].nil? ? @opts[:durable] : @opts[:queue_durable]
-    queue = @channel.queue(@name, :durable => queue_durable, :arguments => @opts[:arguments])
+    queue = @channel.queue(@name, @opts[:queue_options])
 
     if exchange_name.length > 0
       routing_keys.each do |key|
@@ -46,7 +46,7 @@ class Sneakers::Queue
     # has the same configuration as the worker. Also pass along the exchange and
     # queue in case the handler requires access to them (for things like binding
     # retry queues, etc).
-    handler_klass = worker.opts[:handler] || Sneakers::CONFIG[:handler]
+    handler_klass = worker.opts[:handler] || Sneakers::CONFIG.fetch(:handler)
     handler = handler_klass.new(@channel, queue, worker.opts)
 
     @consumer = queue.subscribe(:block => false, :manual_ack => @opts[:ack]) do | delivery_info, metadata, msg |
@@ -60,4 +60,9 @@ class Sneakers::Queue
     @consumer.cancel if @consumer
     @consumer = nil
   end
+
+  def create_bunny_connection
+    Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat], :logger => Sneakers::logger)
+  end
+  private :create_bunny_connection
 end

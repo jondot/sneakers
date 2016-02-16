@@ -10,16 +10,21 @@ Gem::Specification.new do |gem|
   gem.email         = ['jondotan@gmail.com']
   gem.description   = %q( Fast background processing framework for Ruby and RabbitMQ )
   gem.summary       = %q( Fast background processing framework for Ruby and RabbitMQ )
-  gem.homepage      = ''
+  gem.homepage      = 'http://sneakers.io'
+  gem.required_ruby_version = Gem::Requirement.new(">= 2.0")
 
   gem.files         = `git ls-files`.split($/).reject { |f| f == 'Gemfile.lock' }
   gem.executables   = gem.files.grep(/^bin/).map { |f| File.basename(f) }
   gem.test_files    = gem.files.grep(/^(test|spec|features)\//)
   gem.require_paths = ['lib']
-  gem.add_dependency 'serverengine'
-  gem.add_dependency 'bunny', '~> 1.7.0'
-  gem.add_dependency 'thread'
+  gem.add_dependency 'serverengine', '~> 1.5.11'
+  gem.add_dependency 'bunny', '~> 2.2.0'
+  gem.add_dependency 'thread', '~> 0.1.7'
   gem.add_dependency 'thor'
+
+  # for integration environment (see .travis.yml and integration_spec)
+  gem.add_development_dependency 'rabbitmq_http_api_client'
+  gem.add_development_dependency 'redis'
 
   gem.add_development_dependency 'rr'
   gem.add_development_dependency 'ruby-prof'

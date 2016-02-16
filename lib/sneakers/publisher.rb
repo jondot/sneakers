@@ -15,19 +15,26 @@ module Sneakers
       @exchange.publish(msg, options)
     end
 
-    private
 
     attr_reader :exchange
 
+  private
     def ensure_connection!
-      @bunny = Bunny.new(@opts[:amqp], heartbeat: @opts[:heartbeat], vhost: @opts[:vhost], :logger => Sneakers::logger)
+      # If we've already got a bunny object, use it.  This allows people to
+      # specify all kinds of options we don't need to know about (e.g. for ssl).
+      @bunny = @opts[:connection]
+      @bunny ||= create_bunny_connection
       @bunny.start
       @channel = @bunny.create_channel
-      @exchange = @channel.exchange(@opts[:exchange], type: @opts[:exchange_type], durable: @opts[:durable])
+      @exchange = @channel.exchange(@opts[:exchange], @opts[:exchange_options])
     end
 
     def connected?
       @bunny && @bunny.connected?
+    end
+
+    def create_bunny_connection
+      Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat], :logger => Sneakers::logger)
     end
   end
 end

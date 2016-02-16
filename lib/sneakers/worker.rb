@@ -42,7 +42,7 @@ module Sneakers
     end
 
     def do_work(delivery_info, metadata, msg, handler)
-      worker_trace "Working off: #{msg}"
+      worker_trace "Working off: #{msg.inspect}"
 
       @pool.process do
         res = nil
@@ -50,7 +50,7 @@ module Sneakers
 
         begin
           metrics.increment("work.#{self.class.name}.started")
-          Timeout.timeout(@timeout_after) do
+          Timeout.timeout(@timeout_after, Timeout::Error) do
             metrics.timing("work.#{self.class.name}.time") do
               if @call_with_params
                 res = work_with_params(msg, delivery_info, metadata)
@@ -123,8 +123,11 @@ module Sneakers
       logger.debug(log_msg(msg))
     end
 
+    Classes = []
+
     def self.included(base)
       base.extend ClassMethods
+      Classes << base if base.is_a? Class
     end
 
     module ClassMethods
@@ -143,7 +146,7 @@ module Sneakers
       private
 
       def publisher
-        @publisher ||= Sneakers::Publisher.new
+        @publisher ||= Sneakers::Publisher.new(queue_opts)
       end
     end
   end

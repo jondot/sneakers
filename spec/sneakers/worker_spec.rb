@@ -6,7 +6,18 @@ require 'timeout'
 class DummyWorker
   include Sneakers::Worker
   from_queue 'downloads',
-             :durable => false,
+             :exchange_options => {
+               :type => :topic,
+               :durable => false,
+               :auto_delete => true,
+               :arguments => { 'x-arg' => 'value' }
+             },
+             :queue_options => {
+               :durable => false,
+               :auto_delete => true,
+               :exclusive => true,
+               :arguments => { 'x-arg' => 'value' }
+             },
              :ack => false,
              :threads => 50,
              :prefetch => 40,
@@ -101,6 +112,17 @@ class WithParamsWorker
   end
 end
 
+class WithDeprecatedExchangeOptionsWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+             :durable => false,
+             :exchange_type => :topic,
+             :exchange_arguments => { 'x-arg' => 'value' },
+             :arguments => { 'x-arg2' => 'value2' }
+
+  def work(msg)
+  end
+end
 
 class TestPool
   def process(*args,&block)
@@ -145,20 +167,19 @@ describe Sneakers::Worker do
         msg.must_equal(message)
         opts.must_equal(:to_queue => "defaults")
       end
+    end
 
-      stub(Sneakers::Publisher).new { mock }
-      DefaultsWorker.enqueue(message)
+    it "passes the configuration to the publisher" do
+      opts = DummyWorker.queue_opts
+      mock(Sneakers::Publisher).new(opts) { mock(Object.new).publish(anything, anything) }
+      DummyWorker.enqueue(message)
     end
   end
 
   describe "#initialize" do
     describe "builds an internal queue" do
-      before do
-        @dummy_q = DummyWorker.new.queue
-        @defaults_q = DefaultsWorker.new.queue
-      end
-
       it "should build a queue with correct configuration given defaults" do
+        @defaults_q = DefaultsWorker.new.queue
         @defaults_q.name.must_equal('defaults')
         @defaults_q.opts.to_hash.must_equal(
           :runner_config_file => nil,
@@ -171,19 +192,32 @@ describe Sneakers::Worker do
           :timeout_job_after => 5,
           :prefetch => 10,
           :threads => 10,
-          :durable => true,
+          :share_threads => false,
           :ack => true,
           :amqp => "amqp://guest:guest@localhost:5672",
           :vhost => "/",
           :exchange => "sneakers",
-          :exchange_type => :direct,
+          :exchange_options => {
+            :type => :direct,
+            :durable => true,
+            :auto_delete => false,
+            :arguments => {}
+          },
+          :queue_options => {
+            :durable => true,
+            :auto_delete => false,
+            :exclusive => false,
+            :arguments => {}
+          },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
-          :heartbeat  =>  2
+          :heartbeat => 2,
+          :amqp_heartbeat => 10
         )
       end
 
       it "should build a queue with given configuration" do
+        @dummy_q = DummyWorker.new.queue
         @dummy_q.name.must_equal('downloads')
         @dummy_q.opts.to_hash.must_equal(
           :runner_config_file => nil,
@@ -196,15 +230,65 @@ describe Sneakers::Worker do
           :timeout_job_after => 1,
           :prefetch => 40,
           :threads => 50,
-          :durable => false,
+          :share_threads => false,
           :ack => false,
           :amqp => "amqp://guest:guest@localhost:5672",
           :vhost => "/",
           :exchange => "dummy",
-          :exchange_type => :direct,
+          :exchange_options => {
+            :type => :topic,
+            :durable => false,
+            :auto_delete => true,
+            :arguments => { 'x-arg' => 'value' }
+          },
+          :queue_options => {
+            :durable => false,
+            :auto_delete => true,
+            :exclusive => true,
+            :arguments => { 'x-arg' => 'value' }
+          },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
-          :heartbeat => 5
+          :heartbeat => 5,
+          :amqp_heartbeat => 10
+        )
+      end
+
+      it "should build a queue with correct configuration given deprecated exchange options" do
+        @deprecated_exchange_opts_q = WithDeprecatedExchangeOptionsWorker.new.queue
+        @deprecated_exchange_opts_q.name.must_equal('defaults')
+        @deprecated_exchange_opts_q.opts.to_hash.must_equal(
+          :runner_config_file => nil,
+          :metrics => nil,
+          :daemonize => true,
+          :start_worker_delay => 0.2,
+          :workers => 4,
+          :log => "sneakers.log",
+          :pid_path => "sneakers.pid",
+          :timeout_job_after => 5,
+          :prefetch => 10,
+          :threads => 10,
+          :share_threads => false,
+          :ack => true,
+          :amqp => "amqp://guest:guest@localhost:5672",
+          :vhost => "/",
+          :exchange => "sneakers",
+          :exchange_options => {
+            :type => :topic,
+            :durable => false,
+            :auto_delete => false,
+            :arguments => { 'x-arg' => 'value' }
+          },
+          :queue_options => {
+            :durable => false,
+            :auto_delete => false,
+            :exclusive => false,
+            :arguments => { 'x-arg2' => 'value2' }
+          },
+          :hooks => {},
+          :handler => Sneakers::Handlers::Oneshot,
+          :heartbeat => 2,
+          :amqp_heartbeat => 10
         )
       end
     end
