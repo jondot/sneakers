@@ -1,5 +1,5 @@
 require "bundler/gem_tasks"
-require 'metric_fu'
+require 'metric_fu' if RUBY_VERSION >= '2.1.0'
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|

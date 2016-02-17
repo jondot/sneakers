@@ -18,9 +18,10 @@ describe Sneakers::Runner do
         stub(daemon).main{ return 0 }
       end
 
-      @runner.run
-      # look at @runner's @se instance variable (actually of type Daemon)...and
-      # figure out what it's logger is...
+      @runner.run do |runner|
+        assert_instance_of(ServerEngine::Daemon, runner.server_engine)
+        assert_equal(logger, runner.server_engine.config[:logger])
+      end
     end
   end
 end

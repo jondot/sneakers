@@ -27,14 +27,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'redis'
 
   gem.add_development_dependency 'rr'
-  gem.add_development_dependency 'ruby-prof'
-  gem.add_development_dependency 'nokogiri'
-  gem.add_development_dependency 'guard-minitest'
-  gem.add_development_dependency 'metric_fu'
-  gem.add_development_dependency 'simplecov'
-  gem.add_development_dependency 'simplecov-rcov-text'
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'minitest'
-  gem.add_development_dependency 'guard'
 end
 
