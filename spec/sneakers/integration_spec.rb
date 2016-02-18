@@ -187,7 +187,7 @@ describe "integration" do
 
           message = get_message_from_queue("#{queue_name}.error")
 
-          assert_equal(JSON.load(message[2])['num_attempts'], 3)
+          assert_equal(JSON.load(message[2])['_error']['num_attempts'], 3)
         end
       end
 
@@ -323,7 +323,7 @@ describe "integration" do
 
           message = get_message_from_queue(error_queue_name)
 
-          assert_equal(3, JSON.load(message[2])['num_attempts'])
+          assert_equal(3, JSON.load(message[2])['_error']['num_attempts'])
         end
       end
 
