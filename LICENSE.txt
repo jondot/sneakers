@@ -1,4 +1,4 @@
-Copyright (c) 2013-2014 Dotan Nahum
+Copyright (c) 2013-2016 Dotan Nahum
 
 MIT License
 
