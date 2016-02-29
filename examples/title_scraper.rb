@@ -1,7 +1,5 @@
 require "sneakers"
 require 'open-uri'
-require 'nokogiri'
-
 require 'logger'
 
 Sneakers.configure :log => STDOUT
@@ -13,9 +11,16 @@ class TitleScraper
   from_queue 'downloads'
 
   def work(msg)
-    doc = Nokogiri::HTML(open(msg))
-    worker_trace "FOUND <#{doc.css('title').text}>"
+    title = extract_title(open(msg))
+    logger.info "FOUND <#{title}>"
     ack!
+  end
+
+  private
+
+  def extract_title(html)
+    html =~ /<title>(.*?)<\/title>/
+    $1
   end
 end
 

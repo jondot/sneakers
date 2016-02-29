@@ -3,7 +3,6 @@ require 'sneakers'
 require 'sneakers/runner'
 require 'sneakers/metrics/logging_metrics'
 require 'open-uri'
-require 'nokogiri'
 
 
 class MetricsWorker
@@ -12,9 +11,16 @@ class MetricsWorker
   from_queue 'downloads'
 
   def work(msg)
-    doc = Nokogiri::HTML(open(msg))
-    logger.info "FOUND <#{doc.css('title').text}>"
+    title = extract_title(open(msg))
+    logger.info "FOUND <#{title}>"
     ack!
+  end
+
+  private
+
+  def extract_title(html)
+    html =~ /<title>(.*?)<\/title>/
+    $1
   end
 end
 
