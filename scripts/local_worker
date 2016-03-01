@@ -1,0 +1,3 @@
+#!/bin/sh
+docker-compose run sneakers sneakers work TitleScraper --require examples/title_scraper.rb
+

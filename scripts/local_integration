@@ -1,0 +1,2 @@
+#!/bin/sh
+docker-compose run -e INTEGRATION=1 -e INTEGRATION_LOG=1 sneakers rake test

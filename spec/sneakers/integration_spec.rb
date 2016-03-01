@@ -20,8 +20,10 @@ describe "integration" do
     def prepare
       # clean up all integration queues; admin interface must be installed
       # in integration env
+      rmq_addr = compose_or_localhost("rabbitmq")
+      puts "RABBITMQ is at #{rmq_addr}"
       begin
-        admin = RabbitMQ::HTTP::Client.new("http://127.0.0.1:15672/", username: "guest", password: "guest")
+        admin = RabbitMQ::HTTP::Client.new("http://#{rmq_addr}:15672/", username: "guest", password: "guest")
         qs = admin.list_queues
         qs.each do |q|
           name = q.name
@@ -35,13 +37,14 @@ describe "integration" do
       end
 
       Sneakers.clear!
-      Sneakers.configure
+      Sneakers.configure(:amqp => "amqp://guest:guest@#{rmq_addr}:5672")
       Sneakers.logger.level = Logger::ERROR
 
       # configure integration worker on a random generated queue
       random_queue = "integration_#{rand(10**36).to_s(36)}"
 
-      @redis = Redis.new
+      redis_addr = compose_or_localhost("redis")
+      @redis = Redis.new(:host => redis_addr)
       @redis.del(random_queue)
       IntegrationWorker.from_queue(random_queue)
     end

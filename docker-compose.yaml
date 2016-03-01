@@ -1,0 +1,17 @@
+version: '2'
+services:
+  sneakers:
+    build: .
+    depends_on:
+      - rabbitmq
+      - redis
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+

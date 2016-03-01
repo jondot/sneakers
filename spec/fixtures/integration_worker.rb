@@ -2,7 +2,10 @@ require 'sneakers'
 require 'thread'
 require 'redis'
 
-$redis = Redis.new
+
+redis_addr = compose_or_localhost("redis")
+puts "REDIS is at #{redis_addr}"
+$redis = Redis.new(:host => redis_addr)
 
 class IntegrationWorker
   include Sneakers::Worker

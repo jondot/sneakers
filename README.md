@@ -153,6 +153,29 @@ Which increments `started` and `handled.ack`, and times the work unit.
 From here, you can continue over to the
 [Wiki](https://github.com/jondot/sneakers/wiki)
 
+# Docker
+
+If you use Docker, there's some benefits to be had and you can use both
+`docker` and `docker-compose` with this project, in order to run tests,
+integration tests or a sample worker without setting up RabbitMQ or the
+environment needed locally on your development box.
+
+* To build a container run `docker build .`
+* To run non-integration tests within a docker container, run `docker run --rm
+  sneakers_sneakers:latest`
+* To run full integration tests within a docker topology including RabbitMQ,
+  Redis (for integration worker) run `scripts/local_integration`, which will
+  use docker-compose to orchestrate the topology and the sneakers Docker image
+  to run the tests
+* To run a sample worker within Docker, try the `TitleScraper` example by
+  running `script/local_worker`. This will use docker-compose as well. It will
+  also help you get a feeling for how to run Sneakers in a Docker based
+  production environment
+* User `Dockerfile.slim` instead of `Dockerfile` for production docker builds.
+  It generates a more compact image, while the "regular" `Dockerfile` generates
+  a fatter image - yet faster to iterate when developing
+
+
 # Compatibility
 
 * Sneakers 1.1.x and up (using the new generation Bunny 2.x) - Ruby 2.x.x
