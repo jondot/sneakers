@@ -603,7 +603,7 @@ describe Sneakers::Handlers::RoutingMaxretry do
       mock_channel.expect(
         :basic_publish,
         nil,
-        [error_payload, exchange_name, error_routing_key]
+        [error_payload, exchange_name, error_routing_key, content_type: 'application/json']
       )
 
       stub(mock_channel).acknowledge

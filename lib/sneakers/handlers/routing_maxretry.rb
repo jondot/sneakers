@@ -135,7 +135,8 @@ module Sneakers
         channel.basic_publish(
           error_payload(delivery_info, message_properties, message, reason, num_attempts),
           opts[:exchange],
-          opts[:error_routing_key]
+          opts[:error_routing_key],
+          content_type: 'application/json'
         )
 
         channel.acknowledge(delivery_info.delivery_tag)
