@@ -1,6 +1,6 @@
 
 class Sneakers::Queue
-  attr_reader :name, :opts, :exchange, :channel
+  attr_reader :name, :opts, :exchange, :channel, :bunny
 
   def initialize(name, opts)
     @name = name
