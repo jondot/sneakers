@@ -41,4 +41,47 @@ EOF
 
     r.run
   end
+
+  desc "Retries all failed message for WORKER (Only if using Maxretry Handler)"
+  task :retry_failed_messages do
+
+    if ENV["WORKER"].nil?
+      puts <<EOF
+Error: No worker defined.
+Please set the worker class you want to retry like so:
+
+  $ export WORKER=MyWorker
+  $ rake sneakers:enqueue_failed_messages
+
+or:
+
+  $ rake sneakers:enqueue_failed_messages WORKER=MyWorker
+
+EOF
+    exit(1)
+    end
+
+    worker_class = ENV['WORKER'].constantize
+    config = Sneakers::CONFIG.merge worker_class.queue_opts
+    bunny = Bunny.new(config[:amqp], :vhost => config[:vhost], :heartbeat => config[:heartbeat], :logger => Sneakers::logger)
+    bunny.start
+    channel = bunny.create_channel
+    channel.prefetch config[:prefetch]
+    exchange = channel.exchange(config[:exchange], config[:exchange_options])
+    queue = channel.queue(worker_class.queue_name + "-error", :durable => true)
+
+    delivery_info, properties, payload = queue.pop
+
+    while payload
+      error_data = JSON.parse(payload)
+      msg = Base64.decode64(error_data["payload"])
+      
+      exchange.publish msg, :routing_key => delivery_info[:routing_key], :headers => error_data["headers"]
+      
+      delivery_info, properties, payload = queue.pop
+    end
+
+
+  end
+
 end

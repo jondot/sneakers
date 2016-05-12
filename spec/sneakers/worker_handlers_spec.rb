@@ -111,7 +111,7 @@ describe 'Handlers' do
                           "count" => 3,
                           "reason" => "expired",
                           "queue" => "downloads-retry",
-                          "time" => Time.now,
+                          "time" => Time.now.to_s,
                           "exchange" => "RawMail-retry",
                           "routing-keys" => ["RawMail"]
                         },
@@ -119,7 +119,7 @@ describe 'Handlers' do
                           "count" => 3,
                           "reason" => "rejected",
                           "queue" => "downloads",
-                          "time" => Time.now,
+                          "time" => Time.now.to_s,
                           "exchange" => "",
                           "routing-keys" => ["RawMail"]
                         }
@@ -185,14 +185,14 @@ describe 'Handlers' do
                         {
                           "reason" => "expired",
                           "queue" => "downloads-retry",
-                          "time" => Time.now,
+                          "time" => Time.now.to_s,
                           "exchange" => "RawMail-retry",
                           "routing-keys" => ["RawMail"]
                         },
                         {
                           "reason" => "rejected",
                           "queue" => "downloads",
-                          "time" => Time.now,
+                          "time" => Time.now.to_s,
                           "exchange" => "",
                           "routing-keys" => ["RawMail"]
                         }
@@ -252,6 +252,7 @@ describe 'Handlers' do
             data['error'].must_equal('reject')
             data['num_attempts'].must_equal(2)
             data['payload'].must_equal(Base64.encode64(:reject.to_s))
+            data['headers'].must_equal(@props_with_x_death[:headers])
             Time.parse(data['failed_at']).wont_be_nil
           end
 
@@ -267,6 +268,7 @@ describe 'Handlers' do
             data['error'].must_equal('reject')
             data['num_attempts'].must_equal(4)
             data['payload'].must_equal(Base64.encode64(:reject.to_s))
+            data['headers'].must_equal(props_with_x_death_count[:headers])
             Time.parse(data['failed_at']).wont_be_nil
           end
 
@@ -316,6 +318,7 @@ describe 'Handlers' do
             data['error'].must_equal('timeout')
             data['num_attempts'].must_equal(2)
             data['payload'].must_equal(Base64.encode64(:timeout.to_s))
+            data['headers'].must_equal(@props_with_x_death[:headers])
             Time.parse(data['failed_at']).wont_be_nil
           end
         end
@@ -347,6 +350,7 @@ describe 'Handlers' do
             data['backtrace'].wont_be_nil
             data['num_attempts'].must_equal(2)
             data['payload'].must_equal(Base64.encode64('boom!'))
+            data['headers'].must_equal(@props_with_x_death[:headers])
             Time.parse(data['failed_at']).wont_be_nil
           end
         end
@@ -383,6 +387,7 @@ describe 'Handlers' do
           data['error'].must_equal('timeout')
           data['num_attempts'].must_equal(2)
           data['payload'].must_equal(Base64.encode64(payload.to_json))
+          data['headers'].must_equal(@props_with_x_death[:headers])
         end
 
       end

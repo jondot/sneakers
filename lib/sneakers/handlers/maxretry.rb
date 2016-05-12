@@ -137,7 +137,8 @@ module Sneakers
             error: reason,
             num_attempts: num_attempts,
             failed_at: Time.now.iso8601,
-            payload: Base64.encode64(msg.to_s)
+            payload: Base64.encode64(msg.to_s),
+            headers: props[:headers]
           }.tap do |hash|
             if reason.is_a?(Exception)
               hash[:error_class] = reason.class
