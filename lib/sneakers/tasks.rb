@@ -62,15 +62,22 @@ EOF
     end
 
     worker_class = ENV['WORKER'].constantize
-    config = Sneakers::CONFIG.merge worker_class.queue_opts
+    
+    config = Sneakers::CONFIG.merge(worker_class.queue_opts)
+
+    durable = config.fetch(:queue_options, {}).fetch(:durable, false)
+    requeue_exchange = config[:retry_requeue_exchange] || worker_class.queue_name + "-retry-requeue"
+    error_queue = config[:retry_error_exchange] || worker_class.queue_name + "-error"
+
     bunny = Bunny.new(config[:amqp], :vhost => config[:vhost], :heartbeat => config[:heartbeat], :logger => Sneakers::logger)
     bunny.start
     channel = bunny.create_channel
     channel.prefetch config[:prefetch]
-    exchange = channel.exchange(config[:exchange], config[:exchange_options])
-    queue = channel.queue(worker_class.queue_name + "-error", :durable => true)
 
-    delivery_info, properties, payload = queue.pop
+    exchange = channel.exchange(requeue_exchange, :type => 'topic', :durable => durable)
+    queue = channel.queue(error_queue, :durable => durable)
+
+    delivery_info, properties, payload = queue.pop(:manual_ack => true)
 
     while payload
       error_data = JSON.parse(payload)
@@ -78,9 +85,12 @@ EOF
       
       exchange.publish msg, :routing_key => delivery_info[:routing_key], :headers => error_data["headers"]
       
-      delivery_info, properties, payload = queue.pop
+      channel.ack(delivery_info.delivery_tag, false)
+
+      delivery_info, properties, payload = queue.pop(:manual_ack => true)
     end
 
+    channel.close
 
   end
 
