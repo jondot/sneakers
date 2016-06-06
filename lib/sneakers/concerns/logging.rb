@@ -10,7 +10,7 @@ module Sneakers
 
       module ClassMethods
         def logger
-          @logger
+          @logger ||= Logger.new(STDOUT)
         end
 
         def logger=(logger)
@@ -30,5 +30,3 @@ module Sneakers
     end
   end
 end
-
-

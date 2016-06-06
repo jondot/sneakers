@@ -52,7 +52,7 @@ module Sneakers
   end
 
   def logger
-    @logger
+    @logger ||= Logger.new(STDOUT)
   end
 
   def publish(msg, routing)
@@ -106,4 +106,3 @@ module Sneakers
     @publisher = Sneakers::Publisher.new
   end
 end
-
