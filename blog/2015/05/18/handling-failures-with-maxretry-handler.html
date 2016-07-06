@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+<head>
+<link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+<meta charset="utf-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+<title>Sneakers Blog  - Handling failures with maxretry handler</title>
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
+
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/blog/feed.xml" />
+  <link href="../../../../stylesheets/app.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+  
+<header class="navigation">
+  <div class="navigation-wrapper">
+    <div class="navigation-content">
+      <div style="padding:0px">
+        <a href="http://sneakers.io" class="logo">
+          <img src="../../../../images/main_logo.png" alt="Logo Image">
+        </a>
+      </div>
+      <a href="" class="navigation-menu-button" id="js-mobile-menu">MENU</a>
+      <div class="nav">
+        <ul id="navigation-menu">
+          <li class="nav-link "><a href="http://sneakers.io">Home</a></li>
+          <li class="nav-link selected"><a href="http://sneakers.io/blog">Blog</a></li>
+          <li class="nav-link"><a href="https://github.com/jondot/sneakers/wiki">Docs</a></li>
+          <li class="nav-link">
+          <a class="fork" href="https://github.com/jondot/sneakers"><i class="fa fa-github"></i> Fork on Github &rarr;</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  <div class="blog-content">
+    <main class="blog-main">
+          <h1 class="article-title"><a href="handling-failures-with-maxretry-handler.html">Handling failures with maxretry handler</a></h1>
+<div class="article_head">
+  <div class="article_head-author">
+    <img src="http://www.gravatar.com/avatar/cc6428ba9891ca01afe1525bbbe40e03?s=32.jpg" alt=""/>
+    <a href="http://twitter.com/">Igor Zhivilo</a>, May 18
+  </div>
+</div>
+
+
+      <p>In the past few months I had the opportunity to work with RabbitMQ and sneakers, implementing different 'job handling strategies' in our production environment and I decided to share this knowledge with you - hoping this may help someone else there.
+I want to share my experience of working with my favorite failure handling strategy called 'maxretry'.</p>
+
+<p>Ok, let's start - from its description: “Maxretry uses dead letter policies on Rabbitmq to requeue and retry messages after failure (rejections, errors and timeouts). When the maximum number of retries is reached it will put the message on an error queue.”</p>
+
+<blockquote>
+  <p>Sounds good, so let’s do it—but what does “dead policies” means?
+It means messages from a queue can be republished to another exchange when any of the following events occur:</p>
+</blockquote>
+
+<ul>
+  <li>The message is rejected (basic.reject or basic.nack) with requeue=false</li>
+  <li>The TTL for the message expires</li>
+  <li>The queue length limit is exceeded.</li>
+</ul>
+
+<p>For our configuration, I used a retry number equal to 5, so, in case of failure, we resend the message up to 5 times, and only then move our message to error queue, delaying for 60 seconds before we resend the message.</p>
+
+<p>Ok, let’s write some code, starting with the definition of a worker, which uses a custom handler (maxretry) and not the default (Oneshot).</p>
+
+<h5 id="sneakers-initializer">Sneakers Initializer</h5>
+
+<pre class="highlight ruby"><code><span class="c1"># config/initializers/sneakers.rb</span>
+<span class="nb">require</span> <span class="s1">'sneakers'</span>
+<span class="nb">require</span> <span class="s1">'sneakers/handlers/maxretry'</span>  <span class="c1"># you must add handler to this folder</span>
+
+<span class="n">config_file</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="o">::</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="p">.</span><span class="nf">to_s</span> <span class="o">+</span> <span class="s1">'/config/sneakers.yml'</span><span class="p">)</span> 
+<span class="n">config</span> <span class="o">=</span> <span class="no">YAML</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)[</span><span class="o">::</span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">]</span>
+  <span class="p">.</span><span class="nf">symbolize_keys</span>
+  <span class="p">.</span><span class="nf">merge</span><span class="p">(</span><span class="ss">handler: </span><span class="no">Sneakers</span><span class="o">::</span><span class="no">Handlers</span><span class="o">::</span><span class="no">Maxretry</span><span class="p">,</span> <span class="ss">workers: </span><span class="mi">3</span><span class="p">)</span>
+<span class="no">Sneakers</span><span class="p">.</span><span class="nf">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<span class="no">WORKER_OPTIONS</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="ss">retry_timeout:      </span><span class="mi">60</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>  <span class="c1">#60 sec</span>
+  <span class="ss">ack:                </span><span class="kp">true</span><span class="p">,</span>
+  <span class="ss">threads:            </span><span class="mi">10</span><span class="p">,</span>
+  <span class="ss">prefetch:           </span><span class="mi">10</span><span class="p">,</span>
+  <span class="p">.</span><span class="nf">.</span><span class="p">.</span><span class="nf">.</span>
+<span class="p">}</span>
+</code></pre>
+
+<h5 id="configuration-for-sneakers">Configuration for sneakers</h5>
+
+<pre class="highlight ruby"><code><span class="c1"># config/sneakers.yml</span>
+<span class="ss">development:
+  amqp: </span><span class="s2">"amqp://guest:guest@localhost:5672"</span>
+  <span class="ss">vhost: </span><span class="s2">"/"</span>
+
+<span class="ss">integration:
+ </span><span class="p">.</span><span class="nf">.</span><span class="p">.</span><span class="nf">.</span>
+
+<span class="ss">production:
+  </span><span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+</code></pre>
+
+<h5 id="creating-a-worker-which-defines-dead-letter-policies-to-resend-failing-messages">Creating a worker which defines dead letter policies to resend failing messages</h5>
+
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">MessagesWorker</span>
+  <span class="kp">include</span> <span class="no">Sneakers</span><span class="o">::</span><span class="no">Worker</span>
+
+  <span class="n">from_queue</span>  <span class="s1">'mailer.messages'</span><span class="p">,</span>
+      <span class="no">WORKER_OPTIONS</span><span class="p">.</span><span class="nf">merge</span><span class="p">(</span>
+        <span class="p">{</span><span class="ss">:arguments</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:'x-dead-letter-exchange'</span> <span class="o">=&gt;</span> <span class="s1">'mailer.messages-retry'</span><span class="p">}}</span>
+      <span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">work</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+      <span class="no">MyMailer</span><span class="p">.</span><span class="nf">send_mail</span><span class="p">(</span><span class="n">msg</span><span class="p">).</span><span class="nf">deliver</span>
+
+      <span class="n">ack!</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>After running a worker: ‘WORKERS=MessagesWorker rake sneakers:run’, and going to admin:http://localhost:15672, be sure that you see 3 queues created:</p>
+
+<p><img alt="" src="../../../../images/blog/maxretry-admin.png" /></p>
+
+<ul>
+  <li>mailer.messages - your original queue</li>
+  <li>mailer.messages-error - we’re moving the message here after 5 failed retries</li>
+  <li>mailer.messages-retry - maxretry using this queue to resend message in case of failure, TTL ‘flag means’ we’re using a delay between retries: 60 sec in our case</li>
+</ul>
+
+<p>‘DLX’ flags on mailer.messages and mailer-retry means we are using dead-letter-policy (x-dead-letter-exchange) on those queues</p>
+
+<h5 id="so-how-does-it-work">So how does it work?</h5>
+
+<ul>
+  <li>The message comes to the ‘mailer.messages’ queue and consumers try to send it. If it fails because of the ‘DLX’ flag defined with the ‘mailer.messages-retry’ exchange, we send it to the ‘mailer.messages-retry’ queue through a defined exchange.</li>
+  <li>Because the ‘TTL’ flag is defined, we wait for 60 seconds and then we send it again to ‘mailer.messages’ queue, in the meantime increasing our retry counter.</li>
+  <li>We repeat this procedure 5 times in case of failure and then move the message to the ‘mailer.messages-error’ queue.</li>
+</ul>
+
+<p>For more details, you can look at the <a href="https://github.com/jondot/sneakers/blob/master/lib/sneakers/handlers/maxretry.rb">maxretry handler</a>.</p>
+
+<h5 id="how-to-extract-message-from-error-queue-to-resend-it-or-for-debugging-purposes">How to extract message from error queue to resend it or for debugging purposes?</h5>
+
+<ul>
+  <li>Go to the error queue, click on the “get messages” button and copy this message.</li>
+  <li>Run the rails console and use Base64.decode64 (‘paste your copied message here’).</li>
+</ul>
+
+<p>Hope my experience will help someone, you may see <a href="http://warolv.net/blog/2015/05/16/handling-rabbitmq-consumer-failures-with-maxretry-handler/">original post in my blog</a></p>
+
+
+    </main>
+    <aside class="blog-aside">
+      Want to be featured here?<br/>
+      <a href="https://github.com/jondot/sneakers.io" >Submit a pull request</a>
+      
+      <h4>Recent Articles</h4>
+      <ol class="blog-recent">
+        <li>
+          <a href="handling-failures-with-maxretry-handler.html">Handling failures with maxretry handler</a>
+        </li>
+        <li>
+          <a href="../../../2014/12/10/the-new-website.html">Sneakers 1.0 - The New Website</a>
+        </li>
+        <li>
+          <a href="../../../2014/12/09/monitoring-sneakers.html">Monitoring Sneakers</a>
+        </li>
+        <li>
+          <a href="../../../2014/12/04/modular-workers.html">Modular Workers for Easier Testing and Development</a>
+        </li>
+        <li>
+          <a href="../../../2014/11/21/what-weve-been-through.html">What We've Been Trough</a>
+        </li>
+      </ol>
+      <hr />
+      <h4>Tags</h4>
+      <ol>
+      </ol>
+      <h4>By Year</h4>
+      <ol>
+      <li><a href="../../../2015.html">2015 (1)</a></li>
+      <li><a href="../../../2014.html">2014 (4)</a></li>
+      </ol>
+      <div class="blog-minihero">
+        <hr />
+        <ul class="blog-socials">
+          <li>
+            <a href="http://twitter.com/jondot"><i class="fa fa-twitter"></i></a>
+          </li>
+          <li>
+            <a href="https://github.com/jondot/sneakers"><i class="fa fa-github"></i></a>
+          </li>
+          <li>
+            <a href="/sneakers/blog/feed.xml"><i class="fa fa-rss"></i></a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+  <footer class="footer">
+  <div class="footer-logo">
+  </div>
+  <div class="footer-links">
+    <ul>
+      <li><h3>Learn</h3></li>
+      <li><a href="https://github.com/jondot/sneakers/wiki">Docs</a></li>
+      <li><a href="http://sneakers.io/blog">Blog</a></li>
+    </ul>
+    <ul>
+      <li><h3>Follow</h3></li>
+      <li><a href="https://github.com/jondot/sneakers">Github</a></li>
+      <li><a href="http://twitter.com/jondot">Follow @jondot</a></li>
+      <li><a href="mailto:jondotan@gmail.com">Say hi :)</a></li>
+    </ul>
+    <ul>
+      <li><h3>Community</h3></li>
+      <li><a href="https://github.com/jondot/sneakers/issues">Issues</a></li>
+      <li><a href="https://github.com/jondot/sneakers#contributing">How to Contribute</a></li>
+      <li><a href="https://github.com/jondot/sneakers/wiki">Getting Help</a></li>
+    </ul>
+  </div>
+  <p>
+  Copyright © 2015 Dotan Nahum and contributors - Licensed under MIT.
+  </p>
+</footer>
+
+
+
+  <script>
+      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+      e.src='//www.google-analytics.com/analytics.js';
+      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+      ga('create','UA-7131053-14');ga('send','pageview');
+  </script>
+</body>
+</html>

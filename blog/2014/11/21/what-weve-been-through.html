@@ -1,0 +1,249 @@
+<!doctype html>
+<html>
+<head>
+<link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+<meta charset="utf-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+<title>Sneakers Blog  - What We've Been Trough</title>
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
+
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/blog/feed.xml" />
+  <link href="../../../../stylesheets/app.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+  
+<header class="navigation">
+  <div class="navigation-wrapper">
+    <div class="navigation-content">
+      <div style="padding:0px">
+        <a href="http://sneakers.io" class="logo">
+          <img src="../../../../images/main_logo.png" alt="Logo Image">
+        </a>
+      </div>
+      <a href="" class="navigation-menu-button" id="js-mobile-menu">MENU</a>
+      <div class="nav">
+        <ul id="navigation-menu">
+          <li class="nav-link "><a href="http://sneakers.io">Home</a></li>
+          <li class="nav-link selected"><a href="http://sneakers.io/blog">Blog</a></li>
+          <li class="nav-link"><a href="https://github.com/jondot/sneakers/wiki">Docs</a></li>
+          <li class="nav-link">
+          <a class="fork" href="https://github.com/jondot/sneakers"><i class="fa fa-github"></i> Fork on Github &rarr;</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  <div class="blog-content">
+    <main class="blog-main">
+          <h1 class="article-title"><a href="what-weve-been-through.html">What We've Been Trough</a></h1>
+<div class="article_head">
+  <div class="article_head-author">
+    <img src="http://www.gravatar.com/avatar/7bab8ed9cad2d098076b61b7cc3b8030?s=32.jpg" alt=""/>
+    <a href="http://twitter.com/jondot">Dotan Nahum</a>, Nov 21
+  </div>
+</div>
+
+
+      <p>I think it's safe to say: Sneakers is production grade.
+At all of my production deployments, Sneakers outlived and far exceeded it's original goal. On of them, it's been almost 2 years, 4 BILLION jobs processed, supporting 5 completely different use cases.</p>
+
+<p>I'm humbled that a lot of smart people contributed to this project and major companies adopted it. All I hope for, is that it has saved you time, and made your job easier and more fun to do.</p>
+
+<p>That it solved a problem for you.</p>
+
+<p>With that in mind - I'd like to share with you the news, and what's coming.</p>
+
+<h2 id="the-numbers">The Numbers</h2>
+
+<p>Sneakers 0.7 (the latest stable release), and the <code>pre</code> versions did a lot so far:</p>
+
+<ul>
+  <li>Over 4 BILLION jobs processed at 2 mission-critical deployments (one is touching money).</li>
+  <li>At least 5 major companies have Sneakers running in production.</li>
+  <li>Almost 900 stars, 29 watchers, and 86 forks.</li>
+  <li>35 pull requests merged</li>
+  <li>Dozens of contributors!</li>
+</ul>
+
+<h2 id="new-and-notable-features">New and Notable Features</h2>
+
+<p>Since Sneakers 0.7, there's been a lot of community work which resulted
+in excellent quality contributions. Here's a list of new and notable
+features.</p>
+
+<h5 id="rails-activejob">Rails ActiveJob</h5>
+
+<p>Sneakers is now supported with Rails' new <a href="http://edgeapi.rubyonrails.org/classes/ActiveJob/QueueAdapters.html">ActiveJob queueing API</a>.</p>
+
+<p>To set Sneakers in your app:</p>
+
+<p><code>ruby
+Rails.application.config.active_job.queue_adapter = :sneakers
+</code></p>
+
+<p>Thanks Rails Team!</p>
+
+<h5 id="retryhandler-pr-73httpsgithubcomjondotsneakerspull73">RetryHandler <a href="https://github.com/jondot/sneakers/pull/73">PR-73</a></h5>
+
+<p>You can now set up a retry handler - failing jobs will get retried up to a maximum number of times, afterwhich they'll be sent to an error queue.</p>
+
+<p>This is a well known, healthy pattern, to promote self-healing and
+reliability; which is why RabbitMQ supports dead letter policies.</p>
+
+<p>To enable, add these to your worker options:</p>
+
+<p><code>ruby
+:arguments =&gt; {
+                  :'x-dead-letter-exchange' =&gt; 'downloads-retry'
+              }
+</code></p>
+
+<p>And configure your policy:</p>
+
+<p><code>ruby
+Sneakers.configure(:handler =&gt; Sneakers::Handlers::Maxretry,
+  :
+  :
+</code></p>
+
+<p>Through sophisticated message header juggling, we've got some awesome work by @imothee, led by @justin-yeswere with contributions by @lkang to make this happen.</p>
+
+<p>Thanks guys!</p>
+
+<h5 id="bunny-logger-sharing-pr-71httpsgithubcomjondotsneakerspull71">Bunny Logger Sharing <a href="https://github.com/jondot/sneakers/pull/71">PR-71</a></h5>
+
+<p>Bunny is the RabbitMQ driver behind Sneakers. Sneakers will now share your main logger, and redirect core Bunny logs into your main logger.</p>
+
+<p>Thanks @trungpham!</p>
+
+<h5 id="internalexternal-api-improvements-pr-56httpsgithubcomjondotsneakerspull56-pr-54httpsgithubcomjondotsneakerspull54-pr-53httpsgithubcomjondotsneakerspull56-pr-47httpsgithubcomjondotsneakerspull47">Internal/External API Improvements <a href="https://github.com/jondot/sneakers/pull/56">PR-56</a>, <a href="https://github.com/jondot/sneakers/pull/54">PR-54</a>, <a href="https://github.com/jondot/sneakers/pull/56">PR-53</a>, <a href="https://github.com/jondot/sneakers/pull/47">PR-47</a></h5>
+
+<p>Excellent pull requests from @norman who single-handedly crafted a better API for those of you building handlers and/or doing a bit more involved worker configuration.</p>
+
+<p>Thanks @norman!</p>
+
+<h5 id="better-rabbitmq-configuration-pr-52httpsgithubcomjondotsneakerspull52">Better RabbitMQ Configuration <a href="https://github.com/jondot/sneakers/pull/52">PR-52</a></h5>
+
+<p>Sneakers now respects <code>RABBITMQ_URL</code> - thanks @norman!.</p>
+
+<h5 id="publisher-persistence-pr-40httpsgithubcomjondotsneakerspull40">Publisher Persistence <a href="https://github.com/jondot/sneakers/pull/40">PR-40</a></h5>
+
+<p>Although <code>Sneakers::Publisher</code> weren't the focus of Sneakers, it
+received some love from @jkogara, and you can now specify persistence:</p>
+
+<p><code>ruby
+my_publisher.publish('test msg', routing_key: 'downloads', persistence: true)
+</code></p>
+
+<p>Thanks @jkogara!</p>
+
+<h5 id="use-newrelic-for-metrics-pr-37httpsgithubcomjondotsneakerspull37">Use NewRelic for Metrics <a href="https://github.com/jondot/sneakers/pull/37">PR-37</a></h5>
+
+<p>You can now configure NewRelic for metrics:</p>
+
+<p><code>ruby
+Sneakers.configure metrics: Sneakers::Metrics::NewrelicMetrics.new
+</code></p>
+
+<p>Thanks @arielze!</p>
+
+<h4 id="many-more-additions">Many More Additions</h4>
+
+<p>There's many more additions such as specifying routing keys explicitely,
+enqueing via worker, etc.</p>
+
+<p>You can take a look at the entire <a href="https://github.com/jondot/sneakers/pulls?q=is%3Apr+is%3Aclosed">list of additions</a></p>
+
+<p>Thanks everyone!!</p>
+
+
+    </main>
+    <aside class="blog-aside">
+      Want to be featured here?<br/>
+      <a href="https://github.com/jondot/sneakers.io" >Submit a pull request</a>
+      
+      <h4>Recent Articles</h4>
+      <ol class="blog-recent">
+        <li>
+          <a href="../../../2015/05/18/handling-failures-with-maxretry-handler.html">Handling failures with maxretry handler</a>
+        </li>
+        <li>
+          <a href="../../12/10/the-new-website.html">Sneakers 1.0 - The New Website</a>
+        </li>
+        <li>
+          <a href="../../12/09/monitoring-sneakers.html">Monitoring Sneakers</a>
+        </li>
+        <li>
+          <a href="../../12/04/modular-workers.html">Modular Workers for Easier Testing and Development</a>
+        </li>
+        <li>
+          <a href="what-weve-been-through.html">What We've Been Trough</a>
+        </li>
+      </ol>
+      <hr />
+      <h4>Tags</h4>
+      <ol>
+      </ol>
+      <h4>By Year</h4>
+      <ol>
+      <li><a href="../../../2015.html">2015 (1)</a></li>
+      <li><a href="../../../2014.html">2014 (4)</a></li>
+      </ol>
+      <div class="blog-minihero">
+        <hr />
+        <ul class="blog-socials">
+          <li>
+            <a href="http://twitter.com/jondot"><i class="fa fa-twitter"></i></a>
+          </li>
+          <li>
+            <a href="https://github.com/jondot/sneakers"><i class="fa fa-github"></i></a>
+          </li>
+          <li>
+            <a href="/sneakers/blog/feed.xml"><i class="fa fa-rss"></i></a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+  <footer class="footer">
+  <div class="footer-logo">
+  </div>
+  <div class="footer-links">
+    <ul>
+      <li><h3>Learn</h3></li>
+      <li><a href="https://github.com/jondot/sneakers/wiki">Docs</a></li>
+      <li><a href="http://sneakers.io/blog">Blog</a></li>
+    </ul>
+    <ul>
+      <li><h3>Follow</h3></li>
+      <li><a href="https://github.com/jondot/sneakers">Github</a></li>
+      <li><a href="http://twitter.com/jondot">Follow @jondot</a></li>
+      <li><a href="mailto:jondotan@gmail.com">Say hi :)</a></li>
+    </ul>
+    <ul>
+      <li><h3>Community</h3></li>
+      <li><a href="https://github.com/jondot/sneakers/issues">Issues</a></li>
+      <li><a href="https://github.com/jondot/sneakers#contributing">How to Contribute</a></li>
+      <li><a href="https://github.com/jondot/sneakers/wiki">Getting Help</a></li>
+    </ul>
+  </div>
+  <p>
+  Copyright © 2015 Dotan Nahum and contributors - Licensed under MIT.
+  </p>
+</footer>
+
+
+
+  <script>
+      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+      e.src='//www.google-analytics.com/analytics.js';
+      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+      ga('create','UA-7131053-14');ga('send','pageview');
+  </script>
+</body>
+</html>

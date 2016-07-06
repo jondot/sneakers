@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Blog Name</title>
+  <subtitle>Blog subtitle</subtitle>
+  <id>http://blog.url.com/blog</id>
+  <link href="http://blog.url.com/blog"/>
+  <link href="http://blog.url.com/blog/feed.xml" rel="self"/>
+  <updated>2015-05-18T03:00:00+03:00</updated>
+  <author>
+    <name>Blog Author</name>
+  </author>
+  <entry>
+    <title>Handling failures with maxretry handler</title>
+    <link rel="alternate" href="http://blog.url.com/blog/2015/05/18/handling-failures-with-maxretry-handler.html"/>
+    <id>http://blog.url.com/blog/2015/05/18/handling-failures-with-maxretry-handler.html</id>
+    <published>2015-05-18T03:00:00+03:00</published>
+    <updated>2016-07-06T23:29:10+03:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;In the past few months I had the opportunity to work with RabbitMQ and sneakers, implementing different 'job handling strategies' in our production environment and I decided to share this knowledge with you - hoping this may help someone else there.
+I want to share my experience of working with my favorite failure handling strategy called 'maxretry'.&lt;/p&gt;
+
+&lt;p&gt;Ok, let's start - from its description: “Maxretry uses dead letter policies on Rabbitmq to requeue and retry messages after failure (rejections, errors and timeouts). When the maximum number of retries is reached it will put the message on an error queue.”&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Sounds good, so let’s do it—but what does “dead policies” means?
+It means messages from a queue can be republished to another exchange when any of the following events occur:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The message is rejected (basic.reject or basic.nack) with requeue=false&lt;/li&gt;
+  &lt;li&gt;The TTL for the message expires&lt;/li&gt;
+  &lt;li&gt;The queue length limit is exceeded.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For our configuration, I used a retry number equal to 5, so, in case of failure, we resend the message up to 5 times, and only then move our message to error queue, delaying for 60 seconds before we resend the message.&lt;/p&gt;
+
+&lt;p&gt;Ok, let’s write some code, starting with the definition of a worker, which uses a custom handler (maxretry) and not the default (Oneshot).&lt;/p&gt;
+
+&lt;h5 id="sneakers-initializer"&gt;Sneakers Initializer&lt;/h5&gt;
+
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# config/initializers/sneakers.rb&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'sneakers'&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'sneakers/handlers/maxretry'&lt;/span&gt;  &lt;span class="c1"&gt;# you must add handler to this folder&lt;/span&gt;
+
+&lt;span class="n"&gt;config_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;File&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;read&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Rails&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;root&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;to_s&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;'/config/sneakers.yml'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+&lt;span class="n"&gt;config&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;YAML&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;load&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;config_file&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Rails&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;env&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+  &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;symbolize_keys&lt;/span&gt;
+  &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;merge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;handler: &lt;/span&gt;&lt;span class="no"&gt;Sneakers&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Handlers&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Maxretry&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;workers: &lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="no"&gt;Sneakers&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="no"&gt;WORKER_OPTIONS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="ss"&gt;retry_timeout:      &lt;/span&gt;&lt;span class="mi"&gt;60&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="c1"&gt;#60 sec&lt;/span&gt;
+  &lt;span class="ss"&gt;ack:                &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="ss"&gt;threads:            &lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="ss"&gt;prefetch:           &lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h5 id="configuration-for-sneakers"&gt;Configuration for sneakers&lt;/h5&gt;
+
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# config/sneakers.yml&lt;/span&gt;
+&lt;span class="ss"&gt;development:
+  amqp: &lt;/span&gt;&lt;span class="s2"&gt;"amqp://guest:guest@localhost:5672"&lt;/span&gt;
+  &lt;span class="ss"&gt;vhost: &lt;/span&gt;&lt;span class="s2"&gt;"/"&lt;/span&gt;
+
+&lt;span class="ss"&gt;integration:
+ &lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;
+
+&lt;span class="ss"&gt;production:
+  &lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h5 id="creating-a-worker-which-defines-dead-letter-policies-to-resend-failing-messages"&gt;Creating a worker which defines dead letter policies to resend failing messages&lt;/h5&gt;
+
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MessagesWorker&lt;/span&gt;
+  &lt;span class="kp"&gt;include&lt;/span&gt; &lt;span class="no"&gt;Sneakers&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Worker&lt;/span&gt;
+
+  &lt;span class="n"&gt;from_queue&lt;/span&gt;  &lt;span class="s1"&gt;'mailer.messages'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="no"&gt;WORKER_OPTIONS&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;merge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="ss"&gt;:arguments&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="ss"&gt;:'x-dead-letter-exchange'&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="s1"&gt;'mailer.messages-retry'&lt;/span&gt;&lt;span class="p"&gt;}}&lt;/span&gt;
+      &lt;span class="p"&gt;)&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;work&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="no"&gt;MyMailer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;send_mail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;deliver&lt;/span&gt;
+
+      &lt;span class="n"&gt;ack!&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After running a worker: ‘WORKERS=MessagesWorker rake sneakers:run’, and going to admin:http://localhost:15672, be sure that you see 3 queues created:&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="" src="../images/blog/maxretry-admin.png" /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;mailer.messages - your original queue&lt;/li&gt;
+  &lt;li&gt;mailer.messages-error - we’re moving the message here after 5 failed retries&lt;/li&gt;
+  &lt;li&gt;mailer.messages-retry - maxretry using this queue to resend message in case of failure, TTL ‘flag means’ we’re using a delay between retries: 60 sec in our case&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;‘DLX’ flags on mailer.messages and mailer-retry means we are using dead-letter-policy (x-dead-letter-exchange) on those queues&lt;/p&gt;
+
+&lt;h5 id="so-how-does-it-work"&gt;So how does it work?&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The message comes to the ‘mailer.messages’ queue and consumers try to send it. If it fails because of the ‘DLX’ flag defined with the ‘mailer.messages-retry’ exchange, we send it to the ‘mailer.messages-retry’ queue through a defined exchange.&lt;/li&gt;
+  &lt;li&gt;Because the ‘TTL’ flag is defined, we wait for 60 seconds and then we send it again to ‘mailer.messages’ queue, in the meantime increasing our retry counter.&lt;/li&gt;
+  &lt;li&gt;We repeat this procedure 5 times in case of failure and then move the message to the ‘mailer.messages-error’ queue.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For more details, you can look at the &lt;a href="https://github.com/jondot/sneakers/blob/master/lib/sneakers/handlers/maxretry.rb"&gt;maxretry handler&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h5 id="how-to-extract-message-from-error-queue-to-resend-it-or-for-debugging-purposes"&gt;How to extract message from error queue to resend it or for debugging purposes?&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Go to the error queue, click on the “get messages” button and copy this message.&lt;/li&gt;
+  &lt;li&gt;Run the rails console and use Base64.decode64 (‘paste your copied message here’).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Hope my experience will help someone, you may see &lt;a href="http://warolv.net/blog/2015/05/16/handling-rabbitmq-consumer-failures-with-maxretry-handler/"&gt;original post in my blog&lt;/a&gt;&lt;/p&gt;
+
+</content>
+  </entry>
+  <entry>
+    <title>Sneakers 1.0 - The New Website</title>
+    <link rel="alternate" href="http://blog.url.com/blog/2014/12/10/the-new-website.html"/>
+    <id>http://blog.url.com/blog/2014/12/10/the-new-website.html</id>
+    <published>2014-12-10T02:00:00+02:00</published>
+    <updated>2016-07-06T23:29:10+03:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;As you might have noticed, Sneakers got a refreshing facelift and a new website!&lt;/p&gt;
+
+&lt;p&gt;The goal was both to indicate we're going 1.0, and to set up a worthy go-to place for the now evolving Sneakers community. After a few weeks of fighting simple vs. complex, grand vs. elegant, we finally came at a simple, and elegant visual for Sneakers.&lt;/p&gt;
+
+&lt;h3 id="enjoy"&gt;Enjoy!&lt;/h3&gt;
+
+&lt;p&gt;With the new website you can easily &lt;a href="http://sneakers.io"&gt;quickstart&lt;/a&gt;, track versions, read the &lt;a href="http://sneakers.io/blog"&gt;blog&lt;/a&gt;, browse our Wiki based &lt;a href="https://github.com/jondot/sneakers/wiki"&gt;documentation&lt;/a&gt;, and see what others are up to.&lt;/p&gt;
+
+&lt;h3 id="join-in"&gt;Join in!&lt;/h3&gt;
+
+&lt;p&gt;As with the spirit of Sneakers, as a member of the community, you can
+change anything in the Sneakers landing page, blog, or add a blogpost of
+your own through &lt;a href="https://github.com/jondot/sneakers.io"&gt;submitting a pull request&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4 id="add-a-post-on-the-sneakers-blog"&gt;Add a post on the Sneakers blog&lt;/h4&gt;
+
+&lt;p&gt;We're using &lt;a href="http://middlemanapp.com"&gt;Middleman&lt;/a&gt;
+and markdown-based blogging similar to Jekyll and Octopress.&lt;/p&gt;
+
+&lt;p&gt;Adding a post is a matter of &lt;a href="https://github.com/jondot/sneakers.io"&gt;submitting a
+pull request&lt;/a&gt; to the &lt;code&gt;sneakers.io&lt;/code&gt; repo, after adding a markdown post of your choosing to &lt;code&gt;source/blog/&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;One thing to note is that we have a custom support for attribution metadata.&lt;/p&gt;
+
+&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="nn"&gt;---&lt;/span&gt;
+&lt;span class="s"&gt;title&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;The New Website&lt;/span&gt;
+&lt;span class="s"&gt;layout&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;blog&lt;/span&gt;
+&lt;span class="s"&gt;authors&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Dotan Nahum/jondotan@gmail.com&lt;/span&gt;
+&lt;span class="nn"&gt;---&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You should specify &lt;code&gt;Your Name/your-email@company.com&lt;/code&gt; and that will
+be picked up and rendered into your &lt;a href="http://gravatar.com"&gt;gravatar&lt;/a&gt; and name.&lt;/p&gt;
+
+&lt;h4 id="add-yourself-onto-the-front-page"&gt;Add yourself onto the front page&lt;/h4&gt;
+
+&lt;p&gt;There's a section called 'comments', and if you're using Sneakers and
+you're happy about it - please feel free to leave your mark.&lt;/p&gt;
+
+&lt;p&gt;Just add your own comment block in the &lt;code&gt;_comments.html.erb&lt;/code&gt; partial:&lt;/p&gt;
+
+&lt;pre class="highlight html"&gt;&lt;code&gt;  &lt;span class="nt"&gt;&amp;lt;div&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"comment"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;div&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"comment-image"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class="nt"&gt;&amp;lt;img&lt;/span&gt; &lt;span class="na"&gt;src=&lt;/span&gt;&lt;span class="s"&gt;"&amp;lt;%= gravatar('foobar@gmail.com', 64) %&amp;gt;"&lt;/span&gt; &lt;span class="na"&gt;alt=&lt;/span&gt;&lt;span class="s"&gt;""&lt;/span&gt;&lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;div&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"comment-content"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class="nt"&gt;&amp;lt;p&amp;gt;&lt;/span&gt;Sneakers is great!, able to deploy and go pro in around one day. We're processing around 1 billion events per day at Corpware.&lt;span class="nt"&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
+      &lt;span class="nt"&gt;&amp;lt;p&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"comment-detail"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+        John Singleton, CEO at Corpware
+      &lt;span class="nt"&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+</content>
+  </entry>
+  <entry>
+    <title>Monitoring Sneakers</title>
+    <link rel="alternate" href="http://blog.url.com/blog/2014/12/09/monitoring-sneakers.html"/>
+    <id>http://blog.url.com/blog/2014/12/09/monitoring-sneakers.html</id>
+    <published>2014-12-09T02:00:00+02:00</published>
+    <updated>2016-07-06T23:29:10+03:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;I'll show one of my production Sneakers deployment and the some of tiers I've chosen for monitoring it.&lt;/p&gt;
+
+&lt;h4 id="monitoring-message-handling"&gt;Monitoring Message Handling&lt;/h4&gt;
+
+&lt;p&gt;In this specific use case, each "bundle" may contain several "events", which is a simple bulking technique. Here we're averaging and counting the number of events per bundle.&lt;/p&gt;
+
+&lt;p&gt;In itself an important metric to measure, to expose a bad / error prone bulking strategy.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="" src="../images/blog/events-in-bundle.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;A good practice is to always measure the average payload size - the size of a message passed to a worker. Again this is a kind of parameter that may affect job handling time and may expose misconfiguration / errors with original messages.&lt;/p&gt;
+
+&lt;p&gt;The size of a message and rate of messages are also useful in computing and monitoring the network capacity and saturation.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="" src="../images/blog/payload-bytes.png" /&gt;&lt;/p&gt;
+
+&lt;h4 id="monitoring-worker-metrics"&gt;Monitoring Worker Metrics&lt;/h4&gt;
+
+&lt;p&gt;A job's latency is very important. Here you can measure and learn about the profile of your work. With this information you can decide how to scale up / down your workers.&lt;/p&gt;
+
+&lt;p&gt;This metric along with the CPU's state will help you answer questions such as are jobs I/O bound? are they CPU bound?&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="" src="../images/blog/job-latency.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Job/sec is the ultimate eyecandy metric; Beyond that, it is also a very useful tool to base any anomaly / spike detection on with your jobs. It's also one of the metrics that you should always find changing - seasonality, peaks, spikes, etc.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="" src="../images/blog/jobs-sec.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Worker errors are errors that aren't handled by any of your code. Very useful for a baseline for monitoring.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="" src="../images/blog/worker-errors.png" /&gt;&lt;/p&gt;
+
+&lt;h4 id="monitoring-rabbitmq"&gt;Monitoring RabbitMQ&lt;/h4&gt;
+
+&lt;p&gt;A great set of practices for Monitoring RabbitMQ is the same set for most queue brokers.&lt;/p&gt;
+
+&lt;p&gt;Here's a few ideas to get you running:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;A queue with no activity (no push, no drain) is a bad queue.&lt;/li&gt;
+  &lt;li&gt;A queue should always have traffic in + traffic out.&lt;/li&gt;
+  &lt;li&gt;A queue should have a LWA (Low-watermark-alert), and HWA (High-watermark-alert). Set your own based on your learnt real-world metrics.&lt;/li&gt;
+  &lt;li&gt;A queue should always be draining. A queue's level should not be monotonically increasing forever (or a given acceptable time-window).&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id="monitoring-server-vitals"&gt;Monitoring Server Vitals&lt;/h4&gt;
+
+&lt;p&gt;When you're trying to troubleshoot a sneaky problem, server vitals can increase the resolution and usually would provide an answer to your problems.&lt;/p&gt;
+
+&lt;p&gt;Starting off with CPU, obviously. This is cpu-idle:&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="" src="../images/blog/cpu-idle.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Many threads, many processes generate a lot of contention and context switches. You want to be able to visualize the bottlenecks.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="" src="../images/blog/context-switches.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Ruby processes may become notoriously memory-hungry. This is real free memory:&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="" src="../images/blog/free-mem.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;If your worker interacts with the world, it's useful to monitor the amount of open connections. Open connections run out quickly on a high-scale solution. This is open connections:&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="" src="../images/blog/open-web-connections.png" /&gt;&lt;/p&gt;
+
+&lt;h4 id="conclusion"&gt;Conclusion&lt;/h4&gt;
+
+&lt;p&gt;There's no such thing as too much metrics (actually there is, but let's pretend there isn't). Once you bump into a hard problem in the field of background processing, the nature of it being async makes the problem very illusive.&lt;/p&gt;
+
+&lt;p&gt;You have to have some kind of historical viewport where you can examine and cross-reference several worker-level, job-level, and hardware-level metrics.&lt;/p&gt;
+
+</content>
+  </entry>
+  <entry>
+    <title>Modular Workers for Easier Testing and Development</title>
+    <link rel="alternate" href="http://blog.url.com/blog/2014/12/04/modular-workers.html"/>
+    <id>http://blog.url.com/blog/2014/12/04/modular-workers.html</id>
+    <published>2014-12-04T02:00:00+02:00</published>
+    <updated>2016-07-06T23:29:10+03:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;A background worker in the Ruby world can find its place either assiting a
+Rails stack, or having a life of its own.&lt;/p&gt;
+
+&lt;p&gt;I argue that in either case, giving a worker a life of its own will be highly productive in the long run. Having
+the worker modeled as a stand-alone library or a gem, a module if you will, is even more productive.&lt;/p&gt;
+
+&lt;h4 id="whats-a-modular-worker"&gt;What's a Modular Worker?&lt;/h4&gt;
+
+&lt;p&gt;Simply put, a modular worker is a worker that is a library or a project of its own. You can export it to a gem and then depend on it,
+and in turn, it can declare what it depends on - like any other software project.&lt;/p&gt;
+
+&lt;p&gt;A modular worker is a first-class software project, that can be iterated upon independently and quickly.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="" src="../images/blog/modular_workers-acmeworker.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;One strategy of creating a modular worker architecture is to extract all your worker code into 2 projects.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Shell worker project&lt;/li&gt;
+  &lt;li&gt;Actual worker logic project&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Illustrated above - is a shell project, where you wire up your worker logic against an actual worker logic project. Within such a shell project,
+you would set up:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Deployment&lt;/li&gt;
+  &lt;li&gt;Runner strategy (foreman/upstart/runit, supporting scripts)&lt;/li&gt;
+  &lt;li&gt;Supporting configuration - logging, monitoring&lt;/li&gt;
+  &lt;li&gt;Integration tests and harnesses with real data&lt;/li&gt;
+  &lt;li&gt;Dependency and wiring up of the worker into the actual logic code that is &lt;code&gt;AcmeCorp::Handler&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This frees the core &lt;code&gt;AcmeCorp::Handler&lt;/code&gt; project to be:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Ignorant of "operational" concerns, with less operational dependencies&lt;/li&gt;
+  &lt;li&gt;A simple Ruby project, familiar to any developer&lt;/li&gt;
+  &lt;li&gt;Rapidly developed and tested - you pick your workflow&lt;/li&gt;
+  &lt;li&gt;A composable gem, that is fully versioned&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;With this layout, 90% of the time - you'll be maintaining the actual logic of handling messages, while being assured 
+that other concerns like deployment, integration tests, etc. are just taking 10% of your time and can also
+be maintained by other non-domain relevant members of the team (devops?).&lt;/p&gt;
+
+&lt;p&gt;To recap, now you'll be treating workers like so:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Worker Shell aspects - deployment, monitoring etc. are a repo, and a gem, maintained separately.&lt;/li&gt;
+  &lt;li&gt;Business aspects - logic, message handling etc. are a repo, and a gem, maintained separately.&lt;/li&gt;
+  &lt;li&gt;The shell can be reused.&lt;/li&gt;
+  &lt;li&gt;The whole system is a set of gems, like any other project.&lt;/li&gt;
+  &lt;li&gt;The whole system is released and versioned as a first-class software product.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id="sneakers-does-modular-workers-by-default"&gt;Sneakers Does Modular Workers by Default&lt;/h4&gt;
+
+&lt;p&gt;Using Sneakers, you're already doing this without noticing. If you'll take a look at Sneakers' test suite, you'll find that testing
+is easy and simple, and that workers are modular enough that you can pack any of them into gems easily.&lt;/p&gt;
+
+&lt;p&gt;In fact I mostly start a Sneakers worker project by doing a &lt;code&gt;bundle gem my_worker&lt;/code&gt; and then including Sneakers into the &lt;code&gt;gemspec&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Sneakers packs the shell and logic aspects as a singular project, which is good for most if not all use cases.
+You can include your operational concerns within it, as well as your message handling logic - no harm done.&lt;/p&gt;
+
+&lt;p&gt;If you find you need that extra-degree of separation, Sneakers makes it very easy to take apart your worker project into 2
+separate projects as discussed above.&lt;/p&gt;
+
+&lt;h4 id="testing"&gt;Testing&lt;/h4&gt;
+
+&lt;p&gt;Testing a system which depends on a real queue can be nasty (much like testing against a real database).&lt;/p&gt;
+
+&lt;p&gt;However with this layout it becomes easy and manageable:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Unit testing, simple - because &lt;code&gt;AcmeCorp::Handler&lt;/code&gt; is a simple Ruby project.&lt;/li&gt;
+  &lt;li&gt;Integration testing / acceptance testing - focused within the Shell Project, you can do all of the typical 'dirty' test-harness tricks there.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id="the-price-modular-messaging"&gt;The Price: Modular Messaging&lt;/h4&gt;
+
+&lt;p&gt;Getting these immense gains from such an architecture, comes at a price of making sure the architecture supports modular messaging.&lt;/p&gt;
+
+&lt;p&gt;Plainly spoken, you will need to be sure a message is self-contained which means you can't just send off an ID of an item in the database;
+you'll have to send off the entire object.&lt;/p&gt;
+
+</content>
+  </entry>
+  <entry>
+    <title>What We've Been Trough</title>
+    <link rel="alternate" href="http://blog.url.com/blog/2014/11/21/what-weve-been-through.html"/>
+    <id>http://blog.url.com/blog/2014/11/21/what-weve-been-through.html</id>
+    <published>2014-11-21T02:00:00+02:00</published>
+    <updated>2016-07-06T23:29:10+03:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;I think it's safe to say: Sneakers is production grade.
+At all of my production deployments, Sneakers outlived and far exceeded it's original goal. On of them, it's been almost 2 years, 4 BILLION jobs processed, supporting 5 completely different use cases.&lt;/p&gt;
+
+&lt;p&gt;I'm humbled that a lot of smart people contributed to this project and major companies adopted it. All I hope for, is that it has saved you time, and made your job easier and more fun to do.&lt;/p&gt;
+
+&lt;p&gt;That it solved a problem for you.&lt;/p&gt;
+
+&lt;p&gt;With that in mind - I'd like to share with you the news, and what's coming.&lt;/p&gt;
+
+&lt;h2 id="the-numbers"&gt;The Numbers&lt;/h2&gt;
+
+&lt;p&gt;Sneakers 0.7 (the latest stable release), and the &lt;code&gt;pre&lt;/code&gt; versions did a lot so far:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Over 4 BILLION jobs processed at 2 mission-critical deployments (one is touching money).&lt;/li&gt;
+  &lt;li&gt;At least 5 major companies have Sneakers running in production.&lt;/li&gt;
+  &lt;li&gt;Almost 900 stars, 29 watchers, and 86 forks.&lt;/li&gt;
+  &lt;li&gt;35 pull requests merged&lt;/li&gt;
+  &lt;li&gt;Dozens of contributors!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id="new-and-notable-features"&gt;New and Notable Features&lt;/h2&gt;
+
+&lt;p&gt;Since Sneakers 0.7, there's been a lot of community work which resulted
+in excellent quality contributions. Here's a list of new and notable
+features.&lt;/p&gt;
+
+&lt;h5 id="rails-activejob"&gt;Rails ActiveJob&lt;/h5&gt;
+
+&lt;p&gt;Sneakers is now supported with Rails' new &lt;a href="http://edgeapi.rubyonrails.org/classes/ActiveJob/QueueAdapters.html"&gt;ActiveJob queueing API&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;To set Sneakers in your app:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ruby
+Rails.application.config.active_job.queue_adapter = :sneakers
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks Rails Team!&lt;/p&gt;
+
+&lt;h5 id="retryhandler-pr-73httpsgithubcomjondotsneakerspull73"&gt;RetryHandler &lt;a href="https://github.com/jondot/sneakers/pull/73"&gt;PR-73&lt;/a&gt;&lt;/h5&gt;
+
+&lt;p&gt;You can now set up a retry handler - failing jobs will get retried up to a maximum number of times, afterwhich they'll be sent to an error queue.&lt;/p&gt;
+
+&lt;p&gt;This is a well known, healthy pattern, to promote self-healing and
+reliability; which is why RabbitMQ supports dead letter policies.&lt;/p&gt;
+
+&lt;p&gt;To enable, add these to your worker options:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ruby
+:arguments =&amp;gt; {
+                  :'x-dead-letter-exchange' =&amp;gt; 'downloads-retry'
+              }
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;And configure your policy:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ruby
+Sneakers.configure(:handler =&amp;gt; Sneakers::Handlers::Maxretry,
+  :
+  :
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Through sophisticated message header juggling, we've got some awesome work by @imothee, led by @justin-yeswere with contributions by @lkang to make this happen.&lt;/p&gt;
+
+&lt;p&gt;Thanks guys!&lt;/p&gt;
+
+&lt;h5 id="bunny-logger-sharing-pr-71httpsgithubcomjondotsneakerspull71"&gt;Bunny Logger Sharing &lt;a href="https://github.com/jondot/sneakers/pull/71"&gt;PR-71&lt;/a&gt;&lt;/h5&gt;
+
+&lt;p&gt;Bunny is the RabbitMQ driver behind Sneakers. Sneakers will now share your main logger, and redirect core Bunny logs into your main logger.&lt;/p&gt;
+
+&lt;p&gt;Thanks @trungpham!&lt;/p&gt;
+
+&lt;h5 id="internalexternal-api-improvements-pr-56httpsgithubcomjondotsneakerspull56-pr-54httpsgithubcomjondotsneakerspull54-pr-53httpsgithubcomjondotsneakerspull56-pr-47httpsgithubcomjondotsneakerspull47"&gt;Internal/External API Improvements &lt;a href="https://github.com/jondot/sneakers/pull/56"&gt;PR-56&lt;/a&gt;, &lt;a href="https://github.com/jondot/sneakers/pull/54"&gt;PR-54&lt;/a&gt;, &lt;a href="https://github.com/jondot/sneakers/pull/56"&gt;PR-53&lt;/a&gt;, &lt;a href="https://github.com/jondot/sneakers/pull/47"&gt;PR-47&lt;/a&gt;&lt;/h5&gt;
+
+&lt;p&gt;Excellent pull requests from @norman who single-handedly crafted a better API for those of you building handlers and/or doing a bit more involved worker configuration.&lt;/p&gt;
+
+&lt;p&gt;Thanks @norman!&lt;/p&gt;
+
+&lt;h5 id="better-rabbitmq-configuration-pr-52httpsgithubcomjondotsneakerspull52"&gt;Better RabbitMQ Configuration &lt;a href="https://github.com/jondot/sneakers/pull/52"&gt;PR-52&lt;/a&gt;&lt;/h5&gt;
+
+&lt;p&gt;Sneakers now respects &lt;code&gt;RABBITMQ_URL&lt;/code&gt; - thanks @norman!.&lt;/p&gt;
+
+&lt;h5 id="publisher-persistence-pr-40httpsgithubcomjondotsneakerspull40"&gt;Publisher Persistence &lt;a href="https://github.com/jondot/sneakers/pull/40"&gt;PR-40&lt;/a&gt;&lt;/h5&gt;
+
+&lt;p&gt;Although &lt;code&gt;Sneakers::Publisher&lt;/code&gt; weren't the focus of Sneakers, it
+received some love from @jkogara, and you can now specify persistence:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ruby
+my_publisher.publish('test msg', routing_key: 'downloads', persistence: true)
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks @jkogara!&lt;/p&gt;
+
+&lt;h5 id="use-newrelic-for-metrics-pr-37httpsgithubcomjondotsneakerspull37"&gt;Use NewRelic for Metrics &lt;a href="https://github.com/jondot/sneakers/pull/37"&gt;PR-37&lt;/a&gt;&lt;/h5&gt;
+
+&lt;p&gt;You can now configure NewRelic for metrics:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ruby
+Sneakers.configure metrics: Sneakers::Metrics::NewrelicMetrics.new
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks @arielze!&lt;/p&gt;
+
+&lt;h4 id="many-more-additions"&gt;Many More Additions&lt;/h4&gt;
+
+&lt;p&gt;There's many more additions such as specifying routing keys explicitely,
+enqueing via worker, etc.&lt;/p&gt;
+
+&lt;p&gt;You can take a look at the entire &lt;a href="https://github.com/jondot/sneakers/pulls?q=is%3Apr+is%3Aclosed"&gt;list of additions&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks everyone!!&lt;/p&gt;
+
+</content>
+  </entry>
+</feed>

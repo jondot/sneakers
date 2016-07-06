@@ -1,0 +1,3815 @@
+@charset "UTF-8";/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+
+/**
+ * 1. Set default font family to sans-serif.
+ * 2. Prevent iOS and IE text size adjust after device orientation change,
+ *    without disabling user zoom.
+ */
+
+
+html {
+  font-family: sans-serif; /* 1 */
+  -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+
+/**
+ * Remove default margin.
+ */
+
+body {
+  margin: 0;
+}
+
+/* HTML5 display definitions
+   ========================================================================== */
+
+/**
+ * Correct `block` display not defined for any HTML5 element in IE 8/9.
+ * Correct `block` display not defined for `details` or `summary` in IE 10/11
+ * and Firefox.
+ * Correct `block` display not defined for `main` in IE 11.
+ */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+
+/**
+ * 1. Correct `inline-block` display not defined in IE 8/9.
+ * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
+ */
+
+audio,
+canvas,
+progress,
+video {
+  display: inline-block; /* 1 */
+  vertical-align: baseline; /* 2 */
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+/**
+ * Address `[hidden]` styling not present in IE 8/9/10.
+ * Hide the `template` element in IE 8/9/10/11, Safari, and Firefox < 22.
+ */
+
+[hidden],
+template {
+  display: none;
+}
+
+/* Links
+   ========================================================================== */
+
+/**
+ * Remove the gray background color from active links in IE 10.
+ */
+
+a {
+  background-color: transparent;
+}
+
+/**
+ * Improve readability of focused elements when they are also in an
+ * active/hover state.
+ */
+
+a:active,
+a:hover {
+  outline: 0;
+}
+
+/* Text-level semantics
+   ========================================================================== */
+
+/**
+ * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
+ */
+
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
+ */
+
+b,
+strong {
+  font-weight: bold;
+}
+
+/**
+ * Address styling not present in Safari and Chrome.
+ */
+
+dfn {
+  font-style: italic;
+}
+
+/**
+ * Address variable `h1` font-size and margin within `section` and `article`
+ * contexts in Firefox 4+, Safari, and Chrome.
+ */
+
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+/**
+ * Address styling not present in IE 8/9.
+ */
+
+mark {
+  background: #ff0;
+  color: #000;
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+
+small {
+  font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sup {
+  top: -0.5em;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+/* Embedded content
+   ========================================================================== */
+
+/**
+ * Remove border when inside `a` element in IE 8/9/10.
+ */
+
+img {
+  border: 0;
+}
+
+/**
+ * Correct overflow not hidden in IE 9/10/11.
+ */
+
+svg:not(:root) {
+  overflow: hidden;
+}
+
+/* Grouping content
+   ========================================================================== */
+
+/**
+ * Address margin not present in IE 8/9 and Safari.
+ */
+
+figure {
+  margin: 1em 40px;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ */
+
+hr {
+  box-sizing: content-box;
+  height: 0;
+}
+
+/**
+ * Contain overflow in all browsers.
+ */
+
+pre {
+  overflow: auto;
+}
+
+/**
+ * Address odd `em`-unit font size rendering in all browsers.
+ */
+
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+/* Forms
+   ========================================================================== */
+
+/**
+ * Known limitation: by default, Chrome and Safari on OS X allow very limited
+ * styling of `select`, unless a `border` property is set.
+ */
+
+/**
+ * 1. Correct color not being inherited.
+ *    Known issue: affects color of disabled elements.
+ * 2. Correct font properties not being inherited.
+ * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
+ */
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit; /* 1 */
+  font: inherit; /* 2 */
+  margin: 0; /* 3 */
+}
+
+/**
+ * Address `overflow` set to `hidden` in IE 8/9/10/11.
+ */
+
+button {
+  overflow: visible;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
+ * Correct `select` style inheritance in Firefox.
+ */
+
+button,
+select {
+  text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ */
+
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button; /* 2 */
+  cursor: pointer; /* 3 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+
+/**
+ * Remove inner padding and border in Firefox 4+.
+ */
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/**
+ * Address Firefox 4+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+
+input {
+  line-height: normal;
+}
+
+/**
+ * It's recommended that you don't attempt to style these elements.
+ * Firefox's implementation doesn't respect box-sizing, padding, or width.
+ *
+ * 1. Address box sizing set to `content-box` in IE 8/9/10.
+ * 2. Remove excess padding in IE 8/9/10.
+ */
+
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+
+/**
+ * Fix the cursor style for Chrome's increment/decrement buttons. For certain
+ * `font-size` values of the `input`, it causes the cursor style of the
+ * decrement button to change from `default` to `text`.
+ */
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari and Chrome.
+ */
+
+input[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  box-sizing: content-box; /* 2 */
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari and Chrome on OS X.
+ * Safari (but not Chrome) clips the cancel button when the search input has
+ * padding (and `textfield` appearance).
+ */
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct `color` not being inherited in IE 8/9/10/11.
+ * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+ */
+
+legend {
+  border: 0; /* 1 */
+  padding: 0; /* 2 */
+}
+
+/**
+ * Remove default vertical scrollbar in IE 8/9/10/11.
+ */
+
+textarea {
+  overflow: auto;
+}
+
+/**
+ * Don't inherit the `font-weight` (applied by a rule above).
+ * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
+ */
+
+optgroup {
+  font-weight: bold;
+}
+
+/* Tables
+   ========================================================================== */
+
+/**
+ * Remove most spacing between table cells.
+ */
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+td,
+th {
+  padding: 0;
+}
+/*
+
+github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+
+*/
+
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: #333;
+  background: #f8f8f8;
+  -webkit-text-size-adjust: none;
+}
+
+.hljs-comment,
+.diff .hljs-header,
+.hljs-javadoc {
+  color: #998;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.css .rule .hljs-keyword,
+.hljs-winutils,
+.nginx .hljs-title,
+.hljs-subst,
+.hljs-request,
+.hljs-status {
+  color: #333;
+  font-weight: bold;
+}
+
+.hljs-number,
+.hljs-hexcolor,
+.ruby .hljs-constant {
+  color: #008080;
+}
+
+.hljs-string,
+.hljs-tag .hljs-value,
+.hljs-phpdoc,
+.hljs-dartdoc,
+.tex .hljs-formula {
+  color: #d14;
+}
+
+.hljs-title,
+.hljs-id,
+.scss .hljs-preprocessor {
+  color: #900;
+  font-weight: bold;
+}
+
+.hljs-list .hljs-keyword,
+.hljs-subst {
+  font-weight: normal;
+}
+
+.hljs-class .hljs-title,
+.hljs-type,
+.vhdl .hljs-literal,
+.tex .hljs-command {
+  color: #458;
+  font-weight: bold;
+}
+
+.hljs-tag,
+.hljs-tag .hljs-title,
+.hljs-rules .hljs-property,
+.django .hljs-tag .hljs-keyword {
+  color: #000080;
+  font-weight: normal;
+}
+
+.hljs-attribute,
+.hljs-variable,
+.lisp .hljs-body {
+  color: #008080;
+}
+
+.hljs-regexp {
+  color: #009926;
+}
+
+.hljs-symbol,
+.ruby .hljs-symbol .hljs-string,
+.lisp .hljs-keyword,
+.clojure .hljs-keyword,
+.scheme .hljs-keyword,
+.tex .hljs-special,
+.hljs-prompt {
+  color: #990073;
+}
+
+.hljs-built_in {
+  color: #0086b3;
+}
+
+.hljs-preprocessor,
+.hljs-pragma,
+.hljs-pi,
+.hljs-doctype,
+.hljs-shebang,
+.hljs-cdata {
+  color: #999;
+  font-weight: bold;
+}
+
+.hljs-deletion {
+  background: #fdd;
+}
+
+.hljs-addition {
+  background: #dfd;
+}
+
+.diff .hljs-change {
+  background: #0086b3;
+}
+
+.hljs-chunk {
+  color: #aaa;
+}
+.hll { background-color: #ffffcc }
+.c { color: #999988; font-style: italic } /* Comment */
+.err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.k { color: #000000; font-weight: bold } /* Keyword */
+.o { color: #000000; font-weight: bold } /* Operator */
+.cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.cp { color: #999999; font-weight: bold; font-style: italic } /* Comment.Preproc */
+.c1 { color: #999988; font-style: italic } /* Comment.Single */
+.cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.ge { color: #000000; font-style: italic } /* Generic.Emph */
+.gr { color: #aa0000 } /* Generic.Error */
+.gh { color: #999999 } /* Generic.Heading */
+.gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.go { color: #888888 } /* Generic.Output */
+.gp { color: #555555 } /* Generic.Prompt */
+.gs { font-weight: bold } /* Generic.Strong */
+.gu { color: #aaaaaa } /* Generic.Subheading */
+.gt { color: #aa0000 } /* Generic.Traceback */
+.kc { color: #000000; font-weight: bold } /* Keyword.Constant */
+.kd { color: #000000; font-weight: bold } /* Keyword.Declaration */
+.kn { color: #000000; font-weight: bold } /* Keyword.Namespace */
+.kp { color: #000000; font-weight: bold } /* Keyword.Pseudo */
+.kr { color: #000000; font-weight: bold } /* Keyword.Reserved */
+.kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.m { color: #009999 } /* Literal.Number */
+.s { color: #d01040 } /* Literal.String */
+.na { color: #008080 } /* Name.Attribute */
+.nb { color: #0086B3 } /* Name.Builtin */
+.nc { color: #445588; font-weight: bold } /* Name.Class */
+.no { color: #008080 } /* Name.Constant */
+.nd { color: #3c5d5d; font-weight: bold } /* Name.Decorator */
+.ni { color: #800080 } /* Name.Entity */
+.ne { color: #990000; font-weight: bold } /* Name.Exception */
+.nf { color: #990000; font-weight: bold } /* Name.Function */
+.nl { color: #990000; font-weight: bold } /* Name.Label */
+.nn { color: #555555 } /* Name.Namespace */
+.nt { color: #000080 } /* Name.Tag */
+.nv { color: #008080 } /* Name.Variable */
+.ow { color: #000000; font-weight: bold } /* Operator.Word */
+.w { color: #bbbbbb } /* Text.Whitespace */
+.mf { color: #009999 } /* Literal.Number.Float */
+.mh { color: #009999 } /* Literal.Number.Hex */
+.mi { color: #009999 } /* Literal.Number.Integer */
+.mo { color: #009999 } /* Literal.Number.Oct */
+.sb { color: #d01040 } /* Literal.String.Backtick */
+.sc { color: #d01040 } /* Literal.String.Char */
+.sd { color: #d01040 } /* Literal.String.Doc */
+.s2 { color: #d01040 } /* Literal.String.Double */
+.se { color: #d01040 } /* Literal.String.Escape */
+.sh { color: #d01040 } /* Literal.String.Heredoc */
+.si { color: #d01040 } /* Literal.String.Interpol */
+.sx { color: #d01040 } /* Literal.String.Other */
+.sr { color: #009926 } /* Literal.String.Regex */
+.s1 { color: #d01040 } /* Literal.String.Single */
+.ss { color: #990073 } /* Literal.String.Symbol */
+.bp { color: #999999 } /* Name.Builtin.Pseudo */
+.vc { color: #008080 } /* Name.Variable.Class */
+.vg { color: #008080 } /* Name.Variable.Global */
+.vi { color: #008080 } /* Name.Variable.Instance */
+.il { color: #009999 } /* Literal.Number.Integer.Long */
+
+/* Bitters 0.10.0
+ * http://bitters.bourbon.io
+ * Copyright 2013–2014 thoughtbot, inc.
+ * MIT License */
+/* line 1, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/extends/_button.scss */
+button,
+input[type="submit"] {
+  -webkit-font-smoothing: antialiased;
+  background-color: #477DCA;
+  border-radius: 3px;
+  color: white;
+  display: inline-block;
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1;
+  padding: 0.75em 1em;
+  text-decoration: none; }
+  /* line 13, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/extends/_button.scss */
+  button:hover,
+  input[type="submit"]:hover {
+    background-color: #2c5999;
+    color: white; }
+  /* line 18, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/extends/_button.scss */
+  button:disabled,
+  input[type="submit"]:disabled {
+    cursor: not-allowed;
+    opacity: 0.5; }
+
+/* line 1, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+body {
+  -webkit-font-smoothing: antialiased;
+  background-color: white;
+  color: #333;
+  font-family: "Roboto", sans-serif;
+  font-size: 1em;
+  line-height: 1.5; }
+
+/* line 10, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Roboto", sans-serif;
+  line-height: 1.25;
+  margin: 0;
+  text-rendering: optimizeLegibility; }
+
+/* line 22, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+h1 {
+  font-size: 2.25em; }
+
+/* line 26, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+h2 {
+  font-size: 2em; }
+
+/* line 30, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+h3 {
+  font-size: 1.75em; }
+
+/* line 34, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+h4 {
+  font-size: 1.5em; }
+
+/* line 38, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+h5 {
+  font-size: 1.25em; }
+
+/* line 42, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+h6 {
+  font-size: 1em; }
+
+/* line 46, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+p {
+  margin: 0 0 0.75em; }
+
+/* line 50, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+a {
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+  color: #477DCA;
+  text-decoration: none; }
+  /* line 55, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+  a:hover {
+    color: #2c5999; }
+  /* line 59, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+  a:active, a:focus {
+    color: #2c5999;
+    outline: none; }
+
+/* line 65, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+hr {
+  border-bottom: 1px solid #DDD;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  margin: 1.5em 0; }
+
+/* line 73, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+img,
+picture {
+  margin: 0;
+  max-width: 100%; }
+
+/* line 79, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+blockquote {
+  border-left: 2px solid #DDD;
+  color: #595959;
+  margin: 1.5em 0;
+  padding-left: 0.75em; }
+
+/* line 86, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+cite {
+  color: #737373;
+  font-style: italic; }
+  /* line 90, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_typography.scss */
+  cite:before {
+    content: "\2014 \00A0"; }
+
+/* line 1, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+fieldset {
+  background: #f7f7f7;
+  border: 1px solid #DDD;
+  margin: 0 0 0.75em 0;
+  padding: 1.5em; }
+
+/* line 8, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+input,
+label,
+select {
+  display: block;
+  font-family: "Roboto", sans-serif;
+  font-size: 1em; }
+
+/* line 16, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+label {
+  font-weight: bold;
+  margin-bottom: 0.375em; }
+  /* line 20, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+  label.required:after {
+    content: "*"; }
+  /* line 24, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+  label abbr {
+    display: none; }
+
+/* line 29, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+textarea,
+input[type="color"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="email"], input[type="month"], input[type="number"], input[type="password"], input[type="search"], input[type="tel"], input[type="text"], input[type="time"], input[type="url"], input[type="week"], textarea,
+select[multiple=multiple] {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: border-color;
+  -moz-transition: border-color;
+  transition: border-color;
+  background-color: white;
+  border-radius: 3px;
+  border: 1px solid #DDD;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+  font-family: "Roboto", sans-serif;
+  font-size: 1em;
+  margin-bottom: 0.75em;
+  padding: 0.5em 0.5em;
+  width: 100%; }
+  /* line 44, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+  textarea:hover,
+  input[type="color"]:hover, input[type="date"]:hover, input[type="datetime"]:hover, input[type="datetime-local"]:hover, input[type="email"]:hover, input[type="month"]:hover, input[type="number"]:hover, input[type="password"]:hover, input[type="search"]:hover, input[type="tel"]:hover, input[type="text"]:hover, input[type="time"]:hover, input[type="url"]:hover, input[type="week"]:hover, textarea:hover,
+  select[multiple=multiple]:hover {
+    border-color: #c4c4c4; }
+  /* line 48, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+  textarea:focus,
+  input[type="color"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="email"]:focus, input[type="month"]:focus, input[type="number"]:focus, input[type="password"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="text"]:focus, input[type="time"]:focus, input[type="url"]:focus, input[type="week"]:focus, textarea:focus,
+  select[multiple=multiple]:focus {
+    border-color: #477DCA;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06), 0 0 5px rgba(55, 112, 192, 0.7);
+    outline: none; }
+
+/* line 55, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+textarea {
+  resize: vertical; }
+
+/* line 59, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+input[type="search"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none; }
+
+/* line 63, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+input[type="checkbox"],
+input[type="radio"] {
+  display: inline;
+  margin-right: 0.375em; }
+
+/* line 69, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+input[type="file"] {
+  padding-bottom: 0.75em;
+  width: 100%; }
+
+/* line 74, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_forms.scss */
+select {
+  margin-bottom: 1.5em;
+  max-width: 100%;
+  width: auto; }
+
+/* line 1, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_tables.scss */
+table {
+  border-collapse: collapse;
+  margin: 0.75em 0;
+  table-layout: fixed;
+  width: 100%; }
+
+/* line 8, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_tables.scss */
+th {
+  border-bottom: 1px solid #b7b7b7;
+  font-weight: bold;
+  padding: 0.75em 0;
+  text-align: left; }
+
+/* line 15, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_tables.scss */
+td {
+  border-bottom: 1px solid #DDD;
+  padding: 0.75em 0; }
+
+/* line 20, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_tables.scss */
+tr,
+td,
+th {
+  vertical-align: middle; }
+
+/* line 1, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_lists.scss */
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style-type: none; }
+/* line 20, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_lists.scss */
+dl {
+  margin-bottom: 0.75em; }
+  /* line 23, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_lists.scss */
+  dl dt {
+    font-weight: bold;
+    margin-top: 0.75em; }
+  /* line 28, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_lists.scss */
+  dl dd {
+    margin: 0; }
+
+/* line 1, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/base/_buttons.scss */
+button,
+input[type="submit"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap; }
+
+/* Neat 1.7.0
+ * http://neat.bourbon.io
+ * Copyright 2012-2014 thoughtbot, inc.
+ * MIT License */
+/* line 2, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_box-sizing.scss */
+html {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+/* line 7, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_box-sizing.scss */
+*, *:before, *:after {
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  box-sizing: inherit; }
+
+/*!
+ *  Font Awesome 4.2.0 by @davegandy - http://fontawesome.io - @fontawesome
+ *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+ */
+/* FONT PATH
+ * -------------------------- */
+@font-face {
+  font-family: 'FontAwesome';
+  src: url("../fonts/fontawesome-webfont.eot?v=4.2.0");
+  src: url("../fonts/fontawesome-webfont.eot?#iefix&v=4.2.0") format("embedded-opentype"), url("../fonts/fontawesome-webfont.woff?v=4.2.0") format("woff"), url("../fonts/fontawesome-webfont.ttf?v=4.2.0") format("truetype"), url("../fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+/* line 4, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_core.scss */
+.fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+/* makes the font 33% larger relative to the icon container */
+/* line 6, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_larger.scss */
+.fa-lg {
+  font-size: 1.33333em;
+  line-height: 0.75em;
+  vertical-align: -15%; }
+
+/* line 11, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_larger.scss */
+.fa-2x {
+  font-size: 2em; }
+
+/* line 12, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_larger.scss */
+.fa-3x {
+  font-size: 3em; }
+
+/* line 13, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_larger.scss */
+.fa-4x {
+  font-size: 4em; }
+
+/* line 14, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_larger.scss */
+.fa-5x {
+  font-size: 5em; }
+
+/* line 4, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_fixed-width.scss */
+.fa-fw {
+  width: 1.28571em;
+  text-align: center; }
+
+/* line 5, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_list.scss */
+.fa-ul {
+  padding-left: 0;
+  margin-left: 2.14286em;
+  list-style-type: none; }
+  /* line 9, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_list.scss */
+  .fa-ul > li {
+    position: relative; }
+
+/* line 11, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_list.scss */
+.fa-li {
+  position: absolute;
+  left: -2.14286em;
+  width: 2.14286em;
+  top: 0.14286em;
+  text-align: center; }
+  /* line 17, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_list.scss */
+  .fa-li.fa-lg {
+    left: -1.85714em; }
+
+/* line 5, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_bordered-pulled.scss */
+.fa-border {
+  padding: .2em .25em .15em;
+  border: solid 0.08em #eee;
+  border-radius: .1em; }
+
+/* line 11, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_bordered-pulled.scss */
+.pull-right {
+  float: right; }
+
+/* line 12, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_bordered-pulled.scss */
+.pull-left {
+  float: left; }
+
+/* line 15, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_bordered-pulled.scss */
+.fa.pull-left {
+  margin-right: .3em; }
+/* line 16, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_bordered-pulled.scss */
+.fa.pull-right {
+  margin-left: .3em; }
+
+/* line 5, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_spinning.scss */
+.fa-spin {
+  -webkit-animation: fa-spin 2s infinite linear;
+  animation: fa-spin 2s infinite linear; }
+
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg); } }
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg); } }
+/* line 5, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_rotated-flipped.scss */
+.fa-rotate-90 {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg); }
+
+/* line 6, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_rotated-flipped.scss */
+.fa-rotate-180 {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+  -webkit-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg); }
+
+/* line 7, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_rotated-flipped.scss */
+.fa-rotate-270 {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  -webkit-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  transform: rotate(270deg); }
+
+/* line 9, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_rotated-flipped.scss */
+.fa-flip-horizontal {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=0);
+  -webkit-transform: scale(-1, 1);
+  -ms-transform: scale(-1, 1);
+  transform: scale(-1, 1); }
+
+/* line 10, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_rotated-flipped.scss */
+.fa-flip-vertical {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+  -webkit-transform: scale(1, -1);
+  -ms-transform: scale(1, -1);
+  transform: scale(1, -1); }
+
+/* line 15, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_rotated-flipped.scss */
+:root .fa-rotate-90,
+:root .fa-rotate-180,
+:root .fa-rotate-270,
+:root .fa-flip-horizontal,
+:root .fa-flip-vertical {
+  filter: none; }
+
+/* line 5, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_stacked.scss */
+.fa-stack {
+  position: relative;
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  line-height: 2em;
+  vertical-align: middle; }
+
+/* line 13, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_stacked.scss */
+.fa-stack-1x, .fa-stack-2x {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  text-align: center; }
+
+/* line 19, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_stacked.scss */
+.fa-stack-1x {
+  line-height: inherit; }
+
+/* line 20, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_stacked.scss */
+.fa-stack-2x {
+  font-size: 2em; }
+
+/* line 21, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_stacked.scss */
+.fa-inverse {
+  color: #fff; }
+
+/* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
+   readers do not read off random characters that represent icons */
+/* line 5, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-glass:before {
+  content: ""; }
+
+/* line 6, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-music:before {
+  content: ""; }
+
+/* line 7, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-search:before {
+  content: ""; }
+
+/* line 8, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-envelope-o:before {
+  content: ""; }
+
+/* line 9, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-heart:before {
+  content: ""; }
+
+/* line 10, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-star:before {
+  content: ""; }
+
+/* line 11, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-star-o:before {
+  content: ""; }
+
+/* line 12, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-user:before {
+  content: ""; }
+
+/* line 13, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-film:before {
+  content: ""; }
+
+/* line 14, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-th-large:before {
+  content: ""; }
+
+/* line 15, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-th:before {
+  content: ""; }
+
+/* line 16, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-th-list:before {
+  content: ""; }
+
+/* line 17, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-check:before {
+  content: ""; }
+
+/* line 18, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-remove:before,
+.fa-close:before,
+.fa-times:before {
+  content: ""; }
+
+/* line 21, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-search-plus:before {
+  content: ""; }
+
+/* line 22, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-search-minus:before {
+  content: ""; }
+
+/* line 23, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-power-off:before {
+  content: ""; }
+
+/* line 24, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-signal:before {
+  content: ""; }
+
+/* line 25, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-gear:before,
+.fa-cog:before {
+  content: ""; }
+
+/* line 27, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-trash-o:before {
+  content: ""; }
+
+/* line 28, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-home:before {
+  content: ""; }
+
+/* line 29, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-o:before {
+  content: ""; }
+
+/* line 30, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-clock-o:before {
+  content: ""; }
+
+/* line 31, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-road:before {
+  content: ""; }
+
+/* line 32, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-download:before {
+  content: ""; }
+
+/* line 33, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-circle-o-down:before {
+  content: ""; }
+
+/* line 34, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-circle-o-up:before {
+  content: ""; }
+
+/* line 35, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-inbox:before {
+  content: ""; }
+
+/* line 36, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-play-circle-o:before {
+  content: ""; }
+
+/* line 37, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-rotate-right:before,
+.fa-repeat:before {
+  content: ""; }
+
+/* line 39, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-refresh:before {
+  content: ""; }
+
+/* line 40, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-list-alt:before {
+  content: ""; }
+
+/* line 41, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-lock:before {
+  content: ""; }
+
+/* line 42, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-flag:before {
+  content: ""; }
+
+/* line 43, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-headphones:before {
+  content: ""; }
+
+/* line 44, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-volume-off:before {
+  content: ""; }
+
+/* line 45, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-volume-down:before {
+  content: ""; }
+
+/* line 46, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-volume-up:before {
+  content: ""; }
+
+/* line 47, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-qrcode:before {
+  content: ""; }
+
+/* line 48, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-barcode:before {
+  content: ""; }
+
+/* line 49, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-tag:before {
+  content: ""; }
+
+/* line 50, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-tags:before {
+  content: ""; }
+
+/* line 51, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-book:before {
+  content: ""; }
+
+/* line 52, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bookmark:before {
+  content: ""; }
+
+/* line 53, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-print:before {
+  content: ""; }
+
+/* line 54, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-camera:before {
+  content: ""; }
+
+/* line 55, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-font:before {
+  content: ""; }
+
+/* line 56, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bold:before {
+  content: ""; }
+
+/* line 57, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-italic:before {
+  content: ""; }
+
+/* line 58, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-text-height:before {
+  content: ""; }
+
+/* line 59, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-text-width:before {
+  content: ""; }
+
+/* line 60, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-align-left:before {
+  content: ""; }
+
+/* line 61, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-align-center:before {
+  content: ""; }
+
+/* line 62, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-align-right:before {
+  content: ""; }
+
+/* line 63, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-align-justify:before {
+  content: ""; }
+
+/* line 64, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-list:before {
+  content: ""; }
+
+/* line 65, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-dedent:before,
+.fa-outdent:before {
+  content: ""; }
+
+/* line 67, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-indent:before {
+  content: ""; }
+
+/* line 68, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-video-camera:before {
+  content: ""; }
+
+/* line 69, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-photo:before,
+.fa-image:before,
+.fa-picture-o:before {
+  content: ""; }
+
+/* line 72, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-pencil:before {
+  content: ""; }
+
+/* line 73, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-map-marker:before {
+  content: ""; }
+
+/* line 74, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-adjust:before {
+  content: ""; }
+
+/* line 75, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-tint:before {
+  content: ""; }
+
+/* line 76, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-edit:before,
+.fa-pencil-square-o:before {
+  content: ""; }
+
+/* line 78, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-share-square-o:before {
+  content: ""; }
+
+/* line 79, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-check-square-o:before {
+  content: ""; }
+
+/* line 80, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrows:before {
+  content: ""; }
+
+/* line 81, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-step-backward:before {
+  content: ""; }
+
+/* line 82, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-fast-backward:before {
+  content: ""; }
+
+/* line 83, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-backward:before {
+  content: ""; }
+
+/* line 84, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-play:before {
+  content: ""; }
+
+/* line 85, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-pause:before {
+  content: ""; }
+
+/* line 86, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-stop:before {
+  content: ""; }
+
+/* line 87, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-forward:before {
+  content: ""; }
+
+/* line 88, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-fast-forward:before {
+  content: ""; }
+
+/* line 89, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-step-forward:before {
+  content: ""; }
+
+/* line 90, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-eject:before {
+  content: ""; }
+
+/* line 91, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-chevron-left:before {
+  content: ""; }
+
+/* line 92, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-chevron-right:before {
+  content: ""; }
+
+/* line 93, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-plus-circle:before {
+  content: ""; }
+
+/* line 94, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-minus-circle:before {
+  content: ""; }
+
+/* line 95, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-times-circle:before {
+  content: ""; }
+
+/* line 96, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-check-circle:before {
+  content: ""; }
+
+/* line 97, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-question-circle:before {
+  content: ""; }
+
+/* line 98, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-info-circle:before {
+  content: ""; }
+
+/* line 99, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-crosshairs:before {
+  content: ""; }
+
+/* line 100, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-times-circle-o:before {
+  content: ""; }
+
+/* line 101, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-check-circle-o:before {
+  content: ""; }
+
+/* line 102, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-ban:before {
+  content: ""; }
+
+/* line 103, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-left:before {
+  content: ""; }
+
+/* line 104, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-right:before {
+  content: ""; }
+
+/* line 105, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-up:before {
+  content: ""; }
+
+/* line 106, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-down:before {
+  content: ""; }
+
+/* line 107, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-mail-forward:before,
+.fa-share:before {
+  content: ""; }
+
+/* line 109, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-expand:before {
+  content: ""; }
+
+/* line 110, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-compress:before {
+  content: ""; }
+
+/* line 111, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-plus:before {
+  content: ""; }
+
+/* line 112, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-minus:before {
+  content: ""; }
+
+/* line 113, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-asterisk:before {
+  content: ""; }
+
+/* line 114, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-exclamation-circle:before {
+  content: ""; }
+
+/* line 115, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-gift:before {
+  content: ""; }
+
+/* line 116, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-leaf:before {
+  content: ""; }
+
+/* line 117, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-fire:before {
+  content: ""; }
+
+/* line 118, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-eye:before {
+  content: ""; }
+
+/* line 119, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-eye-slash:before {
+  content: ""; }
+
+/* line 120, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-warning:before,
+.fa-exclamation-triangle:before {
+  content: ""; }
+
+/* line 122, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-plane:before {
+  content: ""; }
+
+/* line 123, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-calendar:before {
+  content: ""; }
+
+/* line 124, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-random:before {
+  content: ""; }
+
+/* line 125, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-comment:before {
+  content: ""; }
+
+/* line 126, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-magnet:before {
+  content: ""; }
+
+/* line 127, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-chevron-up:before {
+  content: ""; }
+
+/* line 128, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-chevron-down:before {
+  content: ""; }
+
+/* line 129, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-retweet:before {
+  content: ""; }
+
+/* line 130, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-shopping-cart:before {
+  content: ""; }
+
+/* line 131, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-folder:before {
+  content: ""; }
+
+/* line 132, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-folder-open:before {
+  content: ""; }
+
+/* line 133, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrows-v:before {
+  content: ""; }
+
+/* line 134, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrows-h:before {
+  content: ""; }
+
+/* line 135, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bar-chart-o:before,
+.fa-bar-chart:before {
+  content: ""; }
+
+/* line 137, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-twitter-square:before {
+  content: ""; }
+
+/* line 138, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-facebook-square:before {
+  content: ""; }
+
+/* line 139, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-camera-retro:before {
+  content: ""; }
+
+/* line 140, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-key:before {
+  content: ""; }
+
+/* line 141, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-gears:before,
+.fa-cogs:before {
+  content: ""; }
+
+/* line 143, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-comments:before {
+  content: ""; }
+
+/* line 144, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-thumbs-o-up:before {
+  content: ""; }
+
+/* line 145, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-thumbs-o-down:before {
+  content: ""; }
+
+/* line 146, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-star-half:before {
+  content: ""; }
+
+/* line 147, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-heart-o:before {
+  content: ""; }
+
+/* line 148, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sign-out:before {
+  content: ""; }
+
+/* line 149, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-linkedin-square:before {
+  content: ""; }
+
+/* line 150, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-thumb-tack:before {
+  content: ""; }
+
+/* line 151, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-external-link:before {
+  content: ""; }
+
+/* line 152, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sign-in:before {
+  content: ""; }
+
+/* line 153, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-trophy:before {
+  content: ""; }
+
+/* line 154, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-github-square:before {
+  content: ""; }
+
+/* line 155, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-upload:before {
+  content: ""; }
+
+/* line 156, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-lemon-o:before {
+  content: ""; }
+
+/* line 157, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-phone:before {
+  content: ""; }
+
+/* line 158, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-square-o:before {
+  content: ""; }
+
+/* line 159, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bookmark-o:before {
+  content: ""; }
+
+/* line 160, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-phone-square:before {
+  content: ""; }
+
+/* line 161, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-twitter:before {
+  content: ""; }
+
+/* line 162, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-facebook:before {
+  content: ""; }
+
+/* line 163, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-github:before {
+  content: ""; }
+
+/* line 164, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-unlock:before {
+  content: ""; }
+
+/* line 165, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-credit-card:before {
+  content: ""; }
+
+/* line 166, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-rss:before {
+  content: ""; }
+
+/* line 167, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-hdd-o:before {
+  content: ""; }
+
+/* line 168, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bullhorn:before {
+  content: ""; }
+
+/* line 169, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bell:before {
+  content: ""; }
+
+/* line 170, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-certificate:before {
+  content: ""; }
+
+/* line 171, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-hand-o-right:before {
+  content: ""; }
+
+/* line 172, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-hand-o-left:before {
+  content: ""; }
+
+/* line 173, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-hand-o-up:before {
+  content: ""; }
+
+/* line 174, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-hand-o-down:before {
+  content: ""; }
+
+/* line 175, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-circle-left:before {
+  content: ""; }
+
+/* line 176, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-circle-right:before {
+  content: ""; }
+
+/* line 177, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-circle-up:before {
+  content: ""; }
+
+/* line 178, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-circle-down:before {
+  content: ""; }
+
+/* line 179, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-globe:before {
+  content: ""; }
+
+/* line 180, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-wrench:before {
+  content: ""; }
+
+/* line 181, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-tasks:before {
+  content: ""; }
+
+/* line 182, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-filter:before {
+  content: ""; }
+
+/* line 183, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-briefcase:before {
+  content: ""; }
+
+/* line 184, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrows-alt:before {
+  content: ""; }
+
+/* line 185, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-group:before,
+.fa-users:before {
+  content: ""; }
+
+/* line 187, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-chain:before,
+.fa-link:before {
+  content: ""; }
+
+/* line 189, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cloud:before {
+  content: ""; }
+
+/* line 190, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-flask:before {
+  content: ""; }
+
+/* line 191, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cut:before,
+.fa-scissors:before {
+  content: ""; }
+
+/* line 193, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-copy:before,
+.fa-files-o:before {
+  content: ""; }
+
+/* line 195, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-paperclip:before {
+  content: ""; }
+
+/* line 196, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-save:before,
+.fa-floppy-o:before {
+  content: ""; }
+
+/* line 198, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-square:before {
+  content: ""; }
+
+/* line 199, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-navicon:before,
+.fa-reorder:before,
+.fa-bars:before {
+  content: ""; }
+
+/* line 202, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-list-ul:before {
+  content: ""; }
+
+/* line 203, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-list-ol:before {
+  content: ""; }
+
+/* line 204, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-strikethrough:before {
+  content: ""; }
+
+/* line 205, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-underline:before {
+  content: ""; }
+
+/* line 206, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-table:before {
+  content: ""; }
+
+/* line 207, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-magic:before {
+  content: ""; }
+
+/* line 208, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-truck:before {
+  content: ""; }
+
+/* line 209, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-pinterest:before {
+  content: ""; }
+
+/* line 210, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-pinterest-square:before {
+  content: ""; }
+
+/* line 211, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-google-plus-square:before {
+  content: ""; }
+
+/* line 212, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-google-plus:before {
+  content: ""; }
+
+/* line 213, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-money:before {
+  content: ""; }
+
+/* line 214, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-caret-down:before {
+  content: ""; }
+
+/* line 215, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-caret-up:before {
+  content: ""; }
+
+/* line 216, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-caret-left:before {
+  content: ""; }
+
+/* line 217, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-caret-right:before {
+  content: ""; }
+
+/* line 218, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-columns:before {
+  content: ""; }
+
+/* line 219, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-unsorted:before,
+.fa-sort:before {
+  content: ""; }
+
+/* line 221, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sort-down:before,
+.fa-sort-desc:before {
+  content: ""; }
+
+/* line 223, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sort-up:before,
+.fa-sort-asc:before {
+  content: ""; }
+
+/* line 225, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-envelope:before {
+  content: ""; }
+
+/* line 226, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-linkedin:before {
+  content: ""; }
+
+/* line 227, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-rotate-left:before,
+.fa-undo:before {
+  content: ""; }
+
+/* line 229, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-legal:before,
+.fa-gavel:before {
+  content: ""; }
+
+/* line 231, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-dashboard:before,
+.fa-tachometer:before {
+  content: ""; }
+
+/* line 233, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-comment-o:before {
+  content: ""; }
+
+/* line 234, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-comments-o:before {
+  content: ""; }
+
+/* line 235, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-flash:before,
+.fa-bolt:before {
+  content: ""; }
+
+/* line 237, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sitemap:before {
+  content: ""; }
+
+/* line 238, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-umbrella:before {
+  content: ""; }
+
+/* line 239, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-paste:before,
+.fa-clipboard:before {
+  content: ""; }
+
+/* line 241, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-lightbulb-o:before {
+  content: ""; }
+
+/* line 242, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-exchange:before {
+  content: ""; }
+
+/* line 243, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cloud-download:before {
+  content: ""; }
+
+/* line 244, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cloud-upload:before {
+  content: ""; }
+
+/* line 245, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-user-md:before {
+  content: ""; }
+
+/* line 246, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-stethoscope:before {
+  content: ""; }
+
+/* line 247, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-suitcase:before {
+  content: ""; }
+
+/* line 248, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bell-o:before {
+  content: ""; }
+
+/* line 249, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-coffee:before {
+  content: ""; }
+
+/* line 250, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cutlery:before {
+  content: ""; }
+
+/* line 251, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-text-o:before {
+  content: ""; }
+
+/* line 252, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-building-o:before {
+  content: ""; }
+
+/* line 253, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-hospital-o:before {
+  content: ""; }
+
+/* line 254, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-ambulance:before {
+  content: ""; }
+
+/* line 255, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-medkit:before {
+  content: ""; }
+
+/* line 256, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-fighter-jet:before {
+  content: ""; }
+
+/* line 257, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-beer:before {
+  content: ""; }
+
+/* line 258, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-h-square:before {
+  content: ""; }
+
+/* line 259, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-plus-square:before {
+  content: ""; }
+
+/* line 260, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-angle-double-left:before {
+  content: ""; }
+
+/* line 261, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-angle-double-right:before {
+  content: ""; }
+
+/* line 262, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-angle-double-up:before {
+  content: ""; }
+
+/* line 263, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-angle-double-down:before {
+  content: ""; }
+
+/* line 264, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-angle-left:before {
+  content: ""; }
+
+/* line 265, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-angle-right:before {
+  content: ""; }
+
+/* line 266, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-angle-up:before {
+  content: ""; }
+
+/* line 267, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-angle-down:before {
+  content: ""; }
+
+/* line 268, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-desktop:before {
+  content: ""; }
+
+/* line 269, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-laptop:before {
+  content: ""; }
+
+/* line 270, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-tablet:before {
+  content: ""; }
+
+/* line 271, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-mobile-phone:before,
+.fa-mobile:before {
+  content: ""; }
+
+/* line 273, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-circle-o:before {
+  content: ""; }
+
+/* line 274, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-quote-left:before {
+  content: ""; }
+
+/* line 275, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-quote-right:before {
+  content: ""; }
+
+/* line 276, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-spinner:before {
+  content: ""; }
+
+/* line 277, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-circle:before {
+  content: ""; }
+
+/* line 278, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-mail-reply:before,
+.fa-reply:before {
+  content: ""; }
+
+/* line 280, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-github-alt:before {
+  content: ""; }
+
+/* line 281, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-folder-o:before {
+  content: ""; }
+
+/* line 282, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-folder-open-o:before {
+  content: ""; }
+
+/* line 283, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-smile-o:before {
+  content: ""; }
+
+/* line 284, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-frown-o:before {
+  content: ""; }
+
+/* line 285, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-meh-o:before {
+  content: ""; }
+
+/* line 286, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-gamepad:before {
+  content: ""; }
+
+/* line 287, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-keyboard-o:before {
+  content: ""; }
+
+/* line 288, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-flag-o:before {
+  content: ""; }
+
+/* line 289, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-flag-checkered:before {
+  content: ""; }
+
+/* line 290, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-terminal:before {
+  content: ""; }
+
+/* line 291, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-code:before {
+  content: ""; }
+
+/* line 292, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-mail-reply-all:before,
+.fa-reply-all:before {
+  content: ""; }
+
+/* line 294, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-star-half-empty:before,
+.fa-star-half-full:before,
+.fa-star-half-o:before {
+  content: ""; }
+
+/* line 297, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-location-arrow:before {
+  content: ""; }
+
+/* line 298, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-crop:before {
+  content: ""; }
+
+/* line 299, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-code-fork:before {
+  content: ""; }
+
+/* line 300, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-unlink:before,
+.fa-chain-broken:before {
+  content: ""; }
+
+/* line 302, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-question:before {
+  content: ""; }
+
+/* line 303, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-info:before {
+  content: ""; }
+
+/* line 304, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-exclamation:before {
+  content: ""; }
+
+/* line 305, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-superscript:before {
+  content: ""; }
+
+/* line 306, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-subscript:before {
+  content: ""; }
+
+/* line 307, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-eraser:before {
+  content: ""; }
+
+/* line 308, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-puzzle-piece:before {
+  content: ""; }
+
+/* line 309, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-microphone:before {
+  content: ""; }
+
+/* line 310, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-microphone-slash:before {
+  content: ""; }
+
+/* line 311, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-shield:before {
+  content: ""; }
+
+/* line 312, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-calendar-o:before {
+  content: ""; }
+
+/* line 313, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-fire-extinguisher:before {
+  content: ""; }
+
+/* line 314, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-rocket:before {
+  content: ""; }
+
+/* line 315, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-maxcdn:before {
+  content: ""; }
+
+/* line 316, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-chevron-circle-left:before {
+  content: ""; }
+
+/* line 317, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-chevron-circle-right:before {
+  content: ""; }
+
+/* line 318, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-chevron-circle-up:before {
+  content: ""; }
+
+/* line 319, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-chevron-circle-down:before {
+  content: ""; }
+
+/* line 320, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-html5:before {
+  content: ""; }
+
+/* line 321, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-css3:before {
+  content: ""; }
+
+/* line 322, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-anchor:before {
+  content: ""; }
+
+/* line 323, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-unlock-alt:before {
+  content: ""; }
+
+/* line 324, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bullseye:before {
+  content: ""; }
+
+/* line 325, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-ellipsis-h:before {
+  content: ""; }
+
+/* line 326, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-ellipsis-v:before {
+  content: ""; }
+
+/* line 327, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-rss-square:before {
+  content: ""; }
+
+/* line 328, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-play-circle:before {
+  content: ""; }
+
+/* line 329, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-ticket:before {
+  content: ""; }
+
+/* line 330, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-minus-square:before {
+  content: ""; }
+
+/* line 331, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-minus-square-o:before {
+  content: ""; }
+
+/* line 332, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-level-up:before {
+  content: ""; }
+
+/* line 333, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-level-down:before {
+  content: ""; }
+
+/* line 334, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-check-square:before {
+  content: ""; }
+
+/* line 335, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-pencil-square:before {
+  content: ""; }
+
+/* line 336, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-external-link-square:before {
+  content: ""; }
+
+/* line 337, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-share-square:before {
+  content: ""; }
+
+/* line 338, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-compass:before {
+  content: ""; }
+
+/* line 339, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-toggle-down:before,
+.fa-caret-square-o-down:before {
+  content: ""; }
+
+/* line 341, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-toggle-up:before,
+.fa-caret-square-o-up:before {
+  content: ""; }
+
+/* line 343, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-toggle-right:before,
+.fa-caret-square-o-right:before {
+  content: ""; }
+
+/* line 345, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-euro:before,
+.fa-eur:before {
+  content: ""; }
+
+/* line 347, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-gbp:before {
+  content: ""; }
+
+/* line 348, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-dollar:before,
+.fa-usd:before {
+  content: ""; }
+
+/* line 350, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-rupee:before,
+.fa-inr:before {
+  content: ""; }
+
+/* line 352, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cny:before,
+.fa-rmb:before,
+.fa-yen:before,
+.fa-jpy:before {
+  content: ""; }
+
+/* line 356, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-ruble:before,
+.fa-rouble:before,
+.fa-rub:before {
+  content: ""; }
+
+/* line 359, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-won:before,
+.fa-krw:before {
+  content: ""; }
+
+/* line 361, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bitcoin:before,
+.fa-btc:before {
+  content: ""; }
+
+/* line 363, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file:before {
+  content: ""; }
+
+/* line 364, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-text:before {
+  content: ""; }
+
+/* line 365, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sort-alpha-asc:before {
+  content: ""; }
+
+/* line 366, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sort-alpha-desc:before {
+  content: ""; }
+
+/* line 367, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sort-amount-asc:before {
+  content: ""; }
+
+/* line 368, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sort-amount-desc:before {
+  content: ""; }
+
+/* line 369, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sort-numeric-asc:before {
+  content: ""; }
+
+/* line 370, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sort-numeric-desc:before {
+  content: ""; }
+
+/* line 371, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-thumbs-up:before {
+  content: ""; }
+
+/* line 372, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-thumbs-down:before {
+  content: ""; }
+
+/* line 373, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-youtube-square:before {
+  content: ""; }
+
+/* line 374, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-youtube:before {
+  content: ""; }
+
+/* line 375, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-xing:before {
+  content: ""; }
+
+/* line 376, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-xing-square:before {
+  content: ""; }
+
+/* line 377, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-youtube-play:before {
+  content: ""; }
+
+/* line 378, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-dropbox:before {
+  content: ""; }
+
+/* line 379, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-stack-overflow:before {
+  content: ""; }
+
+/* line 380, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-instagram:before {
+  content: ""; }
+
+/* line 381, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-flickr:before {
+  content: ""; }
+
+/* line 382, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-adn:before {
+  content: ""; }
+
+/* line 383, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bitbucket:before {
+  content: ""; }
+
+/* line 384, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bitbucket-square:before {
+  content: ""; }
+
+/* line 385, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-tumblr:before {
+  content: ""; }
+
+/* line 386, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-tumblr-square:before {
+  content: ""; }
+
+/* line 387, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-long-arrow-down:before {
+  content: ""; }
+
+/* line 388, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-long-arrow-up:before {
+  content: ""; }
+
+/* line 389, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-long-arrow-left:before {
+  content: ""; }
+
+/* line 390, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-long-arrow-right:before {
+  content: ""; }
+
+/* line 391, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-apple:before {
+  content: ""; }
+
+/* line 392, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-windows:before {
+  content: ""; }
+
+/* line 393, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-android:before {
+  content: ""; }
+
+/* line 394, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-linux:before {
+  content: ""; }
+
+/* line 395, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-dribbble:before {
+  content: ""; }
+
+/* line 396, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-skype:before {
+  content: ""; }
+
+/* line 397, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-foursquare:before {
+  content: ""; }
+
+/* line 398, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-trello:before {
+  content: ""; }
+
+/* line 399, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-female:before {
+  content: ""; }
+
+/* line 400, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-male:before {
+  content: ""; }
+
+/* line 401, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-gittip:before {
+  content: ""; }
+
+/* line 402, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sun-o:before {
+  content: ""; }
+
+/* line 403, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-moon-o:before {
+  content: ""; }
+
+/* line 404, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-archive:before {
+  content: ""; }
+
+/* line 405, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bug:before {
+  content: ""; }
+
+/* line 406, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-vk:before {
+  content: ""; }
+
+/* line 407, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-weibo:before {
+  content: ""; }
+
+/* line 408, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-renren:before {
+  content: ""; }
+
+/* line 409, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-pagelines:before {
+  content: ""; }
+
+/* line 410, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-stack-exchange:before {
+  content: ""; }
+
+/* line 411, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-circle-o-right:before {
+  content: ""; }
+
+/* line 412, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-arrow-circle-o-left:before {
+  content: ""; }
+
+/* line 413, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-toggle-left:before,
+.fa-caret-square-o-left:before {
+  content: ""; }
+
+/* line 415, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-dot-circle-o:before {
+  content: ""; }
+
+/* line 416, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-wheelchair:before {
+  content: ""; }
+
+/* line 417, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-vimeo-square:before {
+  content: ""; }
+
+/* line 418, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-turkish-lira:before,
+.fa-try:before {
+  content: ""; }
+
+/* line 420, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-plus-square-o:before {
+  content: ""; }
+
+/* line 421, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-space-shuttle:before {
+  content: ""; }
+
+/* line 422, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-slack:before {
+  content: ""; }
+
+/* line 423, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-envelope-square:before {
+  content: ""; }
+
+/* line 424, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-wordpress:before {
+  content: ""; }
+
+/* line 425, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-openid:before {
+  content: ""; }
+
+/* line 426, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-institution:before,
+.fa-bank:before,
+.fa-university:before {
+  content: ""; }
+
+/* line 429, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-mortar-board:before,
+.fa-graduation-cap:before {
+  content: ""; }
+
+/* line 431, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-yahoo:before {
+  content: ""; }
+
+/* line 432, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-google:before {
+  content: ""; }
+
+/* line 433, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-reddit:before {
+  content: ""; }
+
+/* line 434, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-reddit-square:before {
+  content: ""; }
+
+/* line 435, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-stumbleupon-circle:before {
+  content: ""; }
+
+/* line 436, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-stumbleupon:before {
+  content: ""; }
+
+/* line 437, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-delicious:before {
+  content: ""; }
+
+/* line 438, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-digg:before {
+  content: ""; }
+
+/* line 439, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-pied-piper:before {
+  content: ""; }
+
+/* line 440, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-pied-piper-alt:before {
+  content: ""; }
+
+/* line 441, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-drupal:before {
+  content: ""; }
+
+/* line 442, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-joomla:before {
+  content: ""; }
+
+/* line 443, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-language:before {
+  content: ""; }
+
+/* line 444, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-fax:before {
+  content: ""; }
+
+/* line 445, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-building:before {
+  content: ""; }
+
+/* line 446, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-child:before {
+  content: ""; }
+
+/* line 447, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-paw:before {
+  content: ""; }
+
+/* line 448, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-spoon:before {
+  content: ""; }
+
+/* line 449, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cube:before {
+  content: ""; }
+
+/* line 450, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cubes:before {
+  content: ""; }
+
+/* line 451, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-behance:before {
+  content: ""; }
+
+/* line 452, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-behance-square:before {
+  content: ""; }
+
+/* line 453, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-steam:before {
+  content: ""; }
+
+/* line 454, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-steam-square:before {
+  content: ""; }
+
+/* line 455, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-recycle:before {
+  content: ""; }
+
+/* line 456, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-automobile:before,
+.fa-car:before {
+  content: ""; }
+
+/* line 458, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cab:before,
+.fa-taxi:before {
+  content: ""; }
+
+/* line 460, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-tree:before {
+  content: ""; }
+
+/* line 461, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-spotify:before {
+  content: ""; }
+
+/* line 462, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-deviantart:before {
+  content: ""; }
+
+/* line 463, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-soundcloud:before {
+  content: ""; }
+
+/* line 464, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-database:before {
+  content: ""; }
+
+/* line 465, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-pdf-o:before {
+  content: ""; }
+
+/* line 466, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-word-o:before {
+  content: ""; }
+
+/* line 467, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-excel-o:before {
+  content: ""; }
+
+/* line 468, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-powerpoint-o:before {
+  content: ""; }
+
+/* line 469, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-photo-o:before,
+.fa-file-picture-o:before,
+.fa-file-image-o:before {
+  content: ""; }
+
+/* line 472, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-zip-o:before,
+.fa-file-archive-o:before {
+  content: ""; }
+
+/* line 474, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-sound-o:before,
+.fa-file-audio-o:before {
+  content: ""; }
+
+/* line 476, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-movie-o:before,
+.fa-file-video-o:before {
+  content: ""; }
+
+/* line 478, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-file-code-o:before {
+  content: ""; }
+
+/* line 479, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-vine:before {
+  content: ""; }
+
+/* line 480, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-codepen:before {
+  content: ""; }
+
+/* line 481, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-jsfiddle:before {
+  content: ""; }
+
+/* line 482, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-life-bouy:before,
+.fa-life-buoy:before,
+.fa-life-saver:before,
+.fa-support:before,
+.fa-life-ring:before {
+  content: ""; }
+
+/* line 487, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-circle-o-notch:before {
+  content: ""; }
+
+/* line 488, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-ra:before,
+.fa-rebel:before {
+  content: ""; }
+
+/* line 490, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-ge:before,
+.fa-empire:before {
+  content: ""; }
+
+/* line 492, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-git-square:before {
+  content: ""; }
+
+/* line 493, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-git:before {
+  content: ""; }
+
+/* line 494, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-hacker-news:before {
+  content: ""; }
+
+/* line 495, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-tencent-weibo:before {
+  content: ""; }
+
+/* line 496, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-qq:before {
+  content: ""; }
+
+/* line 497, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-wechat:before,
+.fa-weixin:before {
+  content: ""; }
+
+/* line 499, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-send:before,
+.fa-paper-plane:before {
+  content: ""; }
+
+/* line 501, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-send-o:before,
+.fa-paper-plane-o:before {
+  content: ""; }
+
+/* line 503, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-history:before {
+  content: ""; }
+
+/* line 504, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-circle-thin:before {
+  content: ""; }
+
+/* line 505, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-header:before {
+  content: ""; }
+
+/* line 506, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-paragraph:before {
+  content: ""; }
+
+/* line 507, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-sliders:before {
+  content: ""; }
+
+/* line 508, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-share-alt:before {
+  content: ""; }
+
+/* line 509, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-share-alt-square:before {
+  content: ""; }
+
+/* line 510, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bomb:before {
+  content: ""; }
+
+/* line 511, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-soccer-ball-o:before,
+.fa-futbol-o:before {
+  content: ""; }
+
+/* line 513, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-tty:before {
+  content: ""; }
+
+/* line 514, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-binoculars:before {
+  content: ""; }
+
+/* line 515, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-plug:before {
+  content: ""; }
+
+/* line 516, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-slideshare:before {
+  content: ""; }
+
+/* line 517, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-twitch:before {
+  content: ""; }
+
+/* line 518, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-yelp:before {
+  content: ""; }
+
+/* line 519, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-newspaper-o:before {
+  content: ""; }
+
+/* line 520, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-wifi:before {
+  content: ""; }
+
+/* line 521, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-calculator:before {
+  content: ""; }
+
+/* line 522, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-paypal:before {
+  content: ""; }
+
+/* line 523, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-google-wallet:before {
+  content: ""; }
+
+/* line 524, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cc-visa:before {
+  content: ""; }
+
+/* line 525, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cc-mastercard:before {
+  content: ""; }
+
+/* line 526, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cc-discover:before {
+  content: ""; }
+
+/* line 527, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cc-amex:before {
+  content: ""; }
+
+/* line 528, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cc-paypal:before {
+  content: ""; }
+
+/* line 529, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cc-stripe:before {
+  content: ""; }
+
+/* line 530, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bell-slash:before {
+  content: ""; }
+
+/* line 531, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bell-slash-o:before {
+  content: ""; }
+
+/* line 532, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-trash:before {
+  content: ""; }
+
+/* line 533, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-copyright:before {
+  content: ""; }
+
+/* line 534, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-at:before {
+  content: ""; }
+
+/* line 535, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-eyedropper:before {
+  content: ""; }
+
+/* line 536, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-paint-brush:before {
+  content: ""; }
+
+/* line 537, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-birthday-cake:before {
+  content: ""; }
+
+/* line 538, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-area-chart:before {
+  content: ""; }
+
+/* line 539, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-pie-chart:before {
+  content: ""; }
+
+/* line 540, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-line-chart:before {
+  content: ""; }
+
+/* line 541, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-lastfm:before {
+  content: ""; }
+
+/* line 542, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-lastfm-square:before {
+  content: ""; }
+
+/* line 543, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-toggle-off:before {
+  content: ""; }
+
+/* line 544, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-toggle-on:before {
+  content: ""; }
+
+/* line 545, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bicycle:before {
+  content: ""; }
+
+/* line 546, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-bus:before {
+  content: ""; }
+
+/* line 547, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-ioxhost:before {
+  content: ""; }
+
+/* line 548, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-angellist:before {
+  content: ""; }
+
+/* line 549, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-cc:before {
+  content: ""; }
+
+/* line 550, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-shekel:before,
+.fa-sheqel:before,
+.fa-ils:before {
+  content: ""; }
+
+/* line 553, /Users/dotan.nahum/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/font-awesome-middleman-4.2.3/app/assets/stylesheets/font-awesome/_icons.scss */
+.fa-meanpath:before {
+  content: ""; }
+
+/* line 6, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+.bullets {
+  overflow: auto;
+  margin-bottom: 1.5; }
+  @media screen and (min-width: 53.75em) {
+    /* line 12, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+    .bullets .three-col-bullet {
+      float: left;
+      display: block;
+      margin-right: 2.35765%;
+      width: 31.76157%; }
+      /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_span-columns.scss */
+      .bullets .three-col-bullet:last-child {
+        margin-right: 0; }
+      /* line 82, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_omega.scss */
+      .bullets .three-col-bullet:nth-child(3n) {
+        margin-right: 0; }
+      /* line 87, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_omega.scss */
+      .bullets .three-col-bullet:nth-child(3n+1) {
+        clear: left; } }
+  /* line 19, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .bullets .bullet-icon {
+    margin: auto;
+    width: 100px; }
+    /* line 22, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+    .bullets .bullet-icon img {
+      border-radius: 50%; }
+  /* line 29, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .bullets .bullet-content {
+    margin-bottom: 2em; }
+  /* line 33, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .bullets h2 {
+    font-size: 1.4em;
+    padding-top: 0.5em;
+    margin-bottom: 0.58333em;
+    text-align: center; }
+
+/* line 46, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+.footer {
+  border-top: 2px solid #666666;
+  background: #737373;
+  padding: 3em 1.618em;
+  width: 100%; }
+  /* line 57, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .footer .footer-logo {
+    text-align: center;
+    margin-bottom: 2em; }
+    /* line 61, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+    .footer .footer-logo img {
+      height: 3em; }
+  /* line 66, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .footer .footer-links {
+    margin-bottom: 1.5em; }
+    /* line 20, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/addons/_clearfix.scss */
+    .footer .footer-links::after {
+      clear: both;
+      content: "";
+      display: table; }
+    @media screen and (min-width: 40em) {
+      /* line 66, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+      .footer .footer-links {
+        margin-left: 25.58941%; } }
+  /* line 75, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .footer ul {
+    margin-bottom: 3em; }
+    @media screen and (min-width: 40em) {
+      /* line 75, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+      .footer ul {
+        float: left;
+        display: block;
+        margin-right: 2.35765%;
+        width: 23.23176%; }
+        /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_span-columns.scss */
+        .footer ul:last-child {
+          margin-right: 0; }
+        /* line 82, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_omega.scss */
+        .footer ul:nth-child(3n) {
+          margin-right: 0; }
+        /* line 87, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_omega.scss */
+        .footer ul:nth-child(3n+1) {
+          clear: left; }
+        /* line 20, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/addons/_clearfix.scss */
+        .footer ul::after {
+          clear: both;
+          content: "";
+          display: table; } }
+  /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .footer li {
+    text-align: center; }
+    @media screen and (min-width: 40em) {
+      /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+      .footer li {
+        text-align: left; } }
+  /* line 93, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .footer li a {
+    color: rgba(255, 255, 255, 0.7); }
+    /* line 96, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+    .footer li a:hover {
+      color: white; }
+  /* line 101, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .footer li h3 {
+    color: white;
+    font-size: 1em;
+    font-weight: 800;
+    margin-bottom: .4em; }
+  /* line 108, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .footer hr {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0 auto 1.5em;
+    width: 12em; }
+  /* line 114, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .footer p {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: .9em;
+    line-height: 1.5em;
+    margin: auto;
+    max-width: 35em;
+    text-align: center; }
+
+/* line 131, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+.comment {
+  display: table;
+  width: 400px; }
+  /* line 142, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .comment .comment-image,
+  .comment .comment-content {
+    display: table-cell;
+    vertical-align: top; }
+  /* line 148, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .comment .comment-image {
+    padding-right: 1.4em; }
+    /* line 151, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+    .comment .comment-image > img {
+      width: 4em;
+      height: auto;
+      border-radius: 50%;
+      background: #82a7db;
+      display: block;
+      max-width: none; }
+    /* line 160, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+    .comment-reverse-order .comment .comment-image {
+      padding-right: 0;
+      padding-left: 10px; }
+  /* line 166, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+  .comment .comment-content {
+    width: 100%; }
+    /* line 169, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+    .comment .comment-content h1 {
+      font-size: 1em;
+      margin-bottom: .5em; }
+    /* line 174, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+    .comment .comment-content p {
+      margin-bottom: .5em; }
+    /* line 178, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill.scss */
+    .comment .comment-content p.comment-detail {
+      font-style: italic;
+      font-size: .9em;
+      color: rgba(51, 51, 51, 0.5); }
+
+/* line 1, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+header.navigation {
+  background-color: #fff;
+  border-bottom: 1px solid #e6e6e6;
+  height: 80px;
+  width: 100%;
+  z-index: 999; }
+  /* line 23, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation .navigation-wrapper {
+    max-width: 68em;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 9999; }
+    /* line 20, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/addons/_clearfix.scss */
+    header.navigation .navigation-wrapper::after {
+      clear: both;
+      content: "";
+      display: table; }
+    /* line 20, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/addons/_clearfix.scss */
+    header.navigation .navigation-wrapper::after {
+      clear: both;
+      content: "";
+      display: table; }
+  @media screen and (min-width: 53.75em) {
+    /* line 29, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation .navigation-content {
+      margin-left: 8.5298%;
+      float: left;
+      display: block;
+      margin-right: 2.35765%;
+      width: 82.94039%; }
+      /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_span-columns.scss */
+      header.navigation .navigation-content:last-child {
+        margin-right: 0; } }
+  /* line 36, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation .logo {
+    float: left;
+    max-height: 80px;
+    padding-left: 1em;
+    padding-right: 2em; }
+    /* line 42, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation .logo img {
+      max-height: 80px;
+      padding: .8em 0; }
+  /* line 51, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation .navigation-menu-button {
+    color: rgba(0, 0, 0, 0.7);
+    display: block;
+    float: right;
+    font-family: "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif;
+    font-weight: 700;
+    line-height: 80px;
+    margin: 0;
+    padding-right: 1em;
+    text-transform: uppercase; }
+    @media screen and (min-width: 53.75em) {
+      /* line 51, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation .navigation-menu-button {
+        display: none; } }
+    /* line 66, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation .navigation-menu-button:hover {
+      color: black; }
+  /* line 74, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation .nav {
+    z-index: 9999999;
+    float: none; }
+    @media screen and (min-width: 53.75em) {
+      /* line 74, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation .nav {
+        float: left; } }
+  /* line 82, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation ul#navigation-menu {
+    -webkit-transform-style: preserve-3d;
+    clear: both;
+    display: none;
+    margin: 0 auto;
+    overflow: visible;
+    padding: 0;
+    width: 100%;
+    z-index: 9999; }
+    @media screen and (min-width: 53.75em) {
+      /* line 82, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation ul#navigation-menu {
+        display: inline;
+        margin: 0;
+        padding: 0; } }
+  /* line 103, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation ul li.nav-link {
+    background: #fff;
+    display: block;
+    line-height: 80px;
+    overflow: hidden;
+    padding-right: .8em;
+    text-align: right;
+    width: 100%;
+    z-index: 9999; }
+    /* line 114, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation ul li.nav-link.selected a {
+      font-weight: 700;
+      color: black; }
+    @media screen and (min-width: 53.75em) {
+      /* line 103, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation ul li.nav-link {
+        background: transparent;
+        display: inline;
+        line-height: 80px;
+        text-decoration: none;
+        width: auto; } }
+    /* line 128, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation ul li.nav-link a {
+      color: rgba(0, 0, 0, 0.7);
+      display: inline-block;
+      font-weight: 400; }
+      @media screen and (min-width: 53.75em) {
+        /* line 128, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+        header.navigation ul li.nav-link a {
+          padding-right: 1em; } }
+      /* line 137, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation ul li.nav-link a:hover {
+        color: black; }
+  /* line 143, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation .active-nav-item a {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    padding-bottom: 3px; }
+  /* line 151, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation li.more.nav-link {
+    padding-right: 0; }
+    @media screen and (min-width: 53.75em) {
+      /* line 151, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation li.more.nav-link {
+        padding-right: 1em; } }
+    /* line 158, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation li.more.nav-link > ul > li:first-child a {
+      padding-top: 1em; }
+    /* line 162, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation li.more.nav-link a {
+      margin-right: 1em; }
+    /* line 166, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation li.more.nav-link > a {
+      padding-right: 0.6em; }
+    /* line 170, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation li.more.nav-link > a:after {
+      position: absolute;
+      top: auto;
+      right: -0.4em;
+      bottom: auto;
+      left: auto;
+      content: '\25BE';
+      color: rgba(0, 0, 0, 0.7); }
+  /* line 177, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation li.more {
+    overflow: visible;
+    padding-right: 0; }
+    /* line 181, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation li.more a {
+      padding-right: .8em; }
+    /* line 185, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation li.more > a {
+      padding-right: 1.6em;
+      position: relative; }
+      @media screen and (min-width: 53.75em) {
+        /* line 185, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+        header.navigation li.more > a {
+          margin-right: 1em; } }
+      /* line 193, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation li.more > a:after {
+        content: '›';
+        font-size: 1.2em;
+        position: absolute;
+        right: 0.5em; }
+    /* line 201, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation li.more:hover > .submenu {
+      display: block; }
+    @media screen and (min-width: 53.75em) {
+      /* line 177, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation li.more {
+        padding-right: .8em;
+        position: relative; } }
+  /* line 211, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation ul.submenu {
+    display: none;
+    padding-left: 0; }
+    @media screen and (min-width: 53.75em) {
+      /* line 211, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation ul.submenu {
+        left: -1em;
+        position: absolute;
+        top: 1.5em; } }
+    @media screen and (min-width: 53.75em) {
+      /* line 221, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation ul.submenu .submenu {
+        left: 11.8em;
+        top: 0; } }
+    /* line 228, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation ul.submenu li {
+      display: block;
+      padding-right: 0; }
+      @media screen and (min-width: 53.75em) {
+        /* line 228, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+        header.navigation ul.submenu li {
+          line-height: 61.53846px; }
+          /* line 235, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+          header.navigation ul.submenu li:first-child > a {
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px; }
+          /* line 240, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+          header.navigation ul.submenu li:last-child > a {
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+            padding-bottom: .7em; } }
+      /* line 247, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation ul.submenu li a {
+        background-color: #f7f7f7;
+        display: inline-block;
+        text-align: right;
+        width: 100%; }
+        @media screen and (min-width: 53.75em) {
+          /* line 247, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+          header.navigation ul.submenu li a {
+            background-color: #fff;
+            padding-left: 1em;
+            text-align: left;
+            width: 12em; } }
+  /* line 266, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation .navigation-tools {
+    display: block;
+    padding-right: 1em;
+    padding-left: 0.5em;
+    clear: both;
+    background: #505050; }
+    /* line 20, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/addons/_clearfix.scss */
+    header.navigation .navigation-tools::after {
+      clear: both;
+      content: "";
+      display: table; }
+    @media screen and (min-width: 53.75em) {
+      /* line 266, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation .navigation-tools {
+        background: transparent;
+        float: right;
+        clear: none; } }
+  /* line 284, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+  header.navigation .search-bar {
+    padding: .85em .6em;
+    width: 60%;
+    float: left; }
+    /* line 293, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+    header.navigation .search-bar .search-and-submit {
+      position: relative; }
+      /* line 296, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation .search-bar .search-and-submit input[type=search] {
+        background: white;
+        border: 1px solid #f2f2f2;
+        padding: .6em .8em;
+        font-size: .9em;
+        font-style: italic;
+        color: rgba(0, 0, 0, 0.7);
+        border-radius: 6px;
+        margin: 0; }
+        @media screen and (min-width: 53.75em) {
+          /* line 296, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+          header.navigation .search-bar .search-and-submit input[type=search] {
+            width: 100%; } }
+      /* line 311, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation .search-bar .search-and-submit button[type=submit] {
+        background-color: white;
+        border-radius: 3px;
+        border: 0;
+        color: #333333;
+        display: inline-block;
+        font-size: inherit;
+        font-weight: bold;
+        padding: 7px 18px;
+        text-decoration: none;
+        background-clip: padding-box;
+        background-color: white;
+        border-radius: 3px;
+        border: 0;
+        color: #333333;
+        display: inline-block;
+        font-size: inherit;
+        font-weight: bold;
+        padding: 7px 18px;
+        text-decoration: none;
+        background-clip: padding-box;
+        position: absolute;
+        top: 0.3em;
+        right: 0.3em;
+        bottom: 0.3em;
+        left: auto;
+        outline: none;
+        padding: 0 15px; }
+        /* line 354, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/_bourbon-deprecated-upcoming.scss */
+        header.navigation .search-bar .search-and-submit button[type=submit]:hover:not(:disabled) {
+          background-color: white;
+          cursor: pointer; }
+        /* line 365, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/_bourbon-deprecated-upcoming.scss */
+        header.navigation .search-bar .search-and-submit button[type=submit]:active:not(:disabled), header.navigation .search-bar .search-and-submit button[type=submit]:focus:not(:disabled) {
+          background-color: #f2f2f2;
+          cursor: pointer; }
+        /* line 354, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/_bourbon-deprecated-upcoming.scss */
+        header.navigation .search-bar .search-and-submit button[type=submit]:hover:not(:disabled) {
+          background-color: white;
+          cursor: pointer; }
+        /* line 365, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/_bourbon-deprecated-upcoming.scss */
+        header.navigation .search-bar .search-and-submit button[type=submit]:active:not(:disabled), header.navigation .search-bar .search-and-submit button[type=submit]:focus:not(:disabled) {
+          background-color: #f2f2f2;
+          cursor: pointer; }
+        /* line 59, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/_bourbon-deprecated-upcoming.scss */
+        header.navigation .search-bar .search-and-submit button[type=submit]:disabled {
+          cursor: not-allowed;
+          opacity: 0.5; }
+        /* line 321, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+        header.navigation .search-bar .search-and-submit button[type=submit] img {
+          height: 12px;
+          opacity: .7; }
+    @media screen and (min-width: 53.75em) {
+      /* line 284, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+      header.navigation .search-bar {
+        width: 16em;
+        position: relative;
+        display: inline-block; }
+        /* line 333, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/_refill-nav.scss */
+        header.navigation .search-bar input {
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+          display: block; } }
+
+/* line 28, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+h1, h2, h3, h4, h5 {
+  margin: 1em 0;
+  font-weight: 400; }
+
+/* line 33, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+h1, h2, h3, h4 {
+  font-weight: 100; }
+
+/* line 37, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+body {
+  background: #fff; }
+
+/* line 41, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+code {
+  font-size: 14px; }
+
+/* line 45, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+#hero {
+  text-align: center;
+  margin-top: 6em; }
+  /* line 48, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  #hero h1 {
+    font-size: 3em;
+    font-weight: 100; }
+
+/* line 54, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.content {
+  max-width: 68em;
+  margin-left: auto;
+  margin-right: auto; }
+  /* line 20, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/addons/_clearfix.scss */
+  .content::after {
+    clear: both;
+    content: "";
+    display: table; }
+
+/* line 58, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.quickstart-steps {
+  float: left;
+  display: block;
+  margin-right: 2.35765%;
+  width: 48.82117%;
+  margin-left: 25.58941%; }
+  /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_span-columns.scss */
+  .quickstart-steps:last-child {
+    margin-right: 0; }
+  /* line 61, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  .quickstart-steps div {
+    margin: 1.5em 0 0.3em 0;
+    padding: 0;
+    color: #989898;
+    font-weight: normal; }
+  /* line 67, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  .quickstart-steps pre {
+    margin: 0; }
+
+/* line 72, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+#quickstart {
+  padding: 4em 0; }
+
+/* line 76, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+#features {
+  background: #fff;
+  padding: 4em 0; }
+  /* line 79, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  #features .bullets {
+    margin-left: 8.5298%;
+    float: left;
+    display: block;
+    margin-right: 2.35765%;
+    width: 82.94039%; }
+    /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_span-columns.scss */
+    #features .bullets:last-child {
+      margin-right: 0; }
+  /* line 84, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  #features .bullet-content h4 {
+    text-align: center; }
+
+/* line 90, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+#learn {
+  padding: 4em 0;
+  background: #fff; }
+
+/* line 95, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+#using {
+  padding: 4em 0;
+  background: #fff; }
+
+/* line 99, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.using-join {
+  float: left;
+  display: block;
+  margin-right: 2.35765%;
+  width: 100%;
+  text-align: center;
+  padding: 1em 0; }
+  /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_span-columns.scss */
+  .using-join:last-child {
+    margin-right: 0; }
+
+/* line 105, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.faq {
+  padding: 2em;
+  background: #ea2743;
+  color: #fff; }
+  /* line 109, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  .faq a, .faq a:link, .faq a:visited, .faq a:hover {
+    color: #fff; }
+
+/* line 114, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.blogitem-content {
+  margin-bottom: 2em; }
+
+/* line 118, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.comments-close {
+  margin-left: 8.5298%;
+  float: left;
+  display: block;
+  margin-right: 2.35765%;
+  width: 40.29137%; }
+  /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_span-columns.scss */
+  .comments-close:last-child {
+    margin-right: 0; }
+
+/* line 122, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.comments-far {
+  float: left;
+  display: block;
+  margin-right: 2.35765%;
+  width: 40.29137%; }
+  /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_span-columns.scss */
+  .comments-far:last-child {
+    margin-right: 0; }
+
+/* line 126, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.sectiontitle {
+  margin: 2em 0;
+  margin-top: 0;
+  text-align: center; }
+
+/* line 132, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.articles {
+  margin-left: 8.5298%;
+  float: left;
+  display: block;
+  margin-right: 2.35765%;
+  width: 82.94039%; }
+  /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_span-columns.scss */
+  .articles:last-child {
+    margin-right: 0; }
+
+/* line 140, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.blog-minihero {
+  text-align: center;
+  margin-bottom: 6em; }
+
+/* line 144, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.blog-socials {
+  margin: 1em 0;
+  font-size: 1.5em; }
+  /* line 18, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  .blog-socials > li {
+    display: inline-block; }
+  /* line 146, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  .blog-socials li {
+    margin: 0 0.3em; }
+  /* line 151, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  .blog-socials a, .blog-socials a:visited, .blog-socials a:link, .blog-socials a:hover {
+    color: #000; }
+
+/* line 158, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.blog-content {
+  padding: 0 1em;
+  margin: 3em 0;
+  max-width: 68em;
+  margin-left: auto;
+  margin-right: auto; }
+  @media screen and (min-width: 53.75em) {
+    /* line 158, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+    .blog-content {
+      padding: 0; } }
+  /* line 20, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/bourbon/addons/_clearfix.scss */
+  .blog-content::after {
+    clear: both;
+    content: "";
+    display: table; }
+
+@media screen and (min-width: 53.75em) {
+  /* line 167, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  .blog-main {
+    margin-left: 8.5298%;
+    float: left;
+    display: block;
+    margin-right: 2.35765%;
+    width: 57.35098%; }
+    /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_span-columns.scss */
+    .blog-main:last-child {
+      margin-right: 0; } }
+/* line 172, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.blog-main ul li {
+  list-style-type: disc; }
+/* line 175, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.blog-main ol li {
+  list-style-type: decimal; }
+/* line 178, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.blog-main ul, .blog-main ol {
+  margin: 1em 0; }
+
+@media screen and (min-width: 53.75em) {
+  /* line 184, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  .blog-aside {
+    float: left;
+    display: block;
+    margin-right: 2.35765%;
+    width: 23.23176%;
+    display: inline;
+    margin: 0;
+    padding: 0; }
+    /* line 85, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/neat/grid/_span-columns.scss */
+    .blog-aside:last-child {
+      margin-right: 0; } }
+
+/* line 193, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+h1.article-title {
+  margin: 0; }
+
+/* line 197, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.article_head {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 32px;
+  margin: 1em 0; }
+  /* line 202, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  .article_head img {
+    margin-top: -4px;
+    vertical-align: middle; }
+  /* line 206, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  .article_head a, .article_head a:visited, .article_head a:link, .article_head a:hover {
+    color: #000; }
+
+/* line 210, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.article_head-author {
+  display: table-cell; }
+  /* line 212, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+  .article_head-author img {
+    border-radius: 50%; }
+
+/* line 216, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.article_head-date {
+  padding-left: 0.5em;
+  display: table-cell; }
+
+/* line 221, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.article_head---small h1 {
+  font-size: 1.25em;
+  font-weight: 400; }
+
+/* line 227, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+header.navigation .logo img {
+  padding: 1.35em 0;
+  width: 51px; }
+
+/* line 232, /Users/dotan.nahum/projects/sneakers.io/source/stylesheets/app.scss */
+.blog-recent li {
+  margin: 1em 0; }

@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+<head>
+<link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+<meta charset="utf-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+<title>Sneakers Blog </title>
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
+
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/blog/feed.xml" />
+  <link href="../stylesheets/app.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+  
+<header class="navigation">
+  <div class="navigation-wrapper">
+    <div class="navigation-content">
+      <div style="padding:0px">
+        <a href="http://sneakers.io" class="logo">
+          <img src="../images/main_logo.png" alt="Logo Image">
+        </a>
+      </div>
+      <a href="" class="navigation-menu-button" id="js-mobile-menu">MENU</a>
+      <div class="nav">
+        <ul id="navigation-menu">
+          <li class="nav-link "><a href="http://sneakers.io">Home</a></li>
+          <li class="nav-link selected"><a href="http://sneakers.io/blog">Blog</a></li>
+          <li class="nav-link"><a href="https://github.com/jondot/sneakers/wiki">Docs</a></li>
+          <li class="nav-link">
+          <a class="fork" href="https://github.com/jondot/sneakers"><i class="fa fa-github"></i> Fork on Github &rarr;</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  <div class="blog-content">
+    <main class="blog-main">
+      
+  <h1 class="article-title"><a href="2015/05/18/handling-failures-with-maxretry-handler.html">Handling failures with maxretry handler</a></h1>
+<div class="article_head">
+  <div class="article_head-author">
+    <img src="http://www.gravatar.com/avatar/cc6428ba9891ca01afe1525bbbe40e03?s=32.jpg" alt=""/>
+    <a href="http://twitter.com/">Igor Zhivilo</a>, May 18
+  </div>
+</div>
+
+
+  <p>In the past few months I had the opportunity to work with RabbitMQ and sneakers, implementing different 'job handling strategies' in our production environment and I decided to share this knowledge with you - hoping this may help someone else there.
+I want to share my experience of working with my favorite failure handling strategy called 'maxretry'.</p>
+
+<p>Ok, let's start - from its description: “Maxretry uses dead letter policies on Rabbitmq to requeue and retry messages after failure (rejections...</p>
+  <a href="2015/05/18/handling-failures-with-maxretry-handler.html">Read more...</a>
+  <br/>
+  <br/>
+  <h1 class="article-title"><a href="2014/12/10/the-new-website.html">Sneakers 1.0 - The New Website</a></h1>
+<div class="article_head">
+  <div class="article_head-author">
+    <img src="http://www.gravatar.com/avatar/7bab8ed9cad2d098076b61b7cc3b8030?s=32.jpg" alt=""/>
+    <a href="http://twitter.com/jondot">Dotan Nahum</a>, Dec 10
+  </div>
+</div>
+
+
+  <p>As you might have noticed, Sneakers got a refreshing facelift and a new website!</p>
+
+<p>The goal was both to indicate we're going 1.0, and to set up a worthy go-to place for the now evolving Sneakers community. After a few weeks of fighting simple vs. complex, grand vs. elegant, we finally came at a simple, and elegant visual for Sneakers.</p>
+
+<h3 id="enjoy">Enjoy!</h3>
+
+<p>With the new website you can easily <a href="http://sneakers.io">quickstart</a>, track versions, read the <a href="http://sneakers.io/blog">blog</a>, browse our Wiki based <a href="https://github.com/jondot/sneakers/wiki">documentation</a>, and see what others are up to.</p>
+
+<h3 id="join-in">Join...</h3>
+  <a href="2014/12/10/the-new-website.html">Read more...</a>
+  <br/>
+  <br/>
+  <h1 class="article-title"><a href="2014/12/09/monitoring-sneakers.html">Monitoring Sneakers</a></h1>
+<div class="article_head">
+  <div class="article_head-author">
+    <img src="http://www.gravatar.com/avatar/7bab8ed9cad2d098076b61b7cc3b8030?s=32.jpg" alt=""/>
+    <a href="http://twitter.com/jondot">Dotan Nahum</a>, Dec  9
+  </div>
+</div>
+
+
+  <p>I'll show one of my production Sneakers deployment and the some of tiers I've chosen for monitoring it.</p>
+
+<h4 id="monitoring-message-handling">Monitoring Message Handling</h4>
+
+<p>In this specific use case, each "bundle" may contain several "events", which is a simple bulking technique. Here we're averaging and counting the number of events per bundle.</p>
+
+<p>In itself an important metric to measure, to expose a bad / error prone bulking strategy.</p>
+
+<p><img alt="" src="../images/blog/events-in-bundle.png"></p>
+
+<p>A good practice is to always measure the average payload size - the size of a message passed to...</p>
+  <a href="2014/12/09/monitoring-sneakers.html">Read more...</a>
+  <br/>
+  <br/>
+  <h1 class="article-title"><a href="2014/12/04/modular-workers.html">Modular Workers for Easier Testing and Development</a></h1>
+<div class="article_head">
+  <div class="article_head-author">
+    <img src="http://www.gravatar.com/avatar/7bab8ed9cad2d098076b61b7cc3b8030?s=32.jpg" alt=""/>
+    <a href="http://twitter.com/jondot">Dotan Nahum</a>, Dec  4
+  </div>
+</div>
+
+
+  <p>A background worker in the Ruby world can find its place either assiting a
+Rails stack, or having a life of its own.</p>
+
+<p>I argue that in either case, giving a worker a life of its own will be highly productive in the long run. Having
+the worker modeled as a stand-alone library or a gem, a module if you will, is even more productive.</p>
+
+<h4 id="whats-a-modular-worker">What's a Modular Worker?</h4>
+
+<p>Simply put, a modular worker is a worker that is a library or a project of its own. You can export it to a gem and then depend on it,
+and in...</p>
+  <a href="2014/12/04/modular-workers.html">Read more...</a>
+  <br/>
+  <br/>
+  <h1 class="article-title"><a href="2014/11/21/what-weve-been-through.html">What We've Been Trough</a></h1>
+<div class="article_head">
+  <div class="article_head-author">
+    <img src="http://www.gravatar.com/avatar/7bab8ed9cad2d098076b61b7cc3b8030?s=32.jpg" alt=""/>
+    <a href="http://twitter.com/jondot">Dotan Nahum</a>, Nov 21
+  </div>
+</div>
+
+
+  <p>I think it's safe to say: Sneakers is production grade.
+At all of my production deployments, Sneakers outlived and far exceeded it's original goal. On of them, it's been almost 2 years, 4 BILLION jobs processed, supporting 5 completely different use cases.</p>
+
+<p>I'm humbled that a lot of smart people contributed to this project and major companies adopted it. All I hope for, is that it has saved you time, and made your job easier and more fun to do.</p>
+
+<p>That it solved a problem for you.</p>
+
+<p>With that in...</p>
+  <a href="2014/11/21/what-weve-been-through.html">Read more...</a>
+  <br/>
+  <br/>
+
+
+    </main>
+    <aside class="blog-aside">
+      Want to be featured here?<br/>
+      <a href="https://github.com/jondot/sneakers.io" >Submit a pull request</a>
+      
+      <h4>Recent Articles</h4>
+      <ol class="blog-recent">
+        <li>
+          <a href="2015/05/18/handling-failures-with-maxretry-handler.html">Handling failures with maxretry handler</a>
+        </li>
+        <li>
+          <a href="2014/12/10/the-new-website.html">Sneakers 1.0 - The New Website</a>
+        </li>
+        <li>
+          <a href="2014/12/09/monitoring-sneakers.html">Monitoring Sneakers</a>
+        </li>
+        <li>
+          <a href="2014/12/04/modular-workers.html">Modular Workers for Easier Testing and Development</a>
+        </li>
+        <li>
+          <a href="2014/11/21/what-weve-been-through.html">What We've Been Trough</a>
+        </li>
+      </ol>
+      <hr />
+      <h4>Tags</h4>
+      <ol>
+      </ol>
+      <h4>By Year</h4>
+      <ol>
+      <li><a href="2015.html">2015 (1)</a></li>
+      <li><a href="2014.html">2014 (4)</a></li>
+      </ol>
+      <div class="blog-minihero">
+        <hr />
+        <ul class="blog-socials">
+          <li>
+            <a href="http://twitter.com/jondot"><i class="fa fa-twitter"></i></a>
+          </li>
+          <li>
+            <a href="https://github.com/jondot/sneakers"><i class="fa fa-github"></i></a>
+          </li>
+          <li>
+            <a href="/sneakers/blog/feed.xml"><i class="fa fa-rss"></i></a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+  <footer class="footer">
+  <div class="footer-logo">
+  </div>
+  <div class="footer-links">
+    <ul>
+      <li><h3>Learn</h3></li>
+      <li><a href="https://github.com/jondot/sneakers/wiki">Docs</a></li>
+      <li><a href="http://sneakers.io/blog">Blog</a></li>
+    </ul>
+    <ul>
+      <li><h3>Follow</h3></li>
+      <li><a href="https://github.com/jondot/sneakers">Github</a></li>
+      <li><a href="http://twitter.com/jondot">Follow @jondot</a></li>
+      <li><a href="mailto:jondotan@gmail.com">Say hi :)</a></li>
+    </ul>
+    <ul>
+      <li><h3>Community</h3></li>
+      <li><a href="https://github.com/jondot/sneakers/issues">Issues</a></li>
+      <li><a href="https://github.com/jondot/sneakers#contributing">How to Contribute</a></li>
+      <li><a href="https://github.com/jondot/sneakers/wiki">Getting Help</a></li>
+    </ul>
+  </div>
+  <p>
+  Copyright © 2015 Dotan Nahum and contributors - Licensed under MIT.
+  </p>
+</footer>
+
+
+
+  <script>
+      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+      e.src='//www.google-analytics.com/analytics.js';
+      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+      ga('create','UA-7131053-14');ga('send','pageview');
+  </script>
+</body>
+</html>
