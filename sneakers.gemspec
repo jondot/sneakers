@@ -30,7 +30,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'unparser', '0.2.2' # keep below 0.2.5 for ruby 2.0 compat.
   gem.add_development_dependency 'ruby-prof'
   gem.add_development_dependency 'guard-minitest'
-  gem.add_development_dependency 'activesupport', '~> 4.0'
   gem.add_development_dependency 'metric_fu'
   gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'simplecov-rcov-text'
