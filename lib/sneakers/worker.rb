@@ -93,6 +93,8 @@ module Sneakers
     end
 
     def stop
+      worker_trace "Stopping worker: shutting down thread pool."
+      @pool.shutdown
       worker_trace "Stopping worker: unsubscribing."
       @queue.unsubscribe
       worker_trace "Stopping worker: I'm gone."
