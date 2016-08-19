@@ -6,12 +6,10 @@ cache: bundler
 language: ruby
 rvm:
 - ruby-head
-- 2.2
-- 2.1
-- 2.0.0
+- 2.2.3
 matrix:
   include:
-    - rvm: 2.2
+    - rvm: 2.2.3
       env: INTEGRATION_LOG=1 INTEGRATION=1
 
 
