@@ -21,6 +21,10 @@ module Sneakers
       :arguments => {}
     }.freeze
 
+    PUBLISHER_OPTION_DEFAULTS = {
+      :auto_declare_queue => true
+    }
+
     DEFAULTS = {
       # Set up default handler which just logs the error.
       # Remove this in production if you don't want sensitive data logged.
@@ -46,7 +50,8 @@ module Sneakers
       :hooks              => {},
       :exchange           => 'sneakers',
       :exchange_options   => EXCHANGE_OPTION_DEFAULTS,
-      :queue_options      => QUEUE_OPTION_DEFAULTS
+      :queue_options      => QUEUE_OPTION_DEFAULTS,
+      :publisher_options  => PUBLISHER_OPTION_DEFAULTS
     }.freeze
 
 

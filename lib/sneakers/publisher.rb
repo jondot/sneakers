@@ -8,7 +8,7 @@ module Sneakers
     def publish(msg, options = {})
       @mutex.synchronize do
         ensure_connection! unless connected?
-        ensure_queue!(options[:to_queue])
+        auto_declare_queue(options[:to_queue]) unless !@opts[:publisher_options][:auto_declare_queue]
       end
       to_queue = options.delete(:to_queue)
       options[:routing_key] ||= to_queue
@@ -38,12 +38,12 @@ module Sneakers
       Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat], :logger => Sneakers::logger)
     end
 
-    def ensure_queue!(name)
-      # If the @queue attribute is already set, simply return
-      # otherwise declare+bind queue to ensure the msg is sent somewhere
+    def auto_declare_queue(queue_name)
+      # Return if @queue attribute already
+      # otherwise declare & bind queue to ensure the msg is sent somewhere
       return if @queue
-      @queue = @channel.queue(name, @opts[:queue_options])
-      @queue.bind(@exchange, routing_key: name)
+      @queue = @channel.queue(queue_name, @opts[:queue_options])
+      @queue.bind(@exchange, routing_key: queue_name)
     end
   end
 end

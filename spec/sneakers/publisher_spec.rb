@@ -27,6 +27,7 @@ describe Sneakers::Publisher do
 
       p = Sneakers::Publisher.new
       p.instance_variable_set(:@exchange, xchg)
+      p.instance_variable_set(:@queue, xchg)
 
       mock(p).ensure_connection! {}
       p.publish('test msg', to_queue: 'downloads')
@@ -38,6 +39,7 @@ describe Sneakers::Publisher do
 
       p = Sneakers::Publisher.new
       p.instance_variable_set(:@exchange, xchg)
+      p.instance_variable_set(:@queue, xchg)
 
       mock(p).ensure_connection! {}
       p.publish('test msg', to_queue: 'downloads', persistence: true)
@@ -49,6 +51,7 @@ describe Sneakers::Publisher do
 
       p = Sneakers::Publisher.new
       p.instance_variable_set(:@exchange, xchg)
+      p.instance_variable_set(:@queue, xchg)
 
       mock(p).ensure_connection! {}
       p.publish('test msg', to_queue: 'downloads', expiration: 1, headers: {foo: 'bar'})
@@ -60,6 +63,7 @@ describe Sneakers::Publisher do
 
       p = Sneakers::Publisher.new
       p.instance_variable_set(:@exchange, xchg)
+      p.instance_variable_set(:@queue, xchg)
 
       mock(p).connected? { true }
       mock(p).ensure_connection!.times(0)
@@ -83,12 +87,14 @@ describe Sneakers::Publisher do
       end
 
       bunny = Object.new
+      queue = Object.new
       mock(bunny).start
       mock(bunny).create_channel { channel }
 
       mock(Bunny).new('amqp://someuser:somepassword@somehost:5672', heartbeat: 1, vhost: '/', logger: logger) { bunny }
 
       p = Sneakers::Publisher.new
+      p.instance_variable_set(:@queue, queue)
 
       p.publish('test msg', to_queue: 'downloads')
     end
@@ -97,6 +103,7 @@ describe Sneakers::Publisher do
       logger = Logger.new('/dev/null')
       channel = Object.new
       exchange = Object.new
+      queue = Object.new
       existing_session = Bunny.new
       my_vars = pub_vars.merge(to_queue: 'downloads')
 
@@ -119,6 +126,7 @@ describe Sneakers::Publisher do
       )
 
       p = Sneakers::Publisher.new
+      p.instance_variable_set(:@queue, queue)
       p.publish('test msg', my_vars)
       p.instance_variable_get(:@bunny).must_equal existing_session
     end
