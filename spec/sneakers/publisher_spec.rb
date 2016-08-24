@@ -52,7 +52,7 @@ describe Sneakers::Publisher do
       p = Sneakers::Publisher.new
       p.instance_variable_set(:@exchange, xchg)
       p.instance_variable_set(:@queue, xchg)
-
+ 
       mock(p).ensure_connection! {}
       p.publish('test msg', to_queue: 'downloads', expiration: 1, headers: {foo: 'bar'})
     end
@@ -67,6 +67,38 @@ describe Sneakers::Publisher do
 
       mock(p).connected? { true }
       mock(p).ensure_connection!.times(0)
+
+      p.publish('test msg', to_queue: 'downloads')
+    end
+
+    it 'should create the queue by default' do
+      xchg = Object.new
+      channel = Object.new
+      mock(xchg).publish('test msg', routing_key: 'downloads')
+
+      p = Sneakers::Publisher.new
+      p.instance_variable_set(:@exchange, xchg)
+      p.instance_variable_set(:@channel, channel)
+
+      mock(p).ensure_connection!
+      mock(channel).queue("downloads", {:durable=>true, :auto_delete=>false, :exclusive=>false, :arguments=>{}})
+      mock(p.instance_variable_get(:@queue)).bind(xchg, routing_key: "downloads")
+
+      p.publish('test msg', to_queue: 'downloads')
+    end
+
+    it 'should not create queue if queue instance already set' do
+      xchg = Object.new
+      channel = Object.new
+      mock(xchg).publish('test msg', routing_key: 'downloads')
+
+      p = Sneakers::Publisher.new
+      p.instance_variable_set(:@exchange, xchg)
+      p.instance_variable_set(:@queue, xchg)
+      p.instance_variable_set(:@channel, channel)
+
+      mock(p).ensure_connection!
+      mock(channel).queue.times(0)
 
       p.publish('test msg', to_queue: 'downloads')
     end
