@@ -38,7 +38,10 @@ describe Sneakers::Queue do
 
       mock(@mkbunny).start {}
       mock(@mkbunny).create_channel{ @mkchan }
-      mock(Bunny).new(anything, :vhost => '/', :heartbeat => 2){ @mkbunny }
+      mock(Bunny).new(
+        anything,
+        hash_including(:vhost => '/', :heartbeat => 2)
+      ){ @mkbunny }
     end
 
     describe "#subscribe with sneakers exchange" do
@@ -101,7 +104,10 @@ describe Sneakers::Queue do
       before do
         # expect default exchange
         queue_vars[:exchange] = ""
-        mock(@mkchan).exchange("", :type => :direct, :durable => true){ @mkex }
+        mock(@mkchan).exchange("",
+                               :type => :direct,
+                               :durable => true,
+                               :arguments => {"x-arg" => "value"}){ @mkex }
       end
 
       it "does not bind to exchange" do

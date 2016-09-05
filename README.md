@@ -1,5 +1,6 @@
 # Sneakers
 
+[![Build Status](https://travis-ci.org/jondot/sneakers.svg?branch=master)](https://travis-ci.org/jondot/sneakers)
 
 ```
       __
