@@ -211,8 +211,8 @@ describe Sneakers::Worker do
           },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
-          :heartbeat => 2,
-          :amqp_heartbeat => 10
+          :heartbeat => 30,
+          :amqp_heartbeat => 30
         )
       end
 
@@ -251,7 +251,7 @@ describe Sneakers::Worker do
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
           :heartbeat => 5,
-          :amqp_heartbeat => 10
+          :amqp_heartbeat => 30
         )
       end
 
@@ -289,8 +289,8 @@ describe Sneakers::Worker do
           },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
-          :heartbeat => 2,
-          :amqp_heartbeat => 10
+          :heartbeat => 30,
+          :amqp_heartbeat => 30
         )
       end
     end
