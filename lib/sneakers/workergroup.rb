@@ -23,7 +23,13 @@ module Sneakers
       # when used with many workers.
       pool = config[:share_threads] ? Thread.pool(config[:threads]) : nil
 
-      @workers = config[:worker_classes].map{|w| w.new(nil, pool) }
+      worker_classes = config[:worker_classes]
+
+      if worker_classes.respond_to? :call
+        worker_classes = worker_classes.call
+      end
+
+      @workers = worker_classes.map{|w| w.new(nil, pool) }
       # if more than one worker this should be per worker
       # accumulate clients and consumers as well
       @workers.each do |worker|
