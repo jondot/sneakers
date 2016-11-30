@@ -131,8 +131,11 @@ module Sneakers
         @queue_opts = opts
       end
 
-      def enqueue(msg)
-        publisher.publish(msg, :to_queue => @queue_name)
+      def enqueue(msg, opts={})
+        opts[:routing_key] ||= @queue_opts[:routing_key]
+        opts[:to_queue] ||= @queue_name
+
+        publisher.publish(msg, opts)
       end
 
       private
