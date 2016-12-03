@@ -159,19 +159,16 @@ describe Sneakers::Worker do
 
   describe ".enqueue" do
     it "publishes a message to the class queue" do
-      message = "my message"
-      mock = MiniTest::Mock.new
+      message = 'test message'
 
-      mock.expect(:publish, true) do |msg, opts|
-        msg.must_equal(message)
-        opts.must_equal(:to_queue => "defaults")
+      mock(Sneakers::Publisher).new(DummyWorker.queue_opts) do
+        mock(Object.new).publish(message, {
+          :routing_key => 'test.routing.key',
+          :to_queue    => 'downloads'
+        })
       end
-    end
 
-    it "passes the configuration to the publisher" do
-      opts = DummyWorker.queue_opts
-      mock(Sneakers::Publisher).new(opts) { mock(Object.new).publish(anything, anything) }
-      DummyWorker.enqueue(message)
+      DummyWorker.enqueue(message, :routing_key => 'test.routing.key')
     end
   end
 
