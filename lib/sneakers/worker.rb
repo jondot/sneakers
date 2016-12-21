@@ -51,7 +51,7 @@ module Sneakers
 
         begin
           metrics.increment("work.#{self.class.name}.started")
-          Timeout.timeout(@timeout_after, Timeout::Error) do
+          Timeout.timeout(@timeout_after, WorkerTimeout) do
             metrics.timing("work.#{self.class.name}.time") do
               if @call_with_params
                 res = work_with_params(msg, delivery_info, metadata)
@@ -60,7 +60,7 @@ module Sneakers
               end
             end
           end
-        rescue Timeout::Error => ex
+        rescue WorkerTimeout => ex
           res = :timeout
           worker_error(ex, log_msg: log_msg(msg), message: msg)
         rescue => ex
