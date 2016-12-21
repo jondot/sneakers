@@ -12,6 +12,7 @@ module Sneakers
 end
 
 require 'sneakers/configuration'
+require 'sneakers/errors'
 require 'sneakers/support/production_formatter'
 require 'sneakers/concerns/logging'
 require 'sneakers/concerns/metrics'
