@@ -46,6 +46,7 @@ module Sneakers
         retry_name = @opts[:retry_exchange] || "#{@worker_queue_name}-retry"
         error_name = @opts[:retry_error_exchange] || "#{@worker_queue_name}-error"
         requeue_name = @opts[:retry_requeue_exchange] || "#{@worker_queue_name}-retry-requeue"
+        retry_routing_key = @opts[:retry_routing_key] || "#"
 
         # Create the exchanges
         @retry_exchange, @error_exchange, @requeue_exchange = [retry_name, error_name, requeue_name].map do |name|
@@ -75,7 +76,7 @@ module Sneakers
         @error_queue.bind(@error_exchange, :routing_key => '#')
 
         # Finally, bind the worker queue to our requeue exchange
-        queue.bind(@requeue_exchange, :routing_key => '#')
+        queue.bind(@requeue_exchange, :routing_key => retry_routing_key)
 
         @max_retries = @opts[:retry_max_times] || 5
 
