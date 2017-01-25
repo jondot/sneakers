@@ -62,11 +62,11 @@ module Sneakers
           end
         rescue WorkerTimeout => ex
           res = :timeout
-          worker_error(ex, log_msg: log_msg(msg), message: msg)
+          worker_error(ex, log_msg: log_msg(msg), message: msg, delivery_info: delivery_info, metadata: metadata)
         rescue => ex
           res = :error
           error = ex
-          worker_error(ex, log_msg: log_msg(msg), message: msg)
+          worker_error(ex, log_msg: log_msg(msg), message: msg, delivery_info: delivery_info, metadata: metadata)
         end
 
         if @should_ack
