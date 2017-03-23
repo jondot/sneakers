@@ -144,7 +144,7 @@ module Sneakers
               hash[:error_class] = reason.class.to_s
               hash[:error_message] = "#{reason}"
               if reason.backtrace
-                hash[:backtrace] = reason.backtrace.take(10).join(', ')
+                hash[:backtrace] = reason.backtrace.take(20).join(', ')
               end
             end
           end.to_json
