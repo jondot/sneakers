@@ -252,6 +252,7 @@ describe 'Handlers' do
             data['error'].must_equal('reject')
             data['num_attempts'].must_equal(2)
             data['payload'].must_equal(Base64.encode64(:reject.to_s))
+            data['properties'].must_equal(Base64.encode64(@props_with_x_death.to_json))
             Time.parse(data['failed_at']).wont_be_nil
           end
 
@@ -267,6 +268,7 @@ describe 'Handlers' do
             data['error'].must_equal('reject')
             data['num_attempts'].must_equal(4)
             data['payload'].must_equal(Base64.encode64(:reject.to_s))
+            data['properties'].must_equal(Base64.encode64(props_with_x_death_count.to_json))
             Time.parse(data['failed_at']).wont_be_nil
           end
 
@@ -316,6 +318,7 @@ describe 'Handlers' do
             data['error'].must_equal('timeout')
             data['num_attempts'].must_equal(2)
             data['payload'].must_equal(Base64.encode64(:timeout.to_s))
+            data['properties'].must_equal(Base64.encode64(@props_with_x_death.to_json))
             Time.parse(data['failed_at']).wont_be_nil
           end
         end
@@ -347,6 +350,7 @@ describe 'Handlers' do
             data['backtrace'].wont_be_nil
             data['num_attempts'].must_equal(2)
             data['payload'].must_equal(Base64.encode64('boom!'))
+            data['properties'].must_equal(Base64.encode64(@props_with_x_death.to_json))
             Time.parse(data['failed_at']).wont_be_nil
           end
         end
@@ -383,6 +387,7 @@ describe 'Handlers' do
           data['error'].must_equal('timeout')
           data['num_attempts'].must_equal(2)
           data['payload'].must_equal(Base64.encode64(payload.to_json))
+          data['properties'].must_equal(Base64.encode64(@props_with_x_death.to_json))
         end
 
       end
