@@ -11,6 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q( Fast background processing framework for Ruby and RabbitMQ )
   gem.summary       = %q( Fast background processing framework for Ruby and RabbitMQ )
   gem.homepage      = 'http://sneakers.io'
+  gem.license       = 'MIT'
   gem.required_ruby_version = Gem::Requirement.new(">= 2.0")
 
   gem.files         = `git ls-files`.split($/).reject { |f| f == 'Gemfile.lock' }
