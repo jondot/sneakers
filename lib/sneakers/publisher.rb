@@ -12,11 +12,11 @@ module Sneakers
       to_queue = options.delete(:to_queue)
       options[:routing_key] ||= to_queue
       Sneakers.logger.info {"publishing <#{msg}> to [#{options[:routing_key]}]"}
-      @exchange.publish(msg, options)
+
+      @bunny.with_channel do |channel|
+        channel.exchange(@opts[:exchange], @opts[:exchange_options]).publish(msg, options)
+      end
     end
-
-
-    attr_reader :exchange
 
   private
     def ensure_connection!
@@ -25,8 +25,6 @@ module Sneakers
       @bunny = @opts[:connection]
       @bunny ||= create_bunny_connection
       @bunny.start
-      @channel = @bunny.create_channel
-      @exchange = @channel.exchange(@opts[:exchange], @opts[:exchange_options])
     end
 
     def connected?
