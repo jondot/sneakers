@@ -65,7 +65,7 @@ describe "integration" do
           return
         end
       end
-      
+
       integration_log "failed test. killing off workers."
       Process.kill("TERM", pid)
       sleep 1
@@ -85,6 +85,41 @@ describe "integration" do
       pid
     end
 
+    def alive?(pid)
+      if File.exist? "/proc"
+        # we're on Linux
+        return File.exists? "/proc/#{pid}"
+      else
+        Process.wait
+        Process.kill(0, pid.to_i)
+        true
+      end
+    rescue Errno::ESRCH # No such process
+      false
+    rescue Errno::EPERM # The process exists, but you dont have permission to send the signal to it.
+      true
+    end
+
+    it 'should be possible to terminate when queue is full' do
+      job_count = 30000
+
+      pid = start_worker(IntegrationWorker)
+      Process.kill("TERM", pid)
+
+      integration_log "publishing..."
+      p = Sneakers::Publisher.new
+      job_count.times do |i|
+        p.publish("m #{i}", to_queue: IntegrationWorker.queue_name)
+      end
+
+      pid = start_worker(IntegrationWorker)
+      integration_log "Killing #{pid} now!"
+      Process.kill("TERM", pid)
+      sleep(10)
+      integration_log "Checking if #{pid} is killed now!"
+      alive?(pid).must_equal false
+    end
+
     it 'should pull down 100 jobs from a real queue' do
       job_count = 100
 
@@ -95,7 +130,7 @@ describe "integration" do
       job_count.times do |i|
         p.publish("m #{i}", to_queue: IntegrationWorker.queue_name)
       end
-      
+
       assert_all_accounted_for(
          queue: IntegrationWorker.queue_name,
          pid: pid,
@@ -103,8 +138,8 @@ describe "integration" do
          jobs: job_count,
       )
     end
-    
+
   end
 end
-  
+
 
