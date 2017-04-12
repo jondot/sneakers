@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'sneakers'
+require 'serverengine'
 
 describe Sneakers::Publisher do
   let :pub_vars do
@@ -121,6 +122,25 @@ describe Sneakers::Publisher do
       p = Sneakers::Publisher.new
       p.publish('test msg', my_vars)
       p.instance_variable_get(:@bunny).must_equal existing_session
+    end
+
+    it 'should publish using the content type serializer' do
+      Sneakers::ContentType.register(
+        content_type: 'application/json',
+        serializer: ->(payload) { JSON.dump(payload) },
+        deserializer: ->(_) {},
+      )
+
+      xchg = Object.new
+      mock(xchg).publish('{"foo":"bar"}', routing_key: 'downloads', content_type: 'application/json')
+
+      p = Sneakers::Publisher.new
+      p.instance_variable_set(:@exchange, xchg)
+
+      mock(p).ensure_connection! {}
+      p.publish({ 'foo' => 'bar' }, to_queue: 'downloads', content_type: 'application/json')
+
+      Sneakers::ContentType.reset!
     end
   end
 end

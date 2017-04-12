@@ -21,6 +21,7 @@ module Sneakers
       @timeout_after = opts[:timeout_job_after]
       @pool = pool || Thread.pool(opts[:threads]) # XXX config threads
       @call_with_params = respond_to?(:work_with_params)
+      @content_type = opts[:content_type]
 
       @queue = queue || Sneakers::Queue.new(
         queue_name,
@@ -39,7 +40,7 @@ module Sneakers
       to_queue = opts.delete(:to_queue)
       opts[:routing_key] ||= to_queue
       return unless opts[:routing_key]
-      @queue.exchange.publish(msg, opts)
+      @queue.exchange.publish(Sneakers::ContentType.serialize(msg, opts[:content_type]), opts)
     end
 
     def do_work(delivery_info, metadata, msg, handler)
@@ -53,10 +54,11 @@ module Sneakers
           metrics.increment("work.#{self.class.name}.started")
           Timeout.timeout(@timeout_after, WorkerTimeout) do
             metrics.timing("work.#{self.class.name}.time") do
+              deserialized_msg = ContentType.deserialize(msg, @content_type || metadata && metadata[:content_type])
               if @call_with_params
-                res = work_with_params(msg, delivery_info, metadata)
+                res = work_with_params(deserialized_msg, delivery_info, metadata)
               else
-                res = work(msg)
+                res = work(deserialized_msg)
               end
             end
           end
@@ -135,6 +137,7 @@ module Sneakers
 
       def enqueue(msg, opts={})
         opts[:routing_key] ||= @queue_opts[:routing_key]
+        opts[:content_type] ||= @queue_opts[:content_type]
         opts[:to_queue] ||= @queue_name
 
         publisher.publish(msg, opts)
