@@ -76,6 +76,7 @@ describe Sneakers::Publisher do
         exchange: 'another_exchange',
         exchange_options: { :type => :topic, :arguments => { 'x-arg' => 'value' } },
         log: logger,
+        properties: { key: "value" },
         durable: false)
 
       channel = Object.new
@@ -87,7 +88,7 @@ describe Sneakers::Publisher do
       mock(bunny).start
       mock(bunny).create_channel { channel }
 
-      mock(Bunny).new('amqp://someuser:somepassword@somehost:5672', heartbeat: 1, vhost: '/', logger: logger) { bunny }
+      mock(Bunny).new('amqp://someuser:somepassword@somehost:5672', heartbeat: 1, vhost: '/', logger: logger, properties: { key: "value" }) { bunny }
 
       p = Sneakers::Publisher.new
 
