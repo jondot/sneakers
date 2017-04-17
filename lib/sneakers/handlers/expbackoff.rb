@@ -59,6 +59,9 @@ module Sneakers
         @backoff_base = @opts[:retry_backoff_base] || 0
         @backoff_step = @opts[:retry_backoff_step] || 1
 
+        # This is for example/dev/test
+        @backoff_multiplier = @opts[:retry_backoff_multiplier] || 1000
+
         backoffs = Expbackoff.backoff_periods(@max_retries, @backoff_base, @backoff_step)
 
         # Create the exchanges
@@ -80,7 +83,7 @@ module Sneakers
                                        :durable => queue_durable?,
                                        :arguments => {
                                          :'x-dead-letter-exchange' => requeue_name,
-                                         :'x-message-ttl' => bo * 1000
+                                         :'x-message-ttl' => bo * @backoff_multiplier
                                        })
           retry_queue.bind(@retry_exchange, :arguments => { :backoff => bo })
         end
