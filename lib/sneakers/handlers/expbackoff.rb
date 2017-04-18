@@ -36,7 +36,7 @@ module Sneakers
     #
 
     # - retry_backoff_base = 0, 30, 60, 120, 180, etc defaults to 0
-    # - retry_backoff_step = 1, 2, 3, etc defaults to 1
+    #
 
     class Expbackoff
 
@@ -57,12 +57,11 @@ module Sneakers
 
         @max_retries = @opts[:retry_max_times] || 5
         @backoff_base = @opts[:retry_backoff_base] || 0
-        @backoff_step = @opts[:retry_backoff_step] || 1
 
         # This is for example/dev/test
         @backoff_multiplier = @opts[:retry_backoff_multiplier] || 1000
 
-        backoffs = Expbackoff.backoff_periods(@max_retries, @backoff_base, @backoff_step)
+        backoffs = Expbackoff.backoff_periods(@max_retries, @backoff_base)
 
         # Create the exchanges
         Sneakers.logger.debug { "#{log_prefix} creating exchange=#{retry_name}" }
@@ -130,14 +129,13 @@ module Sneakers
       #####################################################
       # formula
       # base X = 0, 30, 60, 120, 180, etc defaults to 0
-      # step Y = 1, 2, 3, etc defaults to 1
-      # (X + 15) * 2 ** (count + Y)
-      def self.backoff_periods(max_retries, backoff_base, backoff_step)
-        (1..max_retries).map{ |c| next_ttl(c, backoff_base, backoff_step) }
+      # (X + 15) * 2 ** (count + 1)
+      def self.backoff_periods(max_retries, backoff_base)
+        (1..max_retries).map{ |c| next_ttl(c, backoff_base) }
       end
 
-      def self.next_ttl(count, backoff_base, backoff_step)
-        (backoff_base + 15) * 2 ** (count + backoff_step)
+      def self.next_ttl(count, backoff_base)
+        (backoff_base + 15) * 2 ** (count + 1)
       end
 
       #####################################################
@@ -159,7 +157,7 @@ module Sneakers
           Sneakers.logger.info do
             "#{log_prefix} msg=retrying, count=#{num_attempts}, headers=#{props[:headers]}"
           end
-          backoff_ttl = Expbackoff.next_ttl(num_attempts, @backoff_base, @backoff_step)
+          backoff_ttl = Expbackoff.next_ttl(num_attempts, @backoff_base)
           @retry_exchange.publish(msg, :routing_key => hdr.routing_key, :headers => { :backoff => backoff_ttl, :count => num_attempts })
           @channel.acknowledge(hdr.delivery_tag, false)
           # TODO: metrics
