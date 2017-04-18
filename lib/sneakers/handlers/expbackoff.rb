@@ -167,7 +167,7 @@ module Sneakers
           # Retried more than the max times
           # Publish the original message with the routing_key to the error exchange
           Sneakers.logger.info do
-            "#{log_prefix} msg=failing, retry_count=#{num_attempts}, reason=#{reason}"
+            "#{log_prefix} msg=failing, retry_count=#{num_attempts}, headers=#{props[:headers]}, reason=#{reason}"
           end
           data = {
             error: reason,
