@@ -8,7 +8,7 @@ Sneakers.configure(:handler => Sneakers::Handlers::Expbackoff,
                    :workers => 1,
                    :threads => 1,
                    :prefetch => 1,
-                   :exchange => 'sneakers-exp',
+                   :exchange => 'sneakers',
                    :exchange_options => { :type => 'topic', durable: true },
                    :routing_key => ['#', 'something'],
                    :retry_max_times => 3,
@@ -29,12 +29,20 @@ WORKER_OPTIONS = {
 # you must run this twice. Once to setup the exchanges, queues and bindings a
 # second time to have the sent message end up on the downloads queue.
 #
+# x-dead-letter-exchange is not needed but keeping it so that handler can be
+# interchangeable with the Maxretry handler for the queue.
+#
 # Run this via:
 #   bundle exec ruby examples/exp_backoff_handler.rb
 #
 class ExpBackoffWorker
   include Sneakers::Worker
-  from_queue 'downloads-exp', WORKER_OPTIONS
+  from_queue 'downloads',
+      WORKER_OPTIONS.merge({
+                             :arguments => {
+                               :'x-dead-letter-exchange' => 'downloads-retry'
+                             },
+                           })
 
   def work(msg)
     logger.info("ExpBackoffWorker rejecting msg: #{msg.inspect}")
@@ -48,7 +56,12 @@ end
 # see the message once.
 class SucceedingWorker
   include Sneakers::Worker
-  from_queue 'uploads-exp', WORKER_OPTIONS
+  from_queue 'uploads',
+      WORKER_OPTIONS.merge({
+                             :arguments => {
+                               :'x-dead-letter-exchange' => 'uploads-retry'
+                             },
+                           })
 
   def work(msg)
     logger.info("SucceedingWorker succeeding on msg: #{msg.inspect}")
