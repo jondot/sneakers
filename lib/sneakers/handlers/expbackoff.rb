@@ -4,9 +4,13 @@ require 'json'
 module Sneakers
   module Handlers
     #
+    # Expbackoff is based on Maxretry and modified to setup a different set of
+    # queues and exchange to achieve exponential backoff with the dead letter policies.
+    #
     # Maxretry uses dead letter policies on Rabbitmq to requeue and retry
     # messages after failure (rejections, errors and timeouts). When the maximum
     # number of retries is reached it will put the message on an error queue.
+    # 
     # This handler will only retry at the queue level. To accomplish that, the
     # setup is a bit complex.
     #
@@ -14,9 +18,10 @@ module Sneakers
     #   worker_exchange (eXchange)
     #   worker_queue (Queue)
     # We create:
-    #   worker_queue-retry - (X) where we setup the worker queue to dead-letter.
-    #   worker_queue-retry - (Q) queue bound to ^ exchange, dead-letters to
-    #                        worker_queue-retry-requeue.
+    #   worker_queue-backoff - (X) where we setup the worker queue to dead-letter.
+    #   worker_queue-backoff-### - (Q) queues bound to ^ exchange with ttl specified 
+    #                              where ### denotes the backoff period, 
+    #                              dead-letters to worker_queue-retry-requeue.
     #   worker_queue-error - (X) where to send max-retry failures
     #   worker_queue-error - (Q) bound to worker_queue-error.
     #   worker_queue-retry-requeue - (X) exchange to bind worker_queue to for
@@ -26,16 +31,17 @@ module Sneakers
     # dead letter queue. See the example for more information.
     #
     # Many of these can be override with options:
-    # - retry_exchange - sets retry exchange & queue
+    # - retry_backoff_exchange - sets retry exchange & queues
     # - retry_error_exchange - sets error exchange and queue
     # - retry_requeue_exchange - sets the exchange created to re-queue things
     #   back to the worker queue.
     #
-    # initial_delay - 60 sec, etc
-    # backoff_factor - 2, x2, x3, x4 etc
+    # Backoff periods can be calculated using 
+    # Sneakers::Handlers::Expbackoff.backoff_periods(retry_max_times, retry_backoff_base)
     #
-
-    # - retry_backoff_base = 0, 30, 60, 120, 180, etc defaults to 0
+    # retry_max_times = 5, retry_backoff_base = 0 yields [60, 120, 240, 480, 960]
+    #
+    # - retry_backoff_base = 0, 15, 30, 45, 60, ... 120, 180, etc defaults to 0
     #
 
     class Expbackoff
