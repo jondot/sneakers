@@ -85,39 +85,42 @@ describe "integration" do
       pid
     end
 
-    def alive?(pid)
-      if File.exist? "/proc"
-        # we're on Linux
-        return File.exists? "/proc/#{pid}"
-      else
-        Process.wait
-        Process.kill(0, pid.to_i)
-        true
+    def any_consumers
+      rmq_addr = compose_or_localhost("rabbitmq")
+      result = false
+      begin
+        admin = RabbitMQ::HTTP::Client.new("http://#{rmq_addr}:15672/", username: "guest", password: "guest")
+        qs = admin.list_queues
+        qs.each do |q|
+          if q.name.start_with? 'integration_'
+            puts "We see #{q.consumers} consumers on #{q.name}"
+            return true if q.consumers > 0
+          end
+        end
+        return false
+      rescue
+        puts "Rabbitmq admin seems to not exist? you better be running this on Travis or Docker. proceeding.\n#{$!}"
       end
-    rescue Errno::ESRCH # No such process
-      false
-    rescue Errno::EPERM # The process exists, but you dont have permission to send the signal to it.
-      true
     end
 
     it 'should be possible to terminate when queue is full' do
-      job_count = 30000
+      job_count = 40000
 
       pid = start_worker(IntegrationWorker)
       Process.kill("TERM", pid)
 
-      integration_log "publishing..."
+      integration_log "publishing #{job_count} messages..."
       p = Sneakers::Publisher.new
       job_count.times do |i|
         p.publish("m #{i}", to_queue: IntegrationWorker.queue_name)
       end
 
       pid = start_worker(IntegrationWorker)
+      any_consumers.must_equal true
       integration_log "Killing #{pid} now!"
       Process.kill("TERM", pid)
-      sleep(10)
-      integration_log "Checking if #{pid} is killed now!"
-      alive?(pid).must_equal false
+      sleep(2)
+      any_consumers.must_equal false
     end
 
     it 'should pull down 100 jobs from a real queue' do
