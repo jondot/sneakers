@@ -65,7 +65,7 @@ class Sneakers::Queue
       Sneakers.logger.info "Queue: #{cancel_ok.consumer_tag} cancelled"
       @consumer = nil
     else
-      Sneakers.logger.warn "Queue: could not cancel#{@consume.inspect}"
+      Sneakers.logger.warn "Queue: could not cancel #{@consumer.inspect}"
       sleep(1)
       unsubscribe
     end
