@@ -58,14 +58,14 @@ class Sneakers::Queue
   def unsubscribe
     return unless @consumer
 
-    # XXX can we cancel bunny and channel too?
-    Sneakers.logger.info("Queue: Trying to unsubscribe on #{@consumer.inspect}")
+    # TODO: should we simply close the channel here?
+    Sneakers.logger.info("Queue: will try to cancel consumer #{@consumer.inspect}")
     cancel_ok = @consumer.cancel
     if cancel_ok
-      Sneakers.logger.info "Queue: #{cancel_ok.consumer_tag} cancelled"
+      Sneakers.logger.info "Queue: consumer #{cancel_ok.consumer_tag} cancelled"
       @consumer = nil
     else
-      Sneakers.logger.warn "Queue: could not cancel #{@consumer.inspect}"
+      Sneakers.logger.warn "Queue: could not cancel consumer #{@consumer.inspect}"
       sleep(1)
       unsubscribe
     end
