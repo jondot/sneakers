@@ -20,6 +20,7 @@ require 'sneakers/handlers/oneshot'
 require 'sneakers/content_type'
 require 'sneakers/worker'
 require 'sneakers/publisher'
+require 'sneakers/deserializer'
 
 module Sneakers
   extend self
