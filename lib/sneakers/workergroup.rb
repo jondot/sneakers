@@ -29,7 +29,13 @@ module Sneakers
         worker_classes = worker_classes.call
       end
 
-      @workers = worker_classes.map{|w| w.new(nil, pool) }
+      # if we don't provide a connection to a worker,
+      # the queue used in the worker will create a new one
+      # so if we want to have a shared bunny connection for the workers
+      # we must create it here
+      bunny_connection = create_connection_or_nil
+
+      @workers = worker_classes.map{|w| w.new(nil, pool, {connection: bunny_connection}) }
       # if more than one worker this should be per worker
       # accumulate clients and consumers as well
       @workers.each do |worker|
@@ -52,5 +58,13 @@ module Sneakers
       @stop_flag.set!
     end
 
+    def create_bunny_connection
+      Bunny.new(Sneakers::CONFIG[:amqp], :vhost => Sneakers::CONFIG[:vhost], :heartbeat => Sneakers::CONFIG[:heartbeat], :logger => Sneakers::logger)
+    end
+
+    def create_connection_or_nil
+      config[:share_bunny_connection] ? create_bunny_connection : nil
+    end
+    private :create_bunny_connection, :create_connection_or_nil
   end
 end
