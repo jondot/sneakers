@@ -29,6 +29,10 @@ module Sneakers
         worker_classes = worker_classes.call
       end
 
+      # if we don't provide a connection to a worker,
+      # the queue used in the worker will create a new one
+      # so if we want to have a shared bunny connection for the workers
+      # we must create it here
       bunny_connection = create_connection_or_nil
 
       @workers = worker_classes.map{|w| w.new(nil, pool, {connection: bunny_connection}) }
