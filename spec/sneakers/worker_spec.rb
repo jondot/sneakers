@@ -229,6 +229,9 @@ describe Sneakers::Worker do
             :exclusive => false,
             :arguments => {}
           },
+          :publisher_options => {
+            :auto_declare_queue => true
+          },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
           :heartbeat => 30,
@@ -268,6 +271,9 @@ describe Sneakers::Worker do
             :exclusive => true,
             :arguments => { 'x-arg' => 'value' }
           },
+          :publisher_options => {
+            :auto_declare_queue => true
+          },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
           :heartbeat => 5,
@@ -306,6 +312,9 @@ describe Sneakers::Worker do
             :auto_delete => false,
             :exclusive => false,
             :arguments => { 'x-arg2' => 'value2' }
+          },
+          :publisher_options => {
+            :auto_declare_queue => true
           },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
