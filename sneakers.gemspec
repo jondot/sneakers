@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
   gem.add_dependency 'serverengine', '~> 1.5.11'
   gem.add_dependency 'bunny', '~> 2.7.0'
-  gem.add_dependency 'thread', '~> 0.1.7'
+  gem.add_dependency 'concurrent-ruby', '~> 1.0'
   gem.add_dependency 'thor'
 
   # for integration environment (see .travis.yml and integration_spec)
