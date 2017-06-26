@@ -1,5 +1,5 @@
-require "sneakers/version"
-require 'thread/pool'
+require 'sneakers/version'
+require 'concurrent/executors'
 require 'bunny'
 require 'logger'
 require 'serverengine'

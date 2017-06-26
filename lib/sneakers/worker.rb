@@ -19,7 +19,7 @@ module Sneakers
 
       @should_ack =  opts[:ack]
       @timeout_after = opts[:timeout_job_after]
-      @pool = pool || Thread.pool(opts[:threads]) # XXX config threads
+      @pool = pool || Concurrent::FixedThreadPool.new(opts[:threads])
       @call_with_params = respond_to?(:work_with_params)
       @content_type = opts[:content_type]
 
@@ -46,7 +46,7 @@ module Sneakers
     def do_work(delivery_info, metadata, msg, handler)
       worker_trace "Working off: #{msg.inspect}"
 
-      @pool.process do
+      @pool.post do
         res = nil
         error = nil
 
@@ -93,7 +93,7 @@ module Sneakers
         end
 
         metrics.increment("work.#{self.class.name}.ended")
-      end #process
+      end #post
     end
 
     def stop
@@ -101,6 +101,7 @@ module Sneakers
       @queue.unsubscribe
       worker_trace "Stopping worker: shutting down thread pool."
       @pool.shutdown
+      @pool.wait_for_termination
       worker_trace "Stopping worker: I'm gone."
     end
 

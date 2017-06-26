@@ -21,7 +21,7 @@ module Sneakers
 
       # Allocate single thread pool if share_threads is set. This improves load balancing
       # when used with many workers.
-      pool = config[:share_threads] ? Thread.pool(config[:threads]) : nil
+      pool = config[:share_threads] ? Concurrent::FixedThreadPool.new(config[:threads]) : nil
 
       worker_classes = config[:worker_classes]
 

@@ -36,12 +36,7 @@ class HandlerTestWorker
   end
 end
 
-class TestPool
-  def process(*args,&block)
-    block.call
-  end
-end
-
+TestPool ||= Concurrent::ImmediateExecutor
 
 describe 'Handlers' do
   let(:channel) { Object.new }

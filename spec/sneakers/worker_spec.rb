@@ -87,8 +87,6 @@ class JSONPublishingWorker
   end
 end
 
-
-
 class LoggingWorker
   include Sneakers::Worker
   from_queue 'defaults',
@@ -108,7 +106,6 @@ class JSONWorker
   def work(msg)
   end
 end
-
 
 class MetricsWorker
   include Sneakers::Worker
@@ -145,11 +142,7 @@ class WithDeprecatedExchangeOptionsWorker
   end
 end
 
-class TestPool
-  def process(*args,&block)
-    block.call
-  end
-end
+TestPool ||= Concurrent::ImmediateExecutor
 
 def with_test_queuefactory(ctx, ack=true, msg=nil, nowork=false)
   qf = Object.new
