@@ -58,8 +58,7 @@ module Sneakers
         Sneakers::CONFIG[:hooks][hook] = config.delete(hook) if config[hook]
       end
 
-
-      Sneakers.logger.info("New configuration: #{config.inspect}")
+      Sneakers.logger.debug("New configuration: #{config.inspect}")
       config
     end
 
