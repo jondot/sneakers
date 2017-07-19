@@ -1,6 +1,7 @@
 require 'logger'
 require 'spec_helper'
 require 'sneakers'
+require 'sneakers/runner'
 
 describe Sneakers::Runner do
   let(:logger) { Logger.new('logtest.log') }
@@ -29,10 +30,10 @@ describe Sneakers::RunnerConfig do
   let(:logger) { Logger.new("logtest.log") }
   let(:runner_config) { Sneakers::Runner.new([]).instance_variable_get("@runnerconfig") }
 
-
-
   describe "with a connection" do
-    before { Sneakers.configure(log: logger, connection: Object.new) }
+    let(:connection) { Object.new }
+
+    before { Sneakers.configure(log: logger, connection: connection) }
 
     describe "#reload_config!" do
       it "does not throw exception" do
@@ -45,6 +46,10 @@ describe Sneakers::RunnerConfig do
 
       it "must have :logger key as an instance of Logger" do
         runner_config.reload_config![:logger].is_a?(Logger).must_equal true
+      end
+
+      it "must have :connection" do
+        runner_config.reload_config![:connection].is_a?(Object).must_equal true
       end
     end
   end

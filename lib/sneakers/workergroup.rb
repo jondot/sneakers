@@ -33,9 +33,12 @@ module Sneakers
       # the queue used in the worker will create a new one
       # so if we want to have a shared bunny connection for the workers
       # we must create it here
-      bunny_connection = create_connection_or_nil
+      bunny = shared_connection_or_nil
 
-      @workers = worker_classes.map{|w| w.new(nil, pool, {connection: bunny_connection}) }
+      @workers = worker_classes.map do |worker_class|
+        worker_class.new(nil, pool, { connection: bunny })
+      end
+
       # if more than one worker this should be per worker
       # accumulate clients and consumers as well
       @workers.each do |worker|
@@ -47,7 +50,6 @@ module Sneakers
         Sneakers.logger.debug("Heartbeat: running threads [#{Thread.list.count}]")
         # report aggregated stats?
       end
-
     end
 
     def stop
@@ -58,13 +60,23 @@ module Sneakers
       @stop_flag.set!
     end
 
-    def create_bunny_connection
-      Bunny.new(Sneakers::CONFIG[:amqp], :vhost => Sneakers::CONFIG[:vhost], :heartbeat => Sneakers::CONFIG[:heartbeat], :logger => Sneakers::logger)
+    def shared_connection
+      config[:connection] || create_bunny_connection
     end
 
-    def create_connection_or_nil
-      config[:share_bunny_connection] ? create_bunny_connection : nil
+    def create_bunny_connection
+      Bunny.new(
+        Sneakers::CONFIG[:amqp],
+        :vhost => Sneakers::CONFIG[:vhost],
+        :heartbeat => Sneakers::CONFIG[:heartbeat],
+        :logger => Sneakers::logger
+      )
     end
-    private :create_bunny_connection, :create_connection_or_nil
+
+    def shared_connection_or_nil
+      config[:share_bunny_connection] ? shared_connection : nil
+    end
+
+    private :shared_connection, :create_bunny_connection, :shared_connection_or_nil
   end
 end
