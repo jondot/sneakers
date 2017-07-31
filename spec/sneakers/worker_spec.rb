@@ -384,7 +384,7 @@ describe Sneakers::Worker do
       handler = Object.new
       header = Object.new
       mock(handler).error(header, nil, "msg", anything)
-      mock(w.logger).error(/\[Exception error="foo" error_class=RuntimeError backtrace=.*/)
+      mock(w.logger).error(/\[Exception error="foo" error_class=RuntimeError worker_class=AcksWorker backtrace=.*/)
       w.do_work(header, nil, "msg", handler)
     end
 
@@ -393,7 +393,7 @@ describe Sneakers::Worker do
       header = Object.new
       w = AcksWorker.new(@queue, TestPool.new)
       mock(w).work("msg").once{ raise "foo" }
-      mock(w.logger).error(/error="foo" error_class=RuntimeError backtrace=/)
+      mock(w.logger).error(/error="foo" error_class=RuntimeError worker_class=AcksWorker backtrace=/)
       mock(handler).error(header, nil, "msg", anything)
       w.do_work(header, nil, "msg", handler)
     end
@@ -406,7 +406,7 @@ describe Sneakers::Worker do
       header = Object.new
 
       mock(handler).timeout(header, nil, "msg")
-      mock(w.logger).error(/error="execution expired" error_class=Sneakers::WorkerTimeout backtrace=/)
+      mock(w.logger).error(/error="execution expired" error_class=Sneakers::WorkerTimeout worker_class=TimeoutWorker backtrace=/)
 
       w.do_work(header, nil, "msg", handler)
     end
@@ -526,11 +526,10 @@ describe Sneakers::Worker do
       it 'only logs backtraces if present' do
         w = DummyWorker.new(@queue, TestPool.new)
         mock(w.logger).warn('cuz')
-        mock(w.logger).error(/\[Exception error="boom!" error_class=RuntimeError\]/)
+        mock(w.logger).error(/\[Exception error="boom!" error_class=RuntimeError worker_class=DummyWorker\]/)
         w.worker_error(RuntimeError.new('boom!'), 'cuz')
       end
     end
-
   end
 
 
