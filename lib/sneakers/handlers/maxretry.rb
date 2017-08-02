@@ -135,7 +135,7 @@ module Sneakers
             "#{log_prefix} msg=failing, retry_count=#{num_attempts}, reason=#{reason}"
           end
           data = {
-            error: reason,
+            error: reason.to_s,
             num_attempts: num_attempts,
             failed_at: Time.now.iso8601,
             payload: Base64.encode64(msg.to_s),
