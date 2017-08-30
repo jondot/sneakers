@@ -19,7 +19,7 @@ module Sneakers
 
       @should_ack =  opts[:ack]
       @timeout_after = opts[:timeout_job_after]
-      @pool = pool || Concurrent::FixedThreadPool.new(opts[:threads])
+      @pool = pool || Concurrent::FixedThreadPool.new(opts[:threads] || Sneakers::Configuration::DEFAULTS[:threads])
       @call_with_params = respond_to?(:work_with_params)
       @content_type = opts[:content_type]
 
