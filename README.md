@@ -18,8 +18,8 @@ Sneakers is being used in production for both I/O and CPU intensive workloads, a
 
 
 Visit the [wiki](https://github.com/jondot/sneakers/wiki) for
-complete docs.
-
+documentation and [GitHub releases](https://github.com/jondot/sneakers/releases) for release
+notes.
 
 [![Build Status](https://travis-ci.org/jondot/sneakers.svg?branch=master)](https://travis-ci.org/jondot/sneakers)
 
