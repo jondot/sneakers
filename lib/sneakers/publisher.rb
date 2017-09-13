@@ -16,7 +16,7 @@ module Sneakers
     end
 
 
-    attr_reader :exchange
+    attr_reader :exchange, :channel
 
   private
     def ensure_connection!
