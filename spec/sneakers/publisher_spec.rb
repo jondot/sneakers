@@ -27,7 +27,7 @@ describe Sneakers::Publisher do
       mock(xchg).publish('test msg', routing_key: 'downloads')
 
       p = Sneakers::Publisher.new
-      p.instance_variable_set(:@exchange, xchg)
+      mock(p).get_exchange('sneakers', {}) { xchg }
 
       mock(p).ensure_connection! {}
       p.publish('test msg', to_queue: 'downloads')
@@ -38,7 +38,7 @@ describe Sneakers::Publisher do
       mock(xchg).publish('test msg', routing_key: 'downloads', persistence: true)
 
       p = Sneakers::Publisher.new
-      p.instance_variable_set(:@exchange, xchg)
+      mock(p).get_exchange('sneakers', {}) { xchg }
 
       mock(p).ensure_connection! {}
       p.publish('test msg', to_queue: 'downloads', persistence: true)
@@ -49,7 +49,7 @@ describe Sneakers::Publisher do
       mock(xchg).publish('test msg', routing_key: 'downloads', expiration: 1, headers: {foo: 'bar'})
 
       p = Sneakers::Publisher.new
-      p.instance_variable_set(:@exchange, xchg)
+      mock(p).get_exchange('sneakers', {}) { xchg }
 
       mock(p).ensure_connection! {}
       p.publish('test msg', to_queue: 'downloads', expiration: 1, headers: {foo: 'bar'})
@@ -60,7 +60,7 @@ describe Sneakers::Publisher do
       mock(xchg).publish('test msg', routing_key: 'downloads')
 
       p = Sneakers::Publisher.new
-      p.instance_variable_set(:@exchange, xchg)
+      mock(p).get_exchange('sneakers', {}) { xchg }
 
       mock(p).connected? { true }
       mock(p).ensure_connection!.times(0)
@@ -100,7 +100,7 @@ describe Sneakers::Publisher do
       channel = Object.new
       exchange = Object.new
       existing_session = Bunny.new
-      my_vars = pub_vars.merge(to_queue: 'downloads')
+      my_vars = { to_queue: 'downloads' }
 
       mock(existing_session).start
       mock(existing_session).create_channel { channel }
@@ -136,12 +136,39 @@ describe Sneakers::Publisher do
       mock(xchg).publish('{"foo":"bar"}', routing_key: 'downloads', content_type: 'application/json')
 
       p = Sneakers::Publisher.new
-      p.instance_variable_set(:@exchange, xchg)
+      mock(p).get_exchange('sneakers', {}) { xchg }
 
       mock(p).ensure_connection! {}
       p.publish({ 'foo' => 'bar' }, to_queue: 'downloads', content_type: 'application/json')
 
       Sneakers::ContentType.reset!
+    end
+
+    it 'should publish to another exchange if it included in options' do
+      options = {
+        routing_key: 'downloads',
+        exchange: 'another-exchange',
+        exchange_options: {
+          type: :topic,
+          durable: true,
+          arguments: {'x-arg' => 'value' }
+        }
+      }
+
+      channel = Object.new
+      existing_session = Bunny.new
+      xchg = Object.new
+
+      Sneakers.configure(connection: existing_session)
+
+      mock(existing_session).start
+      mock(existing_session).create_channel { channel }
+
+      mock(channel).exchange('another-exchange', type: :topic, durable: true, auto_delete: false, arguments: { 'x-arg' => 'value' }) { xchg }
+      mock(xchg).publish('test msg', options)
+
+      p = Sneakers::Publisher.new
+      p.publish('test msg', options)
     end
   end
 end
