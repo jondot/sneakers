@@ -113,11 +113,11 @@ module Sneakers
 
     # Construct a log message with some standard prefix for this worker
     def log_msg(msg)
-      "[#{@id}][#{Thread.current}][#{@queue.name}][#{@queue.opts}] #{msg}"
+      "[#{@id}][#{Thread.current.object_id}][#{@queue.name}] #{msg}"
     end
 
     def worker_trace(msg)
-      logger.debug(log_msg(msg))
+      logger.info(log_msg(msg))
     end
 
     Classes = []
