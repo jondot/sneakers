@@ -9,14 +9,15 @@ module Sneakers
       @mutex.synchronize do
         ensure_connection! unless connected?
       end
+      exchange = get_exchange(
+        options.delete(:exchange) { @opts[:exchange] },
+        options.delete(:exchange_options) { {} }
+      )
       to_queue = options.delete(:to_queue)
       options[:routing_key] ||= to_queue
       Sneakers.logger.info {"publishing <#{msg}> to [#{options[:routing_key]}]"}
-      @exchange.publish(ContentType.serialize(msg, options[:content_type]), options)
+      exchange.publish(ContentType.serialize(msg, options[:content_type]), options)
     end
-
-
-    attr_reader :exchange
 
   private
     def ensure_connection!
@@ -26,7 +27,6 @@ module Sneakers
       @bunny ||= create_bunny_connection
       @bunny.start
       @channel = @bunny.create_channel
-      @exchange = @channel.exchange(@opts[:exchange], @opts[:exchange_options])
     end
 
     def connected?
@@ -38,6 +38,11 @@ module Sneakers
                               :heartbeat => @opts[:heartbeat],
                               :properties => @opts.fetch(:properties, {}),
                               :logger => Sneakers::logger)
+    end
+
+    def get_exchange(name, opts = {})
+      opts = @opts[:exchange_options].merge(opts)
+      @channel.exchange(name, opts)
     end
   end
 end
