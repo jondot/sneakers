@@ -63,6 +63,7 @@ module Sneakers
     end
 
     def create_connection_or_nil
+      return Sneakers::CONFIG[:connection] unless Sneakers::CONFIG[:connection].nil?
       config[:share_bunny_connection] ? create_bunny_connection : nil
     end
     private :create_bunny_connection, :create_connection_or_nil
