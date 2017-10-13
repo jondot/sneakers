@@ -51,7 +51,7 @@ describe Sneakers::WorkerGroup do
     describe 'with connecion provided' do
       before do
         Sneakers.clear!
-        Sneakers.configure(connection: connection, log: logger, share_bunny_connection: true)
+        Sneakers.configure(connection: connection, log: logger)
       end
 
       it 'creates workers with connection: connection' do
