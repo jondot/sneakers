@@ -47,6 +47,8 @@ module Sneakers
       worker_trace "Working off: #{msg.inspect}"
 
       @pool.post do
+        before_work(delivery_info, metadata, msg)
+
         res = nil
         error = nil
 
@@ -93,6 +95,8 @@ module Sneakers
         end
 
         metrics.increment("work.#{self.class.name}.ended")
+
+        after_work(delivery_info, metadata, msg, res)
       end #post
     end
 
@@ -118,6 +122,25 @@ module Sneakers
 
     def worker_trace(msg)
       logger.debug(log_msg(msg))
+    end
+
+    def before_work(delivery_info, metadata, msg)
+      wbefore = Sneakers::CONFIG[:hooks][:before_work]
+      wbefore.call(
+        delivery_info: delivery_info,
+        metadata: metadata,
+        msg: msg
+      ) if wbefore
+    end
+
+    def after_work(delivery_info, metadata, msg, res)
+      wafter = Sneakers::CONFIG[:hooks][:after_work]
+      wafter.call(
+        delivery_info: delivery_info,
+        metadata: metadata,
+        msg: msg,
+        response: res
+      ) if wafter
     end
 
     Classes = []

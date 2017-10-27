@@ -628,4 +628,42 @@ describe Sneakers::Worker do
       @w.do_work(@delivery_info, {:foo => 1 }, :ack, @handler)
     end
   end
+
+  describe 'work hooks' do
+    before do
+      @props = { foo: 1 }
+      @handler = Object.new
+      @header = Object.new
+
+      @delivery_info = Object.new
+
+      stub(@handler).noop(@delivery_info, { foo: 1 }, :ack)
+
+      @w = WithParamsWorker.new(@queue, TestPool.new)
+    end
+
+    after do
+      Sneakers.clear!
+    end
+
+    it 'should run before_work hook' do
+      @executed = false
+
+      Sneakers.configure(hooks: { before_work: -> (_) { @executed = true; } })
+      mock(@w).work_with_params(:ack, @delivery_info, foo: 1).once
+
+      @w.do_work(@delivery_info, { foo: 1 }, :ack, @handler)
+      @executed.must_equal true
+    end
+
+    it 'should run after_work hook' do
+      @executed = false
+
+      Sneakers.configure(hooks: { after_work: -> (_) { @executed = true; } })
+      mock(@w).work_with_params(:ack, @delivery_info, foo: 1).once
+
+      @w.do_work(@delivery_info, { foo: 1 }, :ack, @handler)
+      @executed.must_equal true
+    end
+  end
 end
