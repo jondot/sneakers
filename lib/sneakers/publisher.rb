@@ -1,5 +1,8 @@
 module Sneakers
   class Publisher
+
+    attr_reader :exchange, :channel
+
     def initialize(opts = {})
       @mutex = Mutex.new
       @opts = Sneakers::CONFIG.merge(opts)
@@ -16,16 +19,13 @@ module Sneakers
       @exchange.publish(ContentType.serialize(msg, options[:content_type]), options)
     end
 
-
-    attr_reader :exchange, :channel
-
-  private
     def ensure_connection!
       @mutex.synchronize do
         connect! unless connected?
       end
     end
 
+  private
     def connect!
       @bunny ||= create_bunny_connection
       @bunny.start
