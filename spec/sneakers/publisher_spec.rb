@@ -63,7 +63,7 @@ describe Sneakers::Publisher do
       p.instance_variable_set(:@exchange, xchg)
 
       mock(p).connected? { true }
-      mock(p).ensure_connection!.times(0)
+      mock(p).connect!.times(0)
 
       p.publish('test msg', to_queue: 'downloads')
     end

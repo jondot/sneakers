@@ -1,28 +1,32 @@
 module Sneakers
   class Publisher
+
+    attr_reader :exchange, :channel
+
     def initialize(opts = {})
       @mutex = Mutex.new
       @opts = Sneakers::CONFIG.merge(opts)
+      # If we've already got a bunny object, use it.  This allows people to
+      # specify all kinds of options we don't need to know about (e.g. for ssl).
+      @bunny = @opts[:connection]
     end
 
     def publish(msg, options = {})
-      @mutex.synchronize do
-        ensure_connection! unless connected?
-      end
+      ensure_connection!
       to_queue = options.delete(:to_queue)
       options[:routing_key] ||= to_queue
       Sneakers.logger.info {"publishing <#{msg}> to [#{options[:routing_key]}]"}
       @exchange.publish(ContentType.serialize(msg, options[:content_type]), options)
     end
 
-
-    attr_reader :exchange, :channel
+    def ensure_connection!
+      @mutex.synchronize do
+        connect! unless connected?
+      end
+    end
 
   private
-    def ensure_connection!
-      # If we've already got a bunny object, use it.  This allows people to
-      # specify all kinds of options we don't need to know about (e.g. for ssl).
-      @bunny = @opts[:connection]
+    def connect!
       @bunny ||= create_bunny_connection
       @bunny.start
       @channel = @bunny.create_channel
