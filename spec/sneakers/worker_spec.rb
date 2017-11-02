@@ -313,6 +313,22 @@ describe Sneakers::Worker do
         DummyWorker.new.id.must_match(/^worker-/)
       end
     end
+
+    describe 'when connection provided' do
+      before do
+        @connection = Bunny.new(host: 'any-host.local')
+        Sneakers.configure(
+          exchange:          'some-exch',
+          exchange_options:  { type: :direct },
+          connection:        @connection,
+        )
+      end
+
+      it "should build a queue with given connection" do
+        @dummy_q = DummyWorker.new.queue
+        @dummy_q.opts[:connection].must_equal(@connection)
+      end
+    end
   end
 
 
