@@ -123,13 +123,13 @@ describe Sneakers::Publisher do
         @existing_session = existing_session
       end
 
-      it 'should use unconnected session if provided' do
+      it 'can handle an existing connection that is offline' do
         p = Sneakers::Publisher.new
         p.publish('test msg', my_vars)
         p.instance_variable_get(:@bunny).must_equal @existing_session
       end
 
-      it 'should use allready connected session if provided' do
+      it 'can handle an existing connection that is online' do
         mock(@existing_session).connected? { true }
         p = Sneakers::Publisher.new
         p.publish('test msg', my_vars)
