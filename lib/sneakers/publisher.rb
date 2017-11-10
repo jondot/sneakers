@@ -34,7 +34,7 @@ module Sneakers
     end
 
     def connected?
-      @bunny && @bunny.connected?
+      @bunny && @bunny.connected? && channel
     end
 
     def create_bunny_connection
