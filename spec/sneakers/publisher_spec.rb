@@ -95,34 +95,46 @@ describe Sneakers::Publisher do
       p.publish('test msg', to_queue: 'downloads')
     end
 
-    it 'should use an externally instantiated bunny session if provided' do
-      logger = Logger.new('/dev/null')
-      channel = Object.new
-      exchange = Object.new
-      existing_session = Bunny.new
-      my_vars = pub_vars.merge(to_queue: 'downloads')
+    describe 'externally instantiated bunny session' do
+      let(:my_vars) { pub_vars.merge(to_queue: 'downloads') }
+      before do
+        logger = Logger.new('/dev/null')
+        channel = Object.new
+        exchange = Object.new
+        existing_session = Bunny.new
 
-      mock(existing_session).start
-      mock(existing_session).create_channel { channel }
+        mock(existing_session).start
+        mock(existing_session).create_channel { channel }
 
-      mock(channel).exchange('another_exchange', type: :topic, durable: false, :auto_delete => false, arguments: { 'x-arg' => 'value' }) do
-        exchange
+        mock(channel).exchange('another_exchange', type: :topic, durable: false, :auto_delete => false, arguments: { 'x-arg' => 'value' }) do
+          exchange
+        end
+
+        mock(exchange).publish('test msg', my_vars)
+
+        Sneakers.configure(
+          connection: existing_session,
+          heartbeat: 1, exchange: 'another_exchange',
+          exchange_type: :topic,
+          exchange_arguments: { 'x-arg' => 'value' },
+          log: logger,
+          durable: false
+        )
+        @existing_session = existing_session
       end
 
-      mock(exchange).publish('test msg', my_vars)
+      it 'should use unconnected session if provided' do
+        p = Sneakers::Publisher.new
+        p.publish('test msg', my_vars)
+        p.instance_variable_get(:@bunny).must_equal @existing_session
+      end
 
-      Sneakers.configure(
-        connection: existing_session,
-        heartbeat: 1, exchange: 'another_exchange',
-        exchange_type: :topic,
-        exchange_arguments: { 'x-arg' => 'value' },
-        log: logger,
-        durable: false
-      )
-
-      p = Sneakers::Publisher.new
-      p.publish('test msg', my_vars)
-      p.instance_variable_get(:@bunny).must_equal existing_session
+      it 'should use allready connected session if provided' do
+        mock(@existing_session).connected? { true }
+        p = Sneakers::Publisher.new
+        p.publish('test msg', my_vars)
+        p.instance_variable_get(:@bunny).must_equal @existing_session
+      end
     end
 
     it 'should publish using the content type serializer' do
