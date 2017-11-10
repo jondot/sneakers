@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(/^bin/).map { |f| File.basename(f) }
   gem.test_files    = gem.files.grep(/^(test|spec|features)\//)
   gem.require_paths = ['lib']
-  gem.add_dependency 'serverengine', '~> 1.5.11'
+  gem.add_dependency 'serverengine', '~> 2.0.5'
   gem.add_dependency 'bunny', '~> 2.7.1'
   gem.add_dependency 'concurrent-ruby', '~> 1.0'
   gem.add_dependency 'thor'
@@ -37,4 +37,3 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'minitest'
   gem.add_development_dependency 'guard'
 end
-

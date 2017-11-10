@@ -72,6 +72,7 @@ module Sneakers
       serverengine_config =  Sneakers::CONFIG.merge(@conf)
       serverengine_config.merge!(
         :logger => Sneakers.logger,
+        :log_level => Sneakers.logger.level,
         :worker_type => 'process',
         :worker_classes => @worker_classes,
 
