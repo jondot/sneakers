@@ -7,7 +7,7 @@ module Sneakers
     # Expbackoff is based on Maxretry and modified to setup a different set of
     # queues and exchange to achieve exponential backoff with the dead letter policies.
     #
-    # Maxretry uses dead letter policies on Rabbitmq to requeue and retry
+    # Expbackoff/Maxretry uses dead letter policies on Rabbitmq to requeue and retry
     # messages after failure (rejections, errors and timeouts). When the maximum
     # number of retries is reached it will put the message on an error queue.
     # 
@@ -41,8 +41,18 @@ module Sneakers
     #
     # retry_max_times = 5, retry_backoff_base = 0 yields [60, 120, 240, 480, 960]
     #
-    # - retry_backoff_base = 0, 15, 30, 45, 60, ... 120, 180, etc defaults to 0
+    # - retry_backoff_base = value can be one of 0, 15, 30, 45, 60, ... 120, 180, etc. defaults to 0
     #
+    # with queue name 'carrot' and backoff periods of [60, 120, 240, 480, 960], following exchanges and queues are created:
+    #   (X) carrot-backoff
+    #   (X) carrot-error
+    #   (X) carrot-retry-requeue
+    #   (Q) carrot-backoff-60
+    #   (Q) carrot-backoff-120
+    #   (Q) carrot-backoff-240
+    #   (Q) carrot-backoff-480
+    #   (Q) carrot-backoff-960
+    #   (Q) carrot-error
 
     class Expbackoff
 
