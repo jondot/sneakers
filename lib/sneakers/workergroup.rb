@@ -59,7 +59,10 @@ module Sneakers
     end
 
     def create_bunny_connection
-      Bunny.new(Sneakers::CONFIG[:amqp], :vhost => Sneakers::CONFIG[:vhost], :heartbeat => Sneakers::CONFIG[:heartbeat], :logger => Sneakers::logger)
+      config.fetch(
+        :connection,
+        Bunny.new(Sneakers::CONFIG[:amqp], :vhost => Sneakers::CONFIG[:vhost], :heartbeat => Sneakers::CONFIG[:heartbeat], :logger => Sneakers::logger)
+      )
     end
 
     def create_connection_or_nil
