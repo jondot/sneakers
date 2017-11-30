@@ -79,6 +79,7 @@ module Sneakers
           hash.delete(k)
           @hash.delete(k)
         end
+        hash.merge!(share_bunny_connection: true) # Share the connection when set.
       end
 
       @hash = deep_merge(@hash, hash)
