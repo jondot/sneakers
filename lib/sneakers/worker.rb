@@ -125,22 +125,22 @@ module Sneakers
     end
 
     def before_work(delivery_info, metadata, msg)
-      wbefore = Sneakers::CONFIG[:hooks][:before_work]
-      wbefore.call(
+      hook = Sneakers::CONFIG[:hooks][:before_work]
+      hook.call(
         delivery_info: delivery_info,
         metadata: metadata,
         msg: msg
-      ) if wbefore
+      ) if hook
     end
 
     def after_work(delivery_info, metadata, msg, res)
-      wafter = Sneakers::CONFIG[:hooks][:after_work]
-      wafter.call(
+      hook = Sneakers::CONFIG[:hooks][:after_work]
+      hook.call(
         delivery_info: delivery_info,
         metadata: metadata,
         msg: msg,
         response: res
-      ) if wafter
+      ) if hook
     end
 
     Classes = []
@@ -175,4 +175,3 @@ module Sneakers
     end
   end
 end
-
