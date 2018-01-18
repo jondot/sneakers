@@ -172,7 +172,7 @@ environment needed locally on your development box.
   running `script/local_worker`. This will use docker-compose as well. It will
   also help you get a feeling for how to run Sneakers in a Docker based
   production environment
-* User `Dockerfile.slim` instead of `Dockerfile` for production docker builds.
+* Use `Dockerfile.slim` instead of `Dockerfile` for production docker builds.
   It generates a more compact image, while the "regular" `Dockerfile` generates
   a fatter image - yet faster to iterate when developing
 
