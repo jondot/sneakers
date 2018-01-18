@@ -54,7 +54,7 @@ module Sneakers
 
       config = make_serverengine_config
 
-      [:before_fork, :after_fork].each do | hook |
+      [:before_fork, :after_fork, :before_work, :after_work].each do | hook |
         Sneakers::CONFIG[:hooks][hook] = config.delete(hook) if config[hook]
       end
 
