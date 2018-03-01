@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(/^bin/).map { |f| File.basename(f) }
   gem.test_files    = gem.files.grep(/^(test|spec|features)\//)
   gem.require_paths = ['lib']
-  gem.add_dependency 'serverengine'
+  gem.add_dependency 'serverengine', '~> 1.5.10'
   gem.add_dependency 'bunny', '~> 1.6.3'
   gem.add_dependency 'thread'
   gem.add_dependency 'thor'
