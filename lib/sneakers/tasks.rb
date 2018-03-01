@@ -6,9 +6,11 @@ task :environment
 namespace :sneakers do
   desc "Start work (set $WORKERS=Klass1,Klass2)"
   task :run  => :environment do
+    puts "Forcing eager load"
     ::Rails.application.eager_load!
 
     workers, missing_workers = Sneakers::Utils.parse_workers(ENV['WORKERS'])
+    puts "Forced eager load for #{workers}"
 
     unless missing_workers.empty?
       puts "Missing workers: #{missing_workers.join(', ')}" if missing_workers
