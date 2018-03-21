@@ -46,11 +46,11 @@ module Sneakers
     def do_work(delivery_info, metadata, msg, handler)
       worker_trace "Working off: #{msg.inspect}"
 
-      @pool.process do
+      @pool.post do
         process_work(delivery_info, metadata, msg, handler)
       end
     end
-    
+
     def process_work(delivery_info, metadata, msg, handler)
       res = nil
       error = nil
@@ -96,10 +96,10 @@ module Sneakers
         end
         metrics.increment("work.#{self.class.name}.handled.#{res || 'noop'}")
       end
-      
+
       metrics.increment("work.#{self.class.name}.ended")
     end
-    
+
     def stop
       worker_trace "Stopping worker: unsubscribing."
       @queue.unsubscribe
@@ -156,4 +156,3 @@ module Sneakers
     end
   end
 end
-
