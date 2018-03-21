@@ -8,6 +8,7 @@ module Sneakers
       unless File.exists?(worker_group_config_file)
         puts "No worker group file found."
         puts "Specify via ENV 'WORKER_GROUP_CONFIG' or by convention ./config/sneaker_worker_groups.yml"
+        Kernel.exit(1)
       end
       @pids = []
       @exec_string = "bundle exec rake sneakers:run"

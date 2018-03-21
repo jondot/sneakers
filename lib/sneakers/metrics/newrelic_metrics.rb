@@ -15,7 +15,8 @@ module Sneakers
       end
 
       def record_stat(metric, num)
-        stats(metric).record_data_point(num)
+        metric_name = "Custom/#{metric.gsub("\.", "\/")}"
+        NewrelicMetrics.eagent::Agent.record_metric(metric_name, num)
       rescue Exception => e
         puts "NewrelicMetrics#record_stat: #{e}"
       end
@@ -25,12 +26,6 @@ module Sneakers
         block.call
         record_stat(metric, ((Time.now - start)*1000).floor)
       end
-
-      def stats(metric)
-        metric.gsub! "\.", "\/"
-        NewrelicMetrics.eagent::Agent.get_stats("Custom/#{metric}")
-      end
-
     end
   end
 end

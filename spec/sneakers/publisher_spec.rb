@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'sneakers'
+require 'serverengine'
 
 describe Sneakers::Publisher do
   let :pub_vars do
@@ -62,7 +63,7 @@ describe Sneakers::Publisher do
       p.instance_variable_set(:@exchange, xchg)
 
       mock(p).connected? { true }
-      mock(p).ensure_connection!.times(0)
+      mock(p).connect!.times(0)
 
       p.publish('test msg', to_queue: 'downloads')
     end
@@ -75,6 +76,7 @@ describe Sneakers::Publisher do
         exchange: 'another_exchange',
         exchange_options: { :type => :topic, :arguments => { 'x-arg' => 'value' } },
         log: logger,
+        properties: { key: "value" },
         durable: false)
 
       channel = Object.new
@@ -86,41 +88,72 @@ describe Sneakers::Publisher do
       mock(bunny).start
       mock(bunny).create_channel { channel }
 
-      mock(Bunny).new('amqp://someuser:somepassword@somehost:5672', heartbeat: 1, vhost: '/', logger: logger) { bunny }
+      mock(Bunny).new('amqp://someuser:somepassword@somehost:5672', heartbeat: 1, vhost: '/', logger: logger, properties: { key: "value" }) { bunny }
 
       p = Sneakers::Publisher.new
 
       p.publish('test msg', to_queue: 'downloads')
     end
 
-    it 'should use an externally instantiated bunny session if provided' do
-      logger = Logger.new('/dev/null')
-      channel = Object.new
-      exchange = Object.new
-      existing_session = Bunny.new
-      my_vars = pub_vars.merge(to_queue: 'downloads')
+    describe 'externally instantiated bunny session' do
+      let(:my_vars) { pub_vars.merge(to_queue: 'downloads') }
+      before do
+        logger = Logger.new('/dev/null')
+        channel = Object.new
+        exchange = Object.new
+        existing_session = Bunny.new
 
-      mock(existing_session).start
-      mock(existing_session).create_channel { channel }
+        mock(existing_session).start
+        mock(existing_session).create_channel { channel }
 
-      mock(channel).exchange('another_exchange', type: :topic, durable: false, :auto_delete => false, arguments: { 'x-arg' => 'value' }) do
-        exchange
+        mock(channel).exchange('another_exchange', type: :topic, durable: false, :auto_delete => false, arguments: { 'x-arg' => 'value' }) do
+          exchange
+        end
+
+        mock(exchange).publish('test msg', my_vars)
+
+        Sneakers.configure(
+          connection: existing_session,
+          heartbeat: 1, exchange: 'another_exchange',
+          exchange_type: :topic,
+          exchange_arguments: { 'x-arg' => 'value' },
+          log: logger,
+          durable: false
+        )
+        @existing_session = existing_session
       end
 
-      mock(exchange).publish('test msg', my_vars)
+      it 'can handle an existing connection that is offline' do
+        p = Sneakers::Publisher.new
+        p.publish('test msg', my_vars)
+        p.instance_variable_get(:@bunny).must_equal @existing_session
+      end
 
-      Sneakers.configure(
-        connection: existing_session,
-        heartbeat: 1, exchange: 'another_exchange',
-        exchange_type: :topic,
-        exchange_arguments: { 'x-arg' => 'value' },
-        log: logger,
-        durable: false
+      it 'can handle an existing connection that is online' do
+        mock(@existing_session).connected? { true }
+        p = Sneakers::Publisher.new
+        p.publish('test msg', my_vars)
+        p.instance_variable_get(:@bunny).must_equal @existing_session
+      end
+    end
+
+    it 'should publish using the content type serializer' do
+      Sneakers::ContentType.register(
+        content_type: 'application/json',
+        serializer: ->(payload) { JSON.dump(payload) },
+        deserializer: ->(_) {},
       )
 
+      xchg = Object.new
+      mock(xchg).publish('{"foo":"bar"}', routing_key: 'downloads', content_type: 'application/json')
+
       p = Sneakers::Publisher.new
-      p.publish('test msg', my_vars)
-      p.instance_variable_get(:@bunny).must_equal existing_session
+      p.instance_variable_set(:@exchange, xchg)
+
+      mock(p).ensure_connection! {}
+      p.publish({ 'foo' => 'bar' }, to_queue: 'downloads', content_type: 'application/json')
+
+      Sneakers::ContentType.reset!
     end
   end
 end

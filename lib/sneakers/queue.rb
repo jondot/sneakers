@@ -1,6 +1,6 @@
 
 class Sneakers::Queue
-  attr_reader :name, :opts, :exchange
+  attr_reader :name, :opts, :exchange, :channel
 
   def initialize(name, opts)
     @name = name
@@ -56,13 +56,26 @@ class Sneakers::Queue
   end
 
   def unsubscribe
-    # XXX can we cancel bunny and channel too?
-    @consumer.cancel if @consumer
-    @consumer = nil
+    return unless @consumer
+
+    # TODO: should we simply close the channel here?
+    Sneakers.logger.info("Queue: will try to cancel consumer #{@consumer.inspect}")
+    cancel_ok = @consumer.cancel
+    if cancel_ok
+      Sneakers.logger.info "Queue: consumer #{cancel_ok.consumer_tag} cancelled"
+      @consumer = nil
+    else
+      Sneakers.logger.warn "Queue: could not cancel consumer #{@consumer.inspect}"
+      sleep(1)
+      unsubscribe
+    end
   end
 
   def create_bunny_connection
-    Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat], :logger => Sneakers::logger)
+    Bunny.new(@opts[:amqp], :vhost => @opts[:vhost],
+                            :heartbeat => @opts[:heartbeat],
+                            :properties => @opts.fetch(:properties, {}),
+                            :logger => Sneakers::logger)
   end
   private :create_bunny_connection
 end

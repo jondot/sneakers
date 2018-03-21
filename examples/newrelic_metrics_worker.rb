@@ -25,8 +25,8 @@ class MetricsWorker
     logger.info "FOUND <#{title}>"
     ack!
   end
-  
-  add_transaction_tracer :work, name: 'MetricsWorker', params: 'args[0]'
+
+  add_transaction_tracer :work, name: 'MetricsWorker', params: 'args[0]', category: :task
 
   private
 
@@ -36,10 +36,5 @@ class MetricsWorker
   end
 end
 
-
 r = Sneakers::Runner.new([ MetricsWorker ])
 r.run
-
-
-
-

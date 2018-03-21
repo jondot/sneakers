@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'sneakers'
 require 'timeout'
+require 'serverengine'
 
 class DummyWorker
   include Sneakers::Worker
@@ -75,7 +76,16 @@ class PublishingWorker
   end
 end
 
+class JSONPublishingWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+             :ack => false,
+             :exchange => 'foochange'
 
+  def work(msg)
+    publish msg, :to_queue => 'target', :content_type => 'application/json'
+  end
+end
 
 class LoggingWorker
   include Sneakers::Worker
@@ -87,6 +97,15 @@ class LoggingWorker
   end
 end
 
+class JSONWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+             :ack => false,
+             :content_type => 'application/json'
+
+  def work(msg)
+  end
+end
 
 class MetricsWorker
   include Sneakers::Worker
@@ -123,11 +142,7 @@ class WithDeprecatedExchangeOptionsWorker
   end
 end
 
-class TestPool
-  def process(*args,&block)
-    block.call
-  end
-end
+TestPool ||= Concurrent::ImmediateExecutor
 
 def with_test_queuefactory(ctx, ack=true, msg=nil, nowork=false)
   qf = Object.new
@@ -164,7 +179,8 @@ describe Sneakers::Worker do
       mock(Sneakers::Publisher).new(DummyWorker.queue_opts) do
         mock(Object.new).publish(message, {
           :routing_key => 'test.routing.key',
-          :to_queue    => 'downloads'
+          :to_queue    => 'downloads',
+          :content_type => nil,
         })
       end
 
@@ -297,6 +313,22 @@ describe Sneakers::Worker do
         DummyWorker.new.id.must_match(/^worker-/)
       end
     end
+
+    describe 'when connection provided' do
+      before do
+        @connection = Bunny.new(host: 'any-host.local')
+        Sneakers.configure(
+          exchange:          'some-exch',
+          exchange_options:  { type: :direct },
+          connection:        @connection,
+        )
+      end
+
+      it "should build a queue with given connection" do
+        @dummy_q = DummyWorker.new.queue
+        @dummy_q.opts[:connection].must_equal(@connection)
+      end
+    end
   end
 
 
@@ -330,13 +362,45 @@ describe Sneakers::Worker do
       w.do_work(nil, nil, "msg", nil)
     end
 
+    describe 'content type based deserialization' do
+      before do
+        Sneakers::ContentType.register(
+          content_type: 'application/json',
+          serializer: ->(_) {},
+          deserializer: ->(payload) { JSON.parse(payload) },
+        )
+      end
+
+      after do
+        Sneakers::ContentType.reset!
+      end
+
+      it 'should use the registered deserializer if the content type is in the metadata' do
+        w = DummyWorker.new(@queue, TestPool.new)
+        mock(w).work({'foo' => 'bar'}).once
+        w.do_work(nil, { content_type: 'application/json' }, '{"foo":"bar"}', nil)
+      end
+
+      it 'should use the registered deserializer if the content type is in the queue options' do
+        w = JSONWorker.new(@queue, TestPool.new)
+        mock(w).work({'foo' => 'bar'}).once
+        w.do_work(nil, {}, '{"foo":"bar"}', nil)
+      end
+
+      it 'should use the deserializer from the queue options even if the metadata has a different content type' do
+        w = JSONWorker.new(@queue, TestPool.new)
+        mock(w).work({'foo' => 'bar'}).once
+        w.do_work(nil, { content_type: 'not/real' }, '{"foo":"bar"}', nil)
+      end
+    end
+
     it "should catch runtime exceptions from a bad work" do
       w = AcksWorker.new(@queue, TestPool.new)
       mock(w).work("msg").once{ raise "foo" }
       handler = Object.new
       header = Object.new
       mock(handler).error(header, nil, "msg", anything)
-      mock(w.logger).error(/\[Exception error="foo" error_class=RuntimeError backtrace=.*/)
+      mock(w.logger).error(/\[Exception error="foo" error_class=RuntimeError worker_class=AcksWorker backtrace=.*/)
       w.do_work(header, nil, "msg", handler)
     end
 
@@ -345,7 +409,7 @@ describe Sneakers::Worker do
       header = Object.new
       w = AcksWorker.new(@queue, TestPool.new)
       mock(w).work("msg").once{ raise "foo" }
-      mock(w.logger).error(/error="foo" error_class=RuntimeError backtrace=/)
+      mock(w.logger).error(/error="foo" error_class=RuntimeError worker_class=AcksWorker backtrace=/)
       mock(handler).error(header, nil, "msg", anything)
       w.do_work(header, nil, "msg", handler)
     end
@@ -358,7 +422,7 @@ describe Sneakers::Worker do
       header = Object.new
 
       mock(handler).timeout(header, nil, "msg")
-      mock(w.logger).error(/error="execution expired" error_class=Sneakers::WorkerTimeout backtrace=/)
+      mock(w.logger).error(/error="execution expired" error_class=Sneakers::WorkerTimeout worker_class=TimeoutWorker backtrace=/)
 
       w.do_work(header, nil, "msg", handler)
     end
@@ -432,6 +496,27 @@ describe Sneakers::Worker do
       mock(@exchange).publish('msg', :routing_key => 'target', :expiration => 1).once
       w.publish 'msg', :to_queue => 'target', :expiration => 1
     end
+
+    describe 'content_type based serialization' do
+      before do
+        Sneakers::ContentType.register(
+          content_type: 'application/json',
+          serializer: ->(payload) { JSON.dump(payload) },
+          deserializer: ->(_) {},
+        )
+      end
+
+      after do
+        Sneakers::ContentType.reset!
+      end
+
+      it 'should be able to publish a message from working context' do
+        w = JSONPublishingWorker.new(@queue, TestPool.new)
+        mock(@exchange).publish('{"foo":"bar"}', :routing_key => 'target', :content_type => 'application/json').once
+        w.do_work(nil, {}, {'foo' => 'bar'}, nil)
+      end
+    end
+
   end
 
 
@@ -457,11 +542,10 @@ describe Sneakers::Worker do
       it 'only logs backtraces if present' do
         w = DummyWorker.new(@queue, TestPool.new)
         mock(w.logger).warn('cuz')
-        mock(w.logger).error(/\[Exception error="boom!" error_class=RuntimeError\]/)
+        mock(w.logger).error(/\[Exception error="boom!" error_class=RuntimeError worker_class=DummyWorker\]/)
         w.worker_error(RuntimeError.new('boom!'), 'cuz')
       end
     end
-
   end
 
 

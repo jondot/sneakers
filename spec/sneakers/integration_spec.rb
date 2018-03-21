@@ -4,6 +4,7 @@ require 'sneakers/runner'
 require 'fixtures/integration_worker'
 
 require "rabbitmq/http/client"
+require 'timeout'
 
 
 describe "integration" do
@@ -17,23 +18,30 @@ describe "integration" do
       puts msg if ENV['INTEGRATION_LOG']
     end
 
+    def rmq_addr
+      @rmq_addr ||= compose_or_localhost("rabbitmq")
+    end
+
+    def admin
+      @admin ||=
+        begin
+          puts "RABBITMQ is at #{rmq_addr}"
+          RabbitMQ::HTTP::Client.new("http://#{rmq_addr}:15672/", username: "guest", password: "guest")
+        rescue
+          fail "Rabbitmq admin seems to not exist? you better be running this on Travis or Docker. proceeding.\n#{$!}"
+        end
+    end
+
     def prepare
       # clean up all integration queues; admin interface must be installed
       # in integration env
-      rmq_addr = compose_or_localhost("rabbitmq")
-      puts "RABBITMQ is at #{rmq_addr}"
-      begin
-        admin = RabbitMQ::HTTP::Client.new("http://#{rmq_addr}:15672/", username: "guest", password: "guest")
-        qs = admin.list_queues
-        qs.each do |q|
-          name = q.name
-          if name.start_with? 'integration_'
-            admin.delete_queue('/', name)
-            integration_log "cleaning up #{name}."
-          end
+      qs = admin.list_queues
+      qs.each do |q|
+        name = q.name
+        if name.start_with? 'integration_'
+          admin.delete_queue('/', name)
+          integration_log "cleaning up #{name}."
         end
-      rescue
-        puts "Rabbitmq admin seems to not exist? you better be running this on Travis or Docker. proceeding.\n#{$!}"
       end
 
       Sneakers.clear!
@@ -65,7 +73,7 @@ describe "integration" do
           return
         end
       end
-      
+
       integration_log "failed test. killing off workers."
       Process.kill("TERM", pid)
       sleep 1
@@ -85,6 +93,48 @@ describe "integration" do
       pid
     end
 
+    def consumers_count
+      qs = admin.list_queues
+      qs.each do |q|
+        if q.name.start_with? 'integration_'
+          return [q.consumers, q.name]
+        end
+      end
+      return [0, nil]
+    end
+
+    def assert_any_consumers(consumers_should_be_there, maximum_wait_time = 15)
+      Timeout::timeout(maximum_wait_time) do
+        loop do
+          consumers, queue = consumers_count
+          fail 'no queues so no consumers' if consumers_should_be_there && !queue
+          puts "We see #{consumers} consumers on #{queue}"
+          (consumers_should_be_there == consumers.zero?) ? sleep(1) : return
+        end
+      end
+    rescue Timeout::Error
+      fail "Consumers should #{'not' unless consumers_should_be_there} be here but #{consumers} consumers were after #{maximum_wait_time}s waiting."
+    end
+
+    it 'should be possible to terminate when queue is full' do
+      job_count = 40000
+
+      pid = start_worker(IntegrationWorker)
+      Process.kill("TERM", pid)
+
+      integration_log "publishing #{job_count} messages..."
+      p = Sneakers::Publisher.new
+      job_count.times do |i|
+        p.publish("m #{i}", to_queue: IntegrationWorker.queue_name)
+      end
+
+      pid = start_worker(IntegrationWorker)
+      assert_any_consumers true
+      integration_log "Killing #{pid} now!"
+      Process.kill("TERM", pid)
+      assert_any_consumers false
+    end
+
     it 'should pull down 100 jobs from a real queue' do
       job_count = 100
 
@@ -95,7 +145,7 @@ describe "integration" do
       job_count.times do |i|
         p.publish("m #{i}", to_queue: IntegrationWorker.queue_name)
       end
-      
+
       assert_all_accounted_for(
          queue: IntegrationWorker.queue_name,
          pid: pid,
@@ -103,8 +153,6 @@ describe "integration" do
          jobs: job_count,
       )
     end
-    
+
   end
 end
-  
-

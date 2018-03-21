@@ -21,7 +21,7 @@ module Sneakers
 
       # Allocate single thread pool if share_threads is set. This improves load balancing
       # when used with many workers.
-      pool = config[:share_threads] ? Thread.pool(config[:threads]) : nil
+      pool = config[:share_threads] ? Concurrent::FixedThreadPool.new(config[:threads]) : nil
 
       worker_classes = config[:worker_classes]
 
@@ -29,7 +29,13 @@ module Sneakers
         worker_classes = worker_classes.call
       end
 
-      @workers = worker_classes.map{|w| w.new(nil, pool) }
+      # If we don't provide a connection to a worker,
+      # the queue used in the worker will create a new one
+
+      @workers = worker_classes.map do |worker_class|
+        worker_class.new(nil, pool, { connection: config[:connection] })
+      end
+
       # if more than one worker this should be per worker
       # accumulate clients and consumers as well
       @workers.each do |worker|
@@ -41,7 +47,6 @@ module Sneakers
         Sneakers.logger.debug("Heartbeat: running threads [#{Thread.list.count}]")
         # report aggregated stats?
       end
-
     end
 
     def stop
@@ -51,6 +56,5 @@ module Sneakers
       end
       @stop_flag.set!
     end
-
   end
 end

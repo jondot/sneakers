@@ -1,5 +1,5 @@
-require "sneakers/version"
-require 'thread/pool'
+require 'sneakers/version'
+require 'concurrent/executors'
 require 'bunny'
 require 'logger'
 require 'serverengine'
@@ -17,6 +17,7 @@ require 'sneakers/support/production_formatter'
 require 'sneakers/concerns/logging'
 require 'sneakers/concerns/metrics'
 require 'sneakers/handlers/oneshot'
+require 'sneakers/content_type'
 require 'sneakers/worker'
 require 'sneakers/publisher'
 
@@ -78,7 +79,7 @@ module Sneakers
 
   # Register a proc to handle any error which occurs within the Sneakers process.
   #
-  #   Sneakers.error_reporters << proc {|ex,ctx_hash| MyErrorService.notify(ex, ctx_hash) }
+  #   Sneakers.error_reporters << proc { |exception, worker, context_hash| MyErrorService.notify(exception, context_hash) }
   #
   # The default error handler logs errors to Sneakers.logger.
   # Ripped off from https://github.com/mperham/sidekiq/blob/6ad6a3aa330deebd76c6cf0d353f66abd3bef93b/lib/sidekiq.rb#L165-L174
