@@ -47,53 +47,57 @@ module Sneakers
       worker_trace "Working off: #{msg.inspect}"
 
       @pool.post do
-        res = nil
-        error = nil
+        process_work(delivery_info, metadata, msg, handler)
+      end
+    end
 
-        begin
-          metrics.increment("work.#{self.class.name}.started")
-          Timeout.timeout(@timeout_after, WorkerTimeout) do
-            metrics.timing("work.#{self.class.name}.time") do
-              deserialized_msg = ContentType.deserialize(msg, @content_type || metadata && metadata[:content_type])
-              if @call_with_params
-                res = work_with_params(deserialized_msg, delivery_info, metadata)
-              else
-                res = work(deserialized_msg)
-              end
+    def process_work(delivery_info, metadata, msg, handler)
+      res = nil
+      error = nil
+
+      begin
+        metrics.increment("work.#{self.class.name}.started")
+        Timeout.timeout(@timeout_after, WorkerTimeout) do
+          metrics.timing("work.#{self.class.name}.time") do
+            deserialized_msg = ContentType.deserialize(msg, @content_type || metadata && metadata[:content_type])
+            if @call_with_params
+              res = work_with_params(deserialized_msg, delivery_info, metadata)
+            else
+              res = work(deserialized_msg)
             end
           end
-        rescue WorkerTimeout => ex
-          res = :timeout
-          worker_error(ex, log_msg: log_msg(msg), class: self.class.name,
-                       message: msg, delivery_info: delivery_info, metadata: metadata)
-        rescue => ex
-          res = :error
-          error = ex
-          worker_error(ex, log_msg: log_msg(msg), class: self.class.name,
-                       message: msg, delivery_info: delivery_info, metadata: metadata)
         end
+      rescue WorkerTimeout => ex
+        res = :timeout
+        worker_error(ex, log_msg: log_msg(msg), class: self.class.name,
+                     message: msg, delivery_info: delivery_info, metadata: metadata)
+      rescue => ex
+        res = :error
+        error = ex
+        worker_error(ex, log_msg: log_msg(msg), class: self.class.name,
+                     message: msg, delivery_info: delivery_info, metadata: metadata)
+      end
 
-        if @should_ack
+      if @should_ack
 
-          if res == :ack
-            # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
-            handler.acknowledge(delivery_info, metadata, msg)
-          elsif res == :timeout
-            handler.timeout(delivery_info, metadata, msg)
-          elsif res == :error
-            handler.error(delivery_info, metadata, msg, error)
-          elsif res == :reject
-            handler.reject(delivery_info, metadata, msg)
-          elsif res == :requeue
-            handler.reject(delivery_info, metadata, msg, true)
-          else
-            handler.noop(delivery_info, metadata, msg)
-          end
-          metrics.increment("work.#{self.class.name}.handled.#{res || 'noop'}")
+        if res == :ack
+          # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
+          handler.acknowledge(delivery_info, metadata, msg)
+        elsif res == :timeout
+          handler.timeout(delivery_info, metadata, msg)
+        elsif res == :error
+          handler.error(delivery_info, metadata, msg, error)
+        elsif res == :reject
+          handler.reject(delivery_info, metadata, msg)
+        elsif res == :requeue
+          handler.reject(delivery_info, metadata, msg, true)
+        else
+          handler.noop(delivery_info, metadata, msg)
         end
+        metrics.increment("work.#{self.class.name}.handled.#{res || 'noop'}")
+      end
 
-        metrics.increment("work.#{self.class.name}.ended")
-      end #post
+      metrics.increment("work.#{self.class.name}.ended")
     end
 
     def stop
@@ -152,4 +156,3 @@ module Sneakers
     end
   end
 end
-
