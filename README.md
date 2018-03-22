@@ -9,19 +9,10 @@
 
 ```
 
-
 A high-performance RabbitMQ background processing framework for
 Ruby.
 
-
 Sneakers is being used in production for both I/O and CPU intensive workloads, and have achieved the goals of high-performance and 0-maintenance, as designed.
-
-
-Visit the [wiki](https://github.com/jondot/sneakers/wiki) for
-documentation and [GitHub releases](https://github.com/jondot/sneakers/releases) for release
-notes.
-
-[![Build Status](https://travis-ci.org/jondot/sneakers.svg?branch=master)](https://travis-ci.org/jondot/sneakers)
 
 
 ## Installation
@@ -43,6 +34,17 @@ Or install it yourself as:
 ``` shell-session
 $ gem install sneakers
 ```
+
+## Documentation
+
+A quick start guide is available in the section below.
+
+Visit the [wiki](https://github.com/jondot/sneakers/wiki) for more detailed
+documentation and [GitHub releases](https://github.com/jondot/sneakers/releases) for release
+notes.
+
+A [change log](./ChangeLog.md) is also available.
+
 
 ## Quick start 
 
