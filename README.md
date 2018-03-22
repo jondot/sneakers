@@ -181,8 +181,9 @@ environment needed locally on your development box.
 
 # Compatibility
 
-* Sneakers 1.1.x and up (using the new generation Bunny 2.x) - Ruby 2.x.x
-* Sneakers 1.x.x and down - Ruby 1.9.x, 2.x.x
+* Sneakers 2.7.x and later (using Bunny 2.9) - Ruby 2.2.x
+* Sneakers 1.1.x and later (using Bunny 2.x) - Ruby 2.x
+* Sneakers 1.x.x and earlier - Ruby 1.9.x, 2.x
 
 # Contributing
 
@@ -197,4 +198,4 @@ To all Sneakers [Contributors](https://github.com/jondot/sneakers/graphs/contrib
 
 # Copyright
 
-Copyright (c) 2015 [Dotan Nahum](http://gplus.to/dotan) [@jondot](http://twitter.com/jondot). See [LICENSE](LICENSE.txt) for further details.
+Copyright (c) 2015-2018 [Dotan Nahum](http://gplus.to/dotan) [@jondot](http://twitter.com/jondot). See [LICENSE](LICENSE.txt) for further details.
