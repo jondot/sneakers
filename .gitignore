@@ -8,3 +8,4 @@ tmp/
 .ruby-version
 .ruby-gemset
 .bundle/*
+*.gem
