@@ -4,7 +4,7 @@ require 'sneakers'
 require 'sneakers/runner'
 
 describe Sneakers::Runner do
-  let(:logger) { Logger.new('logtest.log') }
+  let(:logger) { Logger.new('log/logtest.log') }
 
   describe "with configuration that specifies a logger object" do
     before do
@@ -27,7 +27,7 @@ describe Sneakers::Runner do
 end
 
 describe Sneakers::RunnerConfig do
-  let(:logger) { Logger.new("logtest.log") }
+  let(:logger) { Logger.new("log/logtest.log") }
   let(:runner_config) { Sneakers::Runner.new([]).instance_variable_get("@runnerconfig") }
 
   describe "with a connection" do

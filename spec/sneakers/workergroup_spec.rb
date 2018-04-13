@@ -40,7 +40,7 @@ class StubbedWorker
 end
 
 describe Sneakers::WorkerGroup do
-  let(:logger) { Logger.new('logtest.log') }
+  let(:logger) { Logger.new('log/logtest.log') }
   let(:connection) { Bunny.new(host: 'any-host.local') }
   let(:runner) { Sneakers::Runner.new([DefaultsWorker]) }
   let(:runner_config) { runner.instance_variable_get('@runnerconfig') }
