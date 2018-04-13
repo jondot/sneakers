@@ -163,7 +163,7 @@ If you use Docker, there's some benefits to be had and you can use both
 integration tests or a sample worker without setting up RabbitMQ or the
 environment needed locally on your development box.
 
-* To build a container run `docker build .`
+* To build a container run `docker build . -t sneakers_sneakers`
 * To run non-integration tests within a docker container, run `docker run --rm
   sneakers_sneakers:latest`
 * To run full integration tests within a docker topology including RabbitMQ,

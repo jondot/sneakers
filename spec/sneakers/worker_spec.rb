@@ -144,21 +144,6 @@ end
 
 TestPool ||= Concurrent::ImmediateExecutor
 
-def with_test_queuefactory(ctx, ack=true, msg=nil, nowork=false)
-  qf = Object.new
-  q = Object.new
-  s = Object.new
-  hdr = Object.new
-  mock(qf).build_queue(anything, anything, anything) { q }
-  mock(q).subscribe(anything){ s }
-
-  mock(s).each(anything) { |h,b| b.call(hdr, msg) unless nowork }
-  mock(hdr).ack{true} if !nowork && ack
-  mock(hdr).reject{true} if !nowork && !ack
-
-  mock(ctx).queue_factory { qf } # should return our own
-end
-
 describe Sneakers::Worker do
   before do
     @queue = Object.new
@@ -168,7 +153,7 @@ describe Sneakers::Worker do
     stub(@queue).exchange { @exchange }
 
     Sneakers.clear!
-    Sneakers.configure(:daemonize => true, :log => 'sneakers.log')
+    Sneakers.configure(daemonize: true, log: 'sneakers.log')
     Sneakers::Worker.configure_metrics
   end
 
