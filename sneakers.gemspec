@@ -22,6 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'bunny', '~> 2.9.2'
   gem.add_dependency 'concurrent-ruby', '~> 1.0'
   gem.add_dependency 'thor'
+  gem.add_dependency 'rake'
 
   # for integration environment (see .travis.yml and integration_spec)
   gem.add_development_dependency 'rabbitmq_http_api_client'
