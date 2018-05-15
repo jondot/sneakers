@@ -14,24 +14,23 @@ Ruby.
 
 Sneakers is being used in production for both I/O and CPU intensive workloads, and have achieved the goals of high-performance and 0-maintenance, as designed.
 
-
 ## Installation
 
 Add this line to your application's Gemfile:
 
-``` ruby
+```ruby
 gem 'sneakers'
 ```
 
 And then execute:
 
-``` shell-session
+```shell-session
 $ bundle
 ```
 
 Or install it yourself as:
 
-``` shell-session
+```shell-session
 $ gem install sneakers
 ```
 
@@ -44,7 +43,6 @@ documentation and [GitHub releases](https://github.com/jondot/sneakers/releases)
 notes.
 
 A [change log](./ChangeLog.md) is also available.
-
 
 ## Quick start 
 
@@ -61,7 +59,6 @@ How do we add a worker? Firstly create a file and name it as `boot.rb`
 then create a worker named as `Processor`.
 
 > touch boot.rb
-
 
 ```ruby
 require 'sneakers'
@@ -88,7 +85,6 @@ end
 
 Let's test it out quickly from the command line:
 
-
 ```shell-session
 $ sneakers work Processor --require boot.rb
 ```
@@ -114,7 +110,6 @@ And this is the output you should see at your terminal.
 2013-10-11T19:26:40Z p-4719 t-ovqgyrx8g INFO: log log
 ```
 
-
 We'll count errors and error types with Redis.
 
 ``` shell-session
@@ -122,10 +117,7 @@ $ redis-cli monitor
 1381520329.888581 [0 127.0.0.1:49182] "incr" "processor:CODE001"
 ```
 
-
 We're basically done with the ceremonies and all is left is to do some real work.
-
-
 
 ### Looking at metrics
 
@@ -137,7 +129,7 @@ require 'sneakers'
 require 'redis'
 require 'json'
 require 'sneakers/metrics/logging_metrics'
-Sneakers.configure :metrics => Sneakers::Metrics::LoggingMetrics.new
+Sneakers.configure(metrics: Sneakers::Metrics::LoggingMetrics.new)
 
 # ... rest of code
 ```
@@ -151,7 +143,6 @@ Now push a message again and you'll see:
 ```
 
 Which increments `started` and `handled.ack`, and times the work unit.
-
 
 From here, you can continue over to the
 [Wiki](https://github.com/jondot/sneakers/wiki)
@@ -178,7 +169,6 @@ environment needed locally on your development box.
   It generates a more compact image, while the "regular" `Dockerfile` generates
   a fatter image - yet faster to iterate when developing
 
-
 # Compatibility
 
 * Sneakers 2.7.x and later (using Bunny 2.9) - Ruby 2.2.x
@@ -189,12 +179,9 @@ environment needed locally on your development box.
 
 Fork, implement, add tests, pull request, get my everlasting thanks and a respectable place here :).
 
-
 ### Thanks:
 
 To all Sneakers [Contributors](https://github.com/jondot/sneakers/graphs/contributors) - you make this happen, thanks!
-
-
 
 # Copyright
 
