@@ -4,6 +4,8 @@ services:
 sudo: false
 cache: bundler
 language: ruby
+before_install:
+  - gem install bundler
 rvm:
   - ruby-head
   - "2.5.1"
