@@ -5,12 +5,12 @@ sudo: false
 cache: bundler
 language: ruby
 rvm:
-  - "2.4.1"
-  - "2.3.4"
-  - "2.2.7"
+  - ruby-head
+  - "2.5.1"
+  - "2.4.2"
+  - "2.3.5"
+  - "2.2.8"
 matrix:
   include:
     - rvm: 2.4.1
       env: INTEGRATION_LOG=1 INTEGRATION=1
-
-
