@@ -19,7 +19,7 @@ namespace :sneakers do
       workers, missing_workers = Sneakers::Utils.parse_workers(ENV['WORKERS'])
     end
 
-    unless missing_workers.nil? || missing_workers.empty?
+    unless missing_workers.blank?
       puts "Missing workers: #{missing_workers.join(', ')}" if missing_workers
       puts "Did you `require` properly?"
       exit(1)
