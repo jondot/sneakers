@@ -12,7 +12,9 @@ the timeout high enough so that most workers would never hit it during normal op
 This was one outcome of [a lengthy discussion](https://github.com/jondot/sneakers/issues/343) on possible
 alternatives to the timeout mechanism Sneakers currently uses.
 
-The new timeout is 600 seconds (10 minutes) vs. the original one of 5 seconds.
+The new timeout is 600 seconds (10 minutes) vs. the original one of 5 seconds. It is possible to use
+a different value by configuring it using the `timeout_job_after` key, including setting it to 0
+to disable timeouts entirely.
 
 GitHub issue: [#343](https://github.com/jondot/sneakers/issues/343).
 
