@@ -1,5 +1,19 @@
 # Sneakers Change Log
 
+## Changes Between 2.7.0 and 2.8.0
+
+### Default Worker Timeout Increase
+
+Timeouts can be disruptive and dangerous depending on what the workers do but not having them can also
+lead to operational headaches.
+
+One short term solutions that would not require a worker API/contract change is to increase
+the timeout high enough so that most workers would never hit it during normal operation.
+This was one outcome of [a lengthy discussion](https://github.com/jondot/sneakers/issues/343) on possible
+alternatives to the timeout mechanism Sneakers currently uses.
+
+GitHub issue: [#343](https://github.com/jondot/sneakers/issues/343).
+
 ## Changes Between 2.6.0 and 2.7.0
 
 This release requires Ruby 2.2 and has **breaking API changes**
