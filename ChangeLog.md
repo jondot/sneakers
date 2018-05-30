@@ -12,6 +12,8 @@ the timeout high enough so that most workers would never hit it during normal op
 This was one outcome of [a lengthy discussion](https://github.com/jondot/sneakers/issues/343) on possible
 alternatives to the timeout mechanism Sneakers currently uses.
 
+The new timeout is 300 seconds (5 minutes) vs. the original one of 5 seconds.
+
 GitHub issue: [#343](https://github.com/jondot/sneakers/issues/343).
 
 ## Changes Between 2.6.0 and 2.7.0
