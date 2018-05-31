@@ -10,7 +10,7 @@ module Sneakers
 
       module ClassMethods
         def logger
-          @logger
+          @logger ||= configure_logger
         end
 
         def logger=(logger)
@@ -25,10 +25,9 @@ module Sneakers
             @logger.level = Logger::INFO
             @logger.formatter = Sneakers::Support::ProductionFormatter
           end
+          @logger
         end
       end
     end
   end
 end
-
-
