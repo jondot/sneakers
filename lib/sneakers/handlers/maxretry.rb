@@ -5,7 +5,7 @@ module Sneakers
   module Handlers
     #
     # Maxretry uses dead letter policies on Rabbitmq to requeue and retry
-    # messages after failure (rejections, errors and timeouts). When the maximum
+    # messages after failure (rejections and errors). When the maximum
     # number of retries is reached it will put the message on an error queue.
     # This handler will only retry at the queue level. To accomplish that, the
     # setup is a bit complex.
@@ -99,10 +99,6 @@ module Sneakers
 
       def error(hdr, props, msg, err)
         handle_retry(hdr, props, msg, err)
-      end
-
-      def timeout(hdr, props, msg)
-        handle_retry(hdr, props, msg, :timeout)
       end
 
       def noop(hdr, props, msg)
