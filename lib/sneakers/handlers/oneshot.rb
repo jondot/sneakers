@@ -18,10 +18,6 @@ module Sneakers
         reject(hdr, props, msg)
       end
 
-      def timeout(hdr, props, msg)
-        reject(hdr, props, msg)
-      end
-
       def noop(hdr, props, msg)
 
       end

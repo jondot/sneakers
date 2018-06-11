@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'sneakers'
-require 'timeout'
 require 'serverengine'
 
 class DummyWorker
@@ -21,7 +20,6 @@ class DummyWorker
              :ack => false,
              :threads => 50,
              :prefetch => 40,
-             :timeout_job_after => 1,
              :exchange => 'dummy',
              :heartbeat => 5
 
@@ -32,16 +30,6 @@ end
 class DefaultsWorker
   include Sneakers::Worker
   from_queue 'defaults'
-
-  def work(msg)
-  end
-end
-
-class TimeoutWorker
-  include Sneakers::Worker
-  from_queue 'defaults',
-    :timeout_job_after => 0.5,
-    :ack => true
 
   def work(msg)
   end
@@ -110,8 +98,7 @@ end
 class MetricsWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => true,
-             :timeout_job_after => 0.5
+             :ack => true
 
   def work(msg)
     metrics.increment "foobar"
@@ -122,8 +109,7 @@ end
 class WithParamsWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => true,
-             :timeout_job_after => 0.5
+             :ack => true
 
   def work_with_params(msg, delivery_info, metadata)
     msg
@@ -187,7 +173,6 @@ describe Sneakers::Worker do
           :workers => 4,
           :log => "sneakers.log",
           :pid_path => "sneakers.pid",
-          :timeout_job_after => 600,
           :prefetch => 10,
           :threads => 10,
           :share_threads => false,
@@ -226,7 +211,6 @@ describe Sneakers::Worker do
           :workers => 4,
           :log => "sneakers.log",
           :pid_path => "sneakers.pid",
-          :timeout_job_after => 1,
           :prefetch => 40,
           :threads => 50,
           :share_threads => false,
@@ -265,7 +249,6 @@ describe Sneakers::Worker do
           :workers => 4,
           :log => "sneakers.log",
           :pid_path => "sneakers.pid",
-          :timeout_job_after => 600,
           :prefetch => 10,
           :threads => 10,
           :share_threads => false,
@@ -399,19 +382,6 @@ describe Sneakers::Worker do
       w.do_work(header, nil, "msg", handler)
     end
 
-    it "should timeout if a work takes too long" do
-      w = TimeoutWorker.new(@queue, TestPool.new)
-      stub(w).work("msg"){ sleep 10 }
-
-      handler = Object.new
-      header = Object.new
-
-      mock(handler).timeout(header, nil, "msg")
-      mock(w.logger).error(/error="execution expired" error_class=Sneakers::WorkerTimeout worker_class=TimeoutWorker backtrace=/)
-
-      w.do_work(header, nil, "msg", handler)
-    end
-
     describe "with ack" do
       before do
         @delivery_info = Object.new
@@ -441,14 +411,7 @@ describe Sneakers::Worker do
         @worker.do_work(@delivery_info, nil, :requeue, handler)
       end
 
-      it "should work and handle user-land timeouts" do
-        handler = Object.new
-        mock(handler).timeout(@delivery_info, nil, :timeout)
-
-        @worker.do_work(@delivery_info, nil, :timeout, handler)
-      end
-
-      it "should work and handle user-land error" do
+      it "should work and handle user code errors" do
         handler = Object.new
         mock(handler).error(@delivery_info, nil, :error, anything)
 
@@ -542,7 +505,6 @@ describe Sneakers::Worker do
       # We don't care how these are called, we're focusing on metrics here.
       stub(@handler).acknowledge
       stub(@handler).reject
-      stub(@handler).timeout
       stub(@handler).error
       stub(@handler).noop
 
@@ -576,12 +538,6 @@ describe Sneakers::Worker do
     it 'should be able to meter errors' do
       mock(@w.metrics).increment("work.MetricsWorker.handled.error").once
       mock(@w).work('msg'){ raise :error }
-      @w.do_work(@delivery_info, nil, 'msg', @handler)
-    end
-
-    it 'should be able to meter timeouts' do
-      mock(@w.metrics).increment("work.MetricsWorker.handled.timeout").once
-      mock(@w).work('msg'){ sleep 10 }
       @w.do_work(@delivery_info, nil, 'msg', @handler)
     end
 

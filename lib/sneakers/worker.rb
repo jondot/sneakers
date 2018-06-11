@@ -1,6 +1,5 @@
 require 'sneakers/queue'
 require 'sneakers/support/utils'
-require 'timeout'
 
 module Sneakers
   module Worker
@@ -18,7 +17,6 @@ module Sneakers
       opts = Sneakers::CONFIG.merge(opts)
 
       @should_ack =  opts[:ack]
-      @timeout_after = opts[:timeout_job_after]
       @pool = pool || Concurrent::FixedThreadPool.new(opts[:threads] || Sneakers::Configuration::DEFAULTS[:threads])
       @call_with_params = respond_to?(:work_with_params)
       @content_type = opts[:content_type]
@@ -57,20 +55,14 @@ module Sneakers
 
       begin
         metrics.increment("work.#{self.class.name}.started")
-        Timeout.timeout(@timeout_after, WorkerTimeout) do
-          metrics.timing("work.#{self.class.name}.time") do
-            deserialized_msg = ContentType.deserialize(msg, @content_type || metadata && metadata[:content_type])
-            if @call_with_params
-              res = work_with_params(deserialized_msg, delivery_info, metadata)
-            else
-              res = work(deserialized_msg)
-            end
+        metrics.timing("work.#{self.class.name}.time") do
+          deserialized_msg = ContentType.deserialize(msg, @content_type || metadata && metadata[:content_type])
+          if @call_with_params
+            res = work_with_params(deserialized_msg, delivery_info, metadata)
+          else
+            res = work(deserialized_msg)
           end
         end
-      rescue WorkerTimeout => ex
-        res = :timeout
-        worker_error(ex, log_msg: log_msg(msg), class: self.class.name,
-                     message: msg, delivery_info: delivery_info, metadata: metadata)
       rescue => ex
         res = :error
         error = ex
@@ -83,8 +75,6 @@ module Sneakers
         if res == :ack
           # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
           handler.acknowledge(delivery_info, metadata, msg)
-        elsif res == :timeout
-          handler.timeout(delivery_info, metadata, msg)
         elsif res == :error
           handler.error(delivery_info, metadata, msg, error)
         elsif res == :reject
