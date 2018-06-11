@@ -1,22 +1,25 @@
 # Sneakers Change Log
 
-## Changes Between 2.7.0 and 2.8.0
+## Changes Between 2.8.0 and 2.10.0
 
-### Default Worker Timeout Increase
+This release contains **minor breaking API changes**.
+
+### Worker Timeouts are No Longer Enforced
+
+This is a **breaking change** for `Sneakers::Worker` implementations.
 
 Timeouts can be disruptive and dangerous depending on what the workers do but not having them can also
 lead to operational headaches.
 
-One short term solutions that would not require a worker API/contract change is to increase
-the timeout high enough so that most workers would never hit it during normal operation.
-This was one outcome of [a lengthy discussion](https://github.com/jondot/sneakers/issues/343) on possible
-alternatives to the timeout mechanism Sneakers currently uses.
+The outcome of [a lengthy discussion](https://github.com/jondot/sneakers/issues/343) on possible
+alternatives to the timeout mechanisms is that only applications
+can know where it is safe to enforce a timeout (and how).
 
-The new timeout is 600 seconds (10 minutes) vs. the original one of 5 seconds. It is possible to use
-a different value by configuring it using the `timeout_job_after` key, including setting it to 0
-to disable timeouts entirely.
+`Sneakers::Worker` implementations are now expected to enforce timeouts
+in a way that makes sense (and is safe) to them.
 
-GitHub issue: [#343](https://github.com/jondot/sneakers/issues/343).
+GitHub issues: [#343](https://github.com/jondot/sneakers/issues/343).
+
 
 ## Changes Between 2.6.0 and 2.7.0
 
