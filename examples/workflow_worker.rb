@@ -9,7 +9,6 @@ class WorkflowWorker
              :ack => true,
              :threads => 50,
              :prefetch => 50,
-             :timeout_job_after => 1,
              :exchange => 'dummy',
              :heartbeat => 5,
              :amqp_heartbeat => 10
