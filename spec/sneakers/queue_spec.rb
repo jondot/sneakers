@@ -74,6 +74,17 @@ describe Sneakers::Queue do
         q.subscribe(@mkworker)
       end
 
+      it "supports setting arguments when binding" do
+        mock(@mkchan).queue("downloads", :durable => true) { @mkqueue }
+        q = Sneakers::Queue.new("downloads",
+                                queue_vars.merge(:bind_arguments => { "os" => "linux", "cores" => 8 }))
+
+        mock(@mkqueue).bind(@mkex, :routing_key => "downloads", :arguments => { "os" => "linux", "cores" => 8 })
+        mock(@mkqueue).subscribe(:block => false, :manual_ack => true)
+
+        q.subscribe(@mkworker)
+      end
+
       it "will use whatever handler the worker specifies" do
         mock(@mkchan).queue("downloads", :durable => true) { @mkqueue }
         @handler = Object.new
