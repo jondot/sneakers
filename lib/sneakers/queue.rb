@@ -38,7 +38,11 @@ class Sneakers::Queue
 
     if exchange_name.length > 0
       routing_keys.each do |key|
-        queue.bind(@exchange, :routing_key => key)
+        if @opts[:bind_arguments]
+          queue.bind(@exchange, routing_key: key, arguments: @opts[:bind_arguments])
+        else
+          queue.bind(@exchange, routing_key: key)
+        end
       end
     end
 
@@ -49,7 +53,7 @@ class Sneakers::Queue
     handler_klass = worker.opts[:handler] || Sneakers::CONFIG.fetch(:handler)
     handler = handler_klass.new(@channel, queue, worker.opts)
 
-    @consumer = queue.subscribe(:block => false, :manual_ack => @opts[:ack]) do | delivery_info, metadata, msg |
+    @consumer = queue.subscribe(block: false, manual_ack: @opts[:ack]) do | delivery_info, metadata, msg |
       worker.do_work(delivery_info, metadata, msg, handler)
     end
     nil
@@ -72,10 +76,10 @@ class Sneakers::Queue
   end
 
   def create_bunny_connection
-    Bunny.new(@opts[:amqp], :vhost => @opts[:vhost],
-                            :heartbeat => @opts[:heartbeat],
-                            :properties => @opts.fetch(:properties, {}),
-                            :logger => Sneakers::logger)
+    Bunny.new(@opts[:amqp], vhost: @opts[:vhost],
+                            heartbeat: @opts[:heartbeat],
+                            properties: @opts.fetch(:properties, {}),
+                            logger: Sneakers::logger)
   end
   private :create_bunny_connection
 end
