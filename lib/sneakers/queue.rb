@@ -38,7 +38,11 @@ class Sneakers::Queue
 
     if exchange_name.length > 0
       routing_keys.each do |key|
-        queue.bind(@exchange, :routing_key => key)
+        if @opts.key?(:bind_arguments)
+          queue.bind(@exchange, :routing_key => key, arguments: @opts[:bind_arguments])
+        else
+          queue.bind(@exchange, :routing_key => key)
+        end
       end
     end
 
