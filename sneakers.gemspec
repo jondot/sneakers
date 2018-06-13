@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
 
   gem.add_dependency 'serverengine', '~> 2.0.5'
-  gem.add_dependency 'bunny', '~> 2.9.2'
+  gem.add_dependency 'bunny', '~> 2.10.0'
   gem.add_dependency 'concurrent-ruby', '~> 1.0'
   gem.add_dependency 'thor'
   gem.add_dependency 'rake'
