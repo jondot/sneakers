@@ -57,11 +57,20 @@ module Sneakers
         metrics.increment("work.#{self.class.name}.started")
         metrics.timing("work.#{self.class.name}.time") do
           deserialized_msg = ContentType.deserialize(msg, @content_type || metadata && metadata[:content_type])
-          if @call_with_params
-            res = work_with_params(deserialized_msg, delivery_info, metadata)
-          else
-            res = work(deserialized_msg)
+
+          app = -> (deserialized_msg, delivery_info, metadata, handler) do
+            if @call_with_params
+              work_with_params(deserialized_msg, delivery_info, metadata)
+            else
+              work(deserialized_msg)
+            end
           end
+
+          middlewares = Sneakers.middleware.to_a
+          block_to_call = middlewares.reverse.reduce(app) do |mem, h|
+            h[:class].new(mem, *h[:args])
+          end
+          res = block_to_call.call(deserialized_msg, delivery_info, metadata, handler)
         end
       rescue => ex
         res = :error

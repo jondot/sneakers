@@ -18,6 +18,7 @@ require 'sneakers/concerns/logging'
 require 'sneakers/concerns/metrics'
 require 'sneakers/handlers/oneshot'
 require 'sneakers/content_type'
+require 'sneakers/middleware/config'
 require 'sneakers/worker'
 require 'sneakers/publisher'
 
@@ -85,6 +86,10 @@ module Sneakers
   # Ripped off from https://github.com/mperham/sidekiq/blob/6ad6a3aa330deebd76c6cf0d353f66abd3bef93b/lib/sidekiq.rb#L165-L174
   def error_reporters
     CONFIG[:error_reporters]
+  end
+
+  def middleware
+    @middleware ||= Sneakers::Middleware::Config
   end
 
   private
