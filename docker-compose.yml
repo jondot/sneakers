@@ -3,6 +3,8 @@ version: '3'
 services:
   sneakers:
     build: .
+    volumes:
+      - .:/sneakers
     depends_on:
       - rabbitmq
       - redis
