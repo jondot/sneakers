@@ -8,6 +8,8 @@ services:
     depends_on:
       - rabbitmq
       - redis
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
 
   rabbitmq:
     image: rabbitmq:management-alpine
