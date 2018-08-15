@@ -4,8 +4,8 @@
 
 ```
       __
-  ,--'  >  
-  `=====   
+  ,--'  >
+  `=====
 
 ```
 
@@ -44,7 +44,7 @@ notes.
 
 A [change log](./ChangeLog.md) is also available.
 
-## Quick start 
+## Quick start
 
 Set up a Gemfile
 
@@ -99,6 +99,20 @@ If you go to your RabbitMQ admin now, you'll see a new queue named `logs` was cr
    "message": "HALP!",
    "error": "CODE001"
 }
+```
+
+Push message with ruby
+
+```ruby
+require 'bunny'
+
+conn = Bunny.new
+conn.start
+
+ch = conn.create_channel
+ch.default_exchange.publish({ type: 'error', message: 'HALP!', error: 'CODE001' }.to_json, routing_key: 'logs')
+
+conn.close
 ```
 
 And this is the output you should see at your terminal.
