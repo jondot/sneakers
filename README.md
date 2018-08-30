@@ -104,7 +104,7 @@ If you go to your RabbitMQ admin now, you'll see a new queue named `logs` was cr
 Publish a message with the [bunny](https://github.com/ruby-amqp/bunny) gem RabbitMQ client:
 
 ```ruby
-require ''
+require 'bunny'
 
 conn = Bunny.new
 conn.start
