@@ -372,6 +372,16 @@ describe Sneakers::Worker do
       w.do_work(header, nil, "msg", handler)
     end
 
+    it "should catch script exceptions from a bad work" do
+      w = AcksWorker.new(@queue, TestPool.new)
+      mock(w).work("msg").once{ raise ScriptError }
+      handler = Object.new
+      header = Object.new
+      mock(handler).error(header, nil, "msg", anything)
+      mock(w.logger).error(/\[Exception error="ScriptError" error_class=ScriptError worker_class=AcksWorker backtrace=.*/)
+      w.do_work(header, nil, "msg", handler)
+    end
+
     it "should log exceptions from workers" do
       handler = Object.new
       header = Object.new
