@@ -63,7 +63,7 @@ module Sneakers
             res = work(deserialized_msg)
           end
         end
-      rescue => ex
+      rescue StandardError, ScriptError => ex
         res = :error
         error = ex
         worker_error(ex, log_msg: log_msg(msg), class: self.class.name,
