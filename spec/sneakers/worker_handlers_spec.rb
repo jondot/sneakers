@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'sneakers'
 require 'sneakers/handlers/oneshot'
 require 'sneakers/handlers/maxretry'
+require 'sneakers/handlers/ratelimiter'
 require 'json'
 
 
@@ -324,6 +325,217 @@ describe 'Handlers' do
 
       it 'should work and handle noops' do
         worker.do_work(@header, @props, :wait, @handler)
+      end
+    end
+  end
+
+  describe 'RateLimiter' do
+    let(:queue_name) {'defaults'}
+    let(:overflow_queue_name) {"#{queue_name}-overflow"}
+    let(:rate_limit_queue_name) {"#{queue_name}-rate_limit"}
+    let(:rate_limit_exchange) {Object.new}
+    let(:rate_limit_exchange_name) {'rate_limit'}
+    let(:decorated_handler) {Object.new}
+    let(:opts) { {rate_limiter_decorated_handler_func: -> (*_args) {decorated_handler}}  }
+    let(:header) {Object.new}
+    let(:handler) {Sneakers::Handlers::RateLimiter.new(channel, queue, opts)}
+    let(:metadata) {{}}
+
+    before(:each) do
+      rate_limit_queue = Object.new
+      overflow_queue = Object.new
+
+      mock(rate_limit_queue).bind(rate_limit_exchange, :routing_key => queue_name)
+      mock(overflow_queue).bind(rate_limit_exchange, :routing_key => overflow_queue_name)
+
+      mock(queue).name {queue_name}
+      mock(channel).exchange(anything, anything).times(2) {rate_limit_exchange}
+
+      mock(channel).queue(overflow_queue_name, anything) {overflow_queue}
+      mock(channel).queue(rate_limit_queue_name, anything) {rate_limit_queue}
+
+      stub(header).delivery_tag { 37 }
+    end
+
+    describe '#do_work' do
+
+      before(:each) do
+        mock(handler).before_work(anything, anything, anything) {true}
+      end
+
+      it 'should forward ack to attached handler' do
+        mock(decorated_handler).acknowledge(header, metadata, :ack)
+        worker.do_work(header, metadata, :ack, handler)
+      end
+
+      it 'should forward reject to attached handler' do
+        mock(decorated_handler).reject(header, metadata, :reject, false)
+        worker.do_work(header, metadata, :reject, handler)
+      end
+
+      it 'should forward requeue message to attached handler' do
+        mock(decorated_handler).reject(header, metadata, :requeue, true)
+        worker.do_work(header, metadata, :requeue, handler)
+      end
+
+      it 'should forward errors to attached handler' do
+        error = StandardError.new('boom!')
+        mock(decorated_handler).error(header, metadata, error, error)
+        worker.do_work(header, metadata, error, handler)
+      end
+
+      it 'should forward noops' do
+        mock(decorated_handler).noop(header, metadata, :wait)
+        worker.do_work(header, metadata, :wait, handler)
+      end
+    end
+
+    describe 'message_went_through_rate_limit_queue?' do
+      describe 'when the headers are missing' do
+        it 'returns false' do
+          headers = nil
+
+          result = handler.message_went_through_rate_limit_queue?(headers)
+
+          result.must_equal(false)
+        end
+      end
+
+      describe 'when the x-death is missing' do
+        it 'returns false' do
+          headers = {
+            'x-death' => nil
+          }
+
+          result = handler.message_went_through_rate_limit_queue?(headers)
+
+          result.must_equal(false)
+        end
+      end
+
+      describe 'when the headers are present' do
+        describe 'when the message did not go through the rate limit exchange' do
+          it 'returns false' do
+            headers = {
+              'x-death' => [
+                {
+                  'exchange' => 'different_exchange',
+                  'queue' => rate_limit_queue_name
+                }
+              ]
+            }
+
+            result = handler.message_went_through_rate_limit_queue?(headers)
+
+            result.must_equal(false)
+          end
+        end
+
+        describe 'when the message went through the rate limit exchange but a different queue' do
+          it 'returns false' do
+            headers = {
+              'x-death' => [
+                {
+                  'exchange' => rate_limit_exchange_name,
+                  'queue' => 'different_queue'
+                }
+              ]
+            }
+
+            result = handler.message_went_through_rate_limit_queue?(headers)
+
+            result.must_equal(false)
+          end
+        end
+
+        describe 'when message went through the rate limit exchange and rate limit queue' do
+          it 'returns true' do
+            headers = {
+              'x-death' => [
+                {
+                  'exchange' => rate_limit_exchange_name,
+                  'queue' => rate_limit_queue_name
+                }
+              ]
+            }
+
+            result = handler.message_went_through_rate_limit_queue?(headers)
+
+            result.must_equal(true)
+          end
+        end
+      end
+    end
+
+    describe 'before_work' do
+      describe 'message went through rate limit exchange' do
+        it 'should allow work to proceed' do
+          props = {
+            headers: {
+              'x-death' => [
+                {
+                  'exchange' => rate_limit_exchange_name,
+                  'queue' => rate_limit_queue_name
+                }
+              ]
+            }
+          }
+          result = handler.before_work(nil, props, nil)
+          result.must_equal(true)
+        end
+      end
+
+      describe 'message is new (did not go through rate limit exchange)' do
+        let(:message_) {'message'}
+        let(:props) {{headers: {}}}
+        let(:headers) {props[:headers]}
+
+        it 'should not allow the message to be processed' do
+          mock(channel).confirm_select
+          stub(rate_limit_exchange).publish(message_, :headers => headers, :routing_key => queue_name)
+          mock(channel).wait_for_confirms {true}
+          stub(decorated_handler).acknowledge(nil, props, message_)
+
+          result = handler.before_work(nil, props, message_)
+
+          result.must_equal(false)
+        end
+
+        it 'should acknowledge the message' do
+          mock(channel).confirm_select
+          stub(rate_limit_exchange).publish(message_, :headers => headers, :routing_key => queue_name)
+          mock(channel).wait_for_confirms {true}
+          mock(decorated_handler).acknowledge(nil, props, message_)
+
+          result = handler.before_work(nil, props, message_)
+        end
+
+        it 'should forward the message to the rate limit exchange' do
+          mock(channel).confirm_select
+          mock(rate_limit_exchange).publish(message_, :headers => headers, :routing_key => queue_name)
+          mock(channel).wait_for_confirms {true}
+          stub(decorated_handler).acknowledge(nil, props, message_)
+
+          result = handler.before_work(nil, props, message_)
+        end
+
+        describe 'when the rate limit queue is full' do
+          it 'should send the message to the overflow waiting queue' do
+            mock(handler).send_to_rate_limit_queue(message_, headers) {false}
+            mock(rate_limit_exchange).publish(message_, :headers => headers, :routing_key => overflow_queue_name)
+            stub(decorated_handler).acknowledge(nil, props, message_)
+
+            result = handler.before_work(nil, props, message_)
+          end
+
+          it 'should acknowledge the message' do
+            mock(handler).send_to_rate_limit_queue(message_, headers) {false}
+            stub(rate_limit_exchange).publish(message_, :headers => headers, :routing_key => overflow_queue_name)
+            mock(decorated_handler).acknowledge(nil, props, message_)
+
+            result = handler.before_work(nil, props, message_)
+          end
+        end
       end
     end
   end

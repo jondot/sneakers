@@ -58,6 +58,8 @@ module Sneakers
         metrics.timing("work.#{self.class.name}.time") do
           deserialized_msg = ContentType.deserialize(msg, @content_type || metadata && metadata[:content_type])
 
+          return if handler.respond_to?(:before_work) && !handler.before_work(delivery_info, metadata, msg)
+
           app = -> (deserialized_msg, delivery_info, metadata, handler) do
             if @call_with_params
               work_with_params(deserialized_msg, delivery_info, metadata)
@@ -80,7 +82,6 @@ module Sneakers
       end
 
       if @should_ack
-
         if res == :ack
           # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
           handler.acknowledge(delivery_info, metadata, msg)

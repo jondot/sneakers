@@ -392,6 +392,17 @@ describe Sneakers::Worker do
       w.do_work(header, nil, "msg", handler)
     end
 
+    it "should short circuit unless before_work event return true" do
+      handler = Object.new
+      header = Object.new
+      w = AcksWorker.new(@queue, TestPool.new)
+      mock(w.logger).error(/\[Exception error="this should not be called" error_class=RuntimeError worker_class=AcksWorker backtrace=.*/)
+      mock(w).work("msg").once{ raise "this should not be called" }
+      mock(handler).error(header, nil, "msg", anything)
+      mock(handler).before_work(anything, anything, anything) {true}
+      w.do_work(header, nil, "msg", handler)
+    end
+
     describe 'middleware' do
       let(:middleware) do
         Class.new do

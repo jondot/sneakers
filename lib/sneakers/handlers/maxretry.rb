@@ -92,6 +92,8 @@ module Sneakers
       end
 
       def reject(hdr, props, msg, requeue = false)
+        Sneakers.logger.info{"In maxretry reject. #{props.inspect}"}
+        Sneakers.logger.info{"Maxretry requeue? #{requeue}"}
         if requeue
           # This was explicitly rejected specifying it be requeued so we do not
           # want it to pass through our retry logic.
@@ -108,6 +110,10 @@ module Sneakers
 
       def noop(hdr, props, msg)
 
+      end
+
+      def before_work(*args)
+        true
       end
 
       # Helper logic for retry handling. This will reject the message if there
