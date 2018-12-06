@@ -31,6 +31,12 @@ class Sneakers::Queue
     routing_key = @opts[:routing_key] || @name
     routing_keys = [*routing_key]
 
+    handler_klass = worker.opts[:handler] || Sneakers::CONFIG.fetch(:handler)
+    # Configure options if needed
+    if handler_klass.respond_to?(:configure_queue)
+      @opts[:queue_options] = handler_klass.configure_queue(@name, @opts[:queue_options])
+    end
+
     # TODO: get the arguments from the handler? Retry handler wants this so you
     # don't have to line up the queue's dead letter argument with the exchange
     # you'll create for retry.
@@ -50,7 +56,6 @@ class Sneakers::Queue
     # has the same configuration as the worker. Also pass along the exchange and
     # queue in case the handler requires access to them (for things like binding
     # retry queues, etc).
-    handler_klass = worker.opts[:handler] || Sneakers::CONFIG.fetch(:handler)
     handler = handler_klass.new(@channel, queue, worker.opts)
 
     @consumer = queue.subscribe(block: false, manual_ack: @opts[:ack]) do | delivery_info, metadata, msg |
