@@ -1,4 +1,4 @@
-FROM ruby:2.3-alpine
+FROM ruby:2.3.7-alpine3.7
 
 RUN apk add --no-cache git
 
@@ -9,20 +9,16 @@ RUN apk --update add --virtual build_deps \
                                linux-headers \
                                openssl-dev
 
-RUN mkdir /myapp
-
 WORKDIR /sneakers
 
-COPY lib/sneakers/version.rb /sneakers/lib/sneakers/version.rb
+COPY lib/sneakers/version.rb ./lib/sneakers/version.rb
 
-COPY sneakers.gemspec /sneakers/sneakers.gemspec
+COPY sneakers.gemspec ./sneakers.gemspec
 
-COPY Gemfile /sneakers/Gemfile
+COPY Gemfile* ./
 
-COPY Gemfile.lock /sneakers/Gemfile.lock
+RUN bundle install --retry=3
 
-RUN bundle --jobs=4 --retry=3
-
-COPY . /sneakers
+COPY . .
 
 CMD rake test
