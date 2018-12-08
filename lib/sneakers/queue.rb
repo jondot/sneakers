@@ -37,9 +37,6 @@ class Sneakers::Queue
       @opts[:queue_options] = handler_klass.configure_queue(@name, @opts[:queue_options])
     end
 
-    # TODO: get the arguments from the handler? Retry handler wants this so you
-    # don't have to line up the queue's dead letter argument with the exchange
-    # you'll create for retry.
     queue = @channel.queue(@name, @opts[:queue_options])
 
     if exchange_name.length > 0
