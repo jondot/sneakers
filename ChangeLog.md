@@ -34,6 +34,12 @@ Contributed by @nerikj
 
 GitHub Pull Request: [#358](https://github.com/jondot/sneakers/pull/358)
 
+### Other contributions
+
+This release also contains contributions from @ivan-kolmychek (bumping up Bunny
+dependency), @michaelklishin (improving code style), and @darren987469 (adding
+examples to the README)
+
 ## Changes Between 2.8.0 and 2.10.0
 
 This release contains **minor breaking API changes**.
