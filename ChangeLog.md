@@ -25,7 +25,7 @@ Contributed by @olivierlacan
 
 GitHub Pull Request: [#372](https://github.com/jondot/sneakers/pull/372)
 
-### Support `:queue_arguments` on bind
+### Support `:bind_arguments` on bind
 
 It is now possible to set arguments on a queue when connecting to a headers
 exchange
