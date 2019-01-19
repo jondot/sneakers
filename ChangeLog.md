@@ -1,5 +1,45 @@
 # Sneakers Change Log
 
+## Changes Between 2.10.0 and 2.11.0
+
+This releases includes bug fixes, support for more queue-binding options, better
+management of the Bunny dependency, and improved documentation. Following is a
+list of the notable changes:
+
+### Rescue from ScriptError
+
+Fixes a bug that would cause Sneakers workers to freeze if an exception
+descending from `ScriptError`, such as `NotImplementedError`, is raised
+
+Contributed by @sharshenov
+
+GitHub Pull Request: [373](https://github.com/jondot/sneakers/pull/373)
+
+### Loosen Bunny dependency to minor version
+
+The dependency on Bunny is now pinned to the minor version instead of patch,
+allowing users to benefit from non-breaking updates to Bunny without having to
+wait for a Sneakers release.
+
+Contributed by @olivierlacan
+
+GitHub Pull Request: [#372](https://github.com/jondot/sneakers/pull/372)
+
+### Support `:bind_arguments` on bind
+
+It is now possible to set arguments on a queue when connecting to a headers
+exchange
+
+Contributed by @nerikj
+
+GitHub Pull Request: [#358](https://github.com/jondot/sneakers/pull/358)
+
+### Other contributions
+
+This release also contains contributions from @ivan-kolmychek (bumping up Bunny
+dependency), @michaelklishin (improving code style), and @darren987469 (adding
+examples to the README)
+
 ## Changes Between 2.8.0 and 2.10.0
 
 This release contains **minor breaking API changes**.
