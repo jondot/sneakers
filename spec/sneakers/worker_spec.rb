@@ -128,6 +128,11 @@ class WithDeprecatedExchangeOptionsWorker
   end
 end
 
+class InTestWorkgroupWorker
+  include Sneakers::Worker
+  workgroup :test_group
+end
+
 TestPool ||= Concurrent::ImmediateExecutor
 
 describe Sneakers::Worker do
@@ -156,6 +161,15 @@ describe Sneakers::Worker do
       end
 
       DummyWorker.enqueue(message, :routing_key => 'test.routing.key')
+    end
+  end
+
+  describe ".workgroup" do
+    it "sets and gets workgroup" do
+      InTestWorkgroupWorker.workgroup.must_equal :test_group
+    end
+    it "is :default by default" do
+      DummyWorker.workgroup.must_equal :default
     end
   end
 
