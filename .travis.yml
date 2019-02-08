@@ -1,9 +1,10 @@
+dist: xenial
+sudo: true
+language: ruby
+cache: bundler
 services:
   - rabbitmq
   - redis-server
-sudo: true
-cache: bundler
-language: ruby
 before_install:
   - gem install bundler
 before_script:
