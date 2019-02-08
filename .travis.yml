@@ -1,18 +1,24 @@
 services:
   - rabbitmq
   - redis-server
-sudo: false
+sudo: true
 cache: bundler
 language: ruby
 before_install:
   - gem install bundler
+before_script:
+  - "./bin/ci/install_on_debian.sh"
+  - until sudo lsof -i:5672; do echo "Waiting for RabbitMQ to start..."; sleep 1; done
 rvm:
   - ruby-head
+  - "2.6.0"
   - "2.5.1"
   - "2.4.2"
   - "2.3.5"
-  - "2.2.8"
 matrix:
   include:
-    - rvm: 2.4.1
+    - rvm: "2.6.0"
       env: INTEGRATION_LOG=1 INTEGRATION=1
+  allow_failures:
+    rvm:
+      - ruby-head
