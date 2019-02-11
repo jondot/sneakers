@@ -130,7 +130,7 @@ module Sneakers
         if num_attempts <= @max_retries
           # We call reject which will route the message to the
           # x-dead-letter-exchange (ie. retry exchange) on the queue
-          Sneakers.logger.info do
+          Sneakers.logger.debug do
             "#{log_prefix} msg=retrying, count=#{num_attempts}, headers=#{props[:headers]}"
           end
           @channel.reject(hdr.delivery_tag, false)
@@ -138,7 +138,7 @@ module Sneakers
         else
           # Retried more than the max times
           # Publish the original message with the routing_key to the error exchange
-          Sneakers.logger.info do
+          Sneakers.logger.debug do
             "#{log_prefix} msg=failing, retry_count=#{num_attempts}, reason=#{reason}"
           end
           data = {
