@@ -33,12 +33,7 @@ WORKER_OPTIONS = {
 #
 class MaxRetryWorker
   include Sneakers::Worker
-  from_queue 'downloads',
-      WORKER_OPTIONS.merge({
-                             :arguments => {
-                               :'x-dead-letter-exchange' => 'downloads-retry'
-                             },
-                           })
+  from_queue 'downloads', WORKER_OPTIONS
 
   def work(msg)
     logger.info("MaxRetryWorker rejecting msg: #{msg.inspect}")
@@ -52,12 +47,7 @@ end
 # see the message once.
 class SucceedingWorker
   include Sneakers::Worker
-  from_queue 'uploads',
-      WORKER_OPTIONS.merge({
-                             :arguments => {
-                               :'x-dead-letter-exchange' => 'uploads-retry'
-                             },
-                           })
+  from_queue 'uploads', WORKER_OPTIONS
 
   def work(msg)
     logger.info("SucceedingWorker succeeding on msg: #{msg.inspect}")
