@@ -147,19 +147,19 @@ module Sneakers
 
           # Preserve retry log in a list
           if retry_info = props[:headers]['retry_info']
-            old_retry = JSON.parse retry_info rescue {error: "No retry info"}
-            old_retry = [old_retry] unless old_retry.is_a? Array
+            old_retry0 = JSON.parse(retry_info) rescue {error: "Failed to parse retry info"}
+            old_retry  = Array(old_retry0)
             # Prevent old retry from nesting
-            data[:properties][:headers].delete 'retry_info'
-            data = old_retry.unshift data
+            data[:properties][:headers].delete('retry_info')
+            data = old_retry.unshift(data)
           end
 
-          @error_exchange.publish msg, {
+          @error_exchange.publish(msg, {
             routing_key: hdr.routing_key,
             headers: {
               retry_info: data.to_json
             }
-          }
+          })
           @channel.acknowledge(hdr.delivery_tag, false)
           # TODO: metrics
         end
