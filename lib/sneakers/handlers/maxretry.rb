@@ -134,18 +134,32 @@ module Sneakers
             error: reason.to_s,
             num_attempts: num_attempts,
             failed_at: Time.now.iso8601,
-            payload: Base64.encode64(msg.to_s),
-            properties: Base64.encode64(props.to_json)
+            properties: props.to_hash
           }.tap do |hash|
             if reason.is_a?(Exception)
               hash[:error_class] = reason.class.to_s
               hash[:error_message] = "#{reason}"
               if reason.backtrace
-                hash[:backtrace] = reason.backtrace.take(10).join(', ')
+                hash[:backtrace] = reason.backtrace.take(10)
               end
             end
-          end.to_json
-          @error_exchange.publish(data, :routing_key => hdr.routing_key)
+          end
+
+          # Preserve retry log in a list
+          if retry_info = props[:headers]['retry_info']
+            old_retry0 = JSON.parse(retry_info) rescue {error: "Failed to parse retry info"}
+            old_retry  = Array(old_retry0)
+            # Prevent old retry from nesting
+            data[:properties][:headers].delete('retry_info')
+            data = old_retry.unshift(data)
+          end
+
+          @error_exchange.publish(msg, {
+            routing_key: hdr.routing_key,
+            headers: {
+              retry_info: data.to_json
+            }
+          })
           @channel.acknowledge(hdr.delivery_tag, false)
           # TODO: metrics
         end
