@@ -392,6 +392,61 @@ describe Sneakers::Worker do
       w.do_work(header, nil, "msg", handler)
     end
 
+    describe 'middleware' do
+      let(:middleware) do
+        Class.new do
+          def initialize(app, *args)
+            @app = app
+          end
+
+          def call(deserialized_msg, delivery_info, metadata, handler)
+            @app.call(deserialized_msg, delivery_info, metadata, handler)
+          end
+        end
+      end
+
+      let(:worker) do
+        Class.new do
+          include Sneakers::Worker
+          from_queue 'defaults', ack: false
+
+          def work_with_params(msg, delivery_info, metadata)
+            msg
+          end
+        end
+      end
+
+      before do
+        Sneakers.middleware.use(middleware, 'args')
+
+        @delivery_info = Object.new
+        @metadata = Object.new
+        stub(@metadata).[](:content_type) { 'some/fake' }
+        @message = Object.new
+        @handler = Object.new
+      end
+
+      after do
+        Sneakers.middleware.delete(middleware)
+      end
+
+      it 'should process job and call #work_with_params/#work' do
+        w = worker.new(@queue, TestPool.new)
+        mock(w).work_with_params(@message, @delivery_info, @metadata).once
+
+        w.do_work(@delivery_info, @metadata, @message, @handler)
+      end
+
+      it "should call registered middleware" do
+        mock.proxy(middleware).new(instance_of(Proc), 'args').once do |res|
+          mock.proxy(res).call(@message, @delivery_info, @metadata, @handler).once
+        end
+
+        w = worker.new(@queue, TestPool.new)
+        w.do_work(@delivery_info, @metadata, @message, @handler)
+      end
+    end
+
     describe "with ack" do
       before do
         @delivery_info = Object.new
