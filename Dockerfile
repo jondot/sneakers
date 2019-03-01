@@ -11,9 +11,9 @@ RUN apk --update add --virtual build_deps \
 
 WORKDIR /sneakers
 
-COPY lib/sneakers/version.rb ./lib/sneakers/version.rb
+COPY lib/sneakers/version.rb lib/sneakers/version.rb
 
-COPY sneakers.gemspec ./sneakers.gemspec
+COPY sneakers.gemspec .
 
 COPY Gemfile* ./
 
