@@ -82,13 +82,9 @@ module Sneakers
 
       end
 
-      def self.configure_queue name, opts
-        retry_name = opts[:retry_exchange] || "#{name}-retry"
-        opts.merge(
-          arguments: {
-            'x-dead-letter-exchange': retry_name
-          }
-        )
+      def self.configure_queue(name, opts)
+        retry_name = opts.fetch(:retry_exchange, "#{name}-retry")
+        opts.merge(arguments: { "x-dead-letter-exchange": retry_name })
       end
 
       def acknowledge(hdr, props, msg)
