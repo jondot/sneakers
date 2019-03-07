@@ -1,11 +1,14 @@
-
 class Sneakers::Queue
-  attr_reader :name, :opts, :exchange, :channel
+  attr_reader :name, :opts, :exchanges, :channel
 
   def initialize(name, opts)
     @name = name
     @opts = opts
     @handler_klass = Sneakers::CONFIG[:handler]
+  end
+
+  def exchange
+    exchanges.first if exchanges
   end
 
   #
@@ -25,9 +28,6 @@ class Sneakers::Queue
     @channel = @bunny.create_channel
     @channel.prefetch(@opts[:prefetch])
 
-    exchange_name = @opts[:exchange]
-    @exchange = @channel.exchange(exchange_name, @opts[:exchange_options])
-
     routing_key = @opts[:routing_key] || @name
     routing_keys = [*routing_key]
 
@@ -39,12 +39,24 @@ class Sneakers::Queue
 
     queue = @channel.queue(@name, @opts[:queue_options])
 
-    if exchange_name.length > 0
+    @exchanges = []
+    exchanges =
+      @opts[:exchanges] ||
+        [{ :exchange => @opts[:exchange], :exchange_options => @opts[:exchange_options] }]
+
+    exchanges.each do |exchange_config|
+      exchange_name = exchange_config[:exchange]
+
+      exchange = @channel.exchange(exchange_name, exchange_config[:exchange_options])
+      @exchanges << exchange
+
+      next if exchange_name.to_s.empty?
+
       routing_keys.each do |key|
         if @opts[:bind_arguments]
-          queue.bind(@exchange, routing_key: key, arguments: @opts[:bind_arguments])
+          queue.bind(exchange, routing_key: key, arguments: @opts[:bind_arguments])
         else
-          queue.bind(@exchange, routing_key: key)
+          queue.bind(exchange, routing_key: key)
         end
       end
     end
