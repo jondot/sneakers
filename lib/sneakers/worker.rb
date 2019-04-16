@@ -72,6 +72,8 @@ module Sneakers
           end
           res = block_to_call.call(deserialized_msg, delivery_info, metadata, handler)
         end
+      rescue *opts[:raise_exceptions] => ex
+        raise
       rescue StandardError, ScriptError => ex
         res = :error
         error = ex

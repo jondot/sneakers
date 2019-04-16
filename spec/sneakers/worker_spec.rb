@@ -193,6 +193,7 @@ describe Sneakers::Worker do
             :arguments => {}
           },
           :hooks => {},
+          :raise_exceptions => [],
           :handler => Sneakers::Handlers::Oneshot,
           :heartbeat => 30,
           :amqp_heartbeat => 30
@@ -231,6 +232,7 @@ describe Sneakers::Worker do
             :arguments => { 'x-arg' => 'value' }
           },
           :hooks => {},
+          :raise_exceptions => [],
           :handler => Sneakers::Handlers::Oneshot,
           :heartbeat => 5,
           :amqp_heartbeat => 30
@@ -269,6 +271,7 @@ describe Sneakers::Worker do
             :arguments => { 'x-arg2' => 'value2' }
           },
           :hooks => {},
+          :raise_exceptions => [],
           :handler => Sneakers::Handlers::Oneshot,
           :heartbeat => 30,
           :amqp_heartbeat => 30
