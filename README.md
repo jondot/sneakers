@@ -193,6 +193,10 @@ environment needed locally on your development box.
 
 Fork, implement, add tests, pull request, get my everlasting thanks and a respectable place here :).
 
+## Issue triage [![Open Source Helpers](https://www.codetriage.com/jondot/sneakers/badges/users.svg)](https://www.codetriage.com/jondot/sneakers)
+
+You can contribute by triaging issues which may include reproducing bug reports or asking for vital information, such as version numbers or reproduction instructions. If you would like to start triaging issues, one easy way to get started is to [subscribe to sneakers on CodeTriage](https://www.codetriage.com/jondot/sneakers).
+
 ### Thanks:
 
 To all Sneakers [Contributors](https://github.com/jondot/sneakers/graphs/contributors) - you make this happen, thanks!
