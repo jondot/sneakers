@@ -26,7 +26,7 @@ describe "integration" do
       @admin ||=
         begin
           puts "RABBITMQ is at #{rmq_addr}"
-          RabbitMQ::HTTP::Client.new("http://#{rmq_addr}:15672/", username: "guest", password: "guest")
+          RabbitMQ::HTTP::Client.new("http://#{rmq_addr}:5672/", username: "guest", password: "guest")
         rescue
           fail "Rabbitmq admin seems to not exist? you better be running this on Travis or Docker. proceeding.\n#{$!}"
         end
