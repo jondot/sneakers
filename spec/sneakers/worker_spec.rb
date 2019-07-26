@@ -286,6 +286,10 @@ describe Sneakers::Worker do
           :amqp_heartbeat => 30
         )
       end
+      
+      it "should build a queue without an exchange given nil exchange option is provided" do
+        QueueWithoutAnExchangeWorker.new.queue.exchange.must_be_nil
+      end
     end
 
     describe "initializes worker" do
@@ -307,10 +311,6 @@ describe Sneakers::Worker do
       it "should build a queue with given connection" do
         @dummy_q = DummyWorker.new.queue
         @dummy_q.opts[:connection].must_equal(@connection)
-      end
-
-      it "should build a queue without an exchange" do
-        QueueWithoutAnExchangeWorker.new.queue.exchange.must_be_nil
       end
     end
   end
