@@ -17,7 +17,9 @@ class DummyWorker
                :exclusive => true,
                :arguments => { 'x-arg' => 'value' }
              },
-             :ack => false,
+             :consumer_options => {
+               :manual_ack => false
+             },
              :threads => 50,
              :prefetch => 40,
              :exchange => 'dummy',
@@ -38,7 +40,9 @@ end
 class AcksWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => true
+             :consumer_options => {
+               :manual_ack => true
+             }
 
   def work(msg)
     if msg == :ack
@@ -56,7 +60,9 @@ end
 class PublishingWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => false,
+             :consumer_options => {
+               :manual_ack => false
+             },
              :exchange => 'foochange'
 
   def work(msg)
@@ -67,7 +73,9 @@ end
 class JSONPublishingWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => false,
+             :consumer_options => {
+               :manual_ack => false
+             },
              :exchange => 'foochange'
 
   def work(msg)
@@ -78,7 +86,9 @@ end
 class LoggingWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => false
+             :consumer_options => {
+               :manual_ack => false
+             }
 
   def work(msg)
     logger.info "hello"
@@ -88,7 +98,9 @@ end
 class JSONWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => false,
+             :consumer_options => {
+               :manual_ack => false
+             },
              :content_type => 'application/json'
 
   def work(msg)
@@ -98,7 +110,10 @@ end
 class MetricsWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => true
+             :consumer_options => {
+               :manual_ack => true
+             }
+
 
   def work(msg)
     metrics.increment "foobar"
@@ -109,7 +124,9 @@ end
 class WithParamsWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => true
+             :consumer_options => {
+               :manual_ack => true
+             }
 
   def work_with_params(msg, delivery_info, metadata)
     msg
@@ -176,7 +193,6 @@ describe Sneakers::Worker do
           :prefetch => 10,
           :threads => 10,
           :share_threads => false,
-          :ack => true,
           :amqp => "amqp://guest:guest@localhost:5672",
           :vhost => "/",
           :exchange => "sneakers",
@@ -190,6 +206,11 @@ describe Sneakers::Worker do
             :durable => true,
             :auto_delete => false,
             :exclusive => false,
+            :arguments => {}
+          },
+          :consumer_options => {
+            :block => false,
+            :manual_ack => true,
             :arguments => {}
           },
           :hooks => {},
@@ -214,7 +235,6 @@ describe Sneakers::Worker do
           :prefetch => 40,
           :threads => 50,
           :share_threads => false,
-          :ack => false,
           :amqp => "amqp://guest:guest@localhost:5672",
           :vhost => "/",
           :exchange => "dummy",
@@ -229,6 +249,11 @@ describe Sneakers::Worker do
             :auto_delete => true,
             :exclusive => true,
             :arguments => { 'x-arg' => 'value' }
+          },
+          :consumer_options => {
+            :block => false,
+            :manual_ack => false,
+            :arguments => {}
           },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
@@ -252,7 +277,6 @@ describe Sneakers::Worker do
           :prefetch => 10,
           :threads => 10,
           :share_threads => false,
-          :ack => true,
           :amqp => "amqp://guest:guest@localhost:5672",
           :vhost => "/",
           :exchange => "sneakers",
@@ -267,6 +291,11 @@ describe Sneakers::Worker do
             :auto_delete => false,
             :exclusive => false,
             :arguments => { 'x-arg2' => 'value2' }
+          },
+          :consumer_options => {
+            :block => false,
+            :manual_ack => true,
+            :arguments => {}
           },
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
@@ -408,7 +437,10 @@ describe Sneakers::Worker do
       let(:worker) do
         Class.new do
           include Sneakers::Worker
-          from_queue 'defaults', ack: false
+          from_queue 'defaults',
+                     :consumer_options => {
+                       :manual_ack => false
+                     }
 
           def work_with_params(msg, delivery_info, metadata)
             msg

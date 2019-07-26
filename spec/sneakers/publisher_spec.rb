@@ -7,7 +7,9 @@ describe Sneakers::Publisher do
     {
       :prefetch => 25,
       :durable => true,
-      :ack => true,
+      :consumer_options => {
+        :manual_ack => true
+      },
       :heartbeat => 2,
       :vhost => '/',
       :exchange => "sneakers",

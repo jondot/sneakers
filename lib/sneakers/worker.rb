@@ -16,7 +16,7 @@ module Sneakers
       queue_name = self.class.queue_name
       opts = Sneakers::CONFIG.merge(opts)
 
-      @should_ack =  opts[:ack]
+      @should_ack =  opts[:consumer_options][:manual_ack]
       @pool = pool || Concurrent::FixedThreadPool.new(opts[:threads] || Sneakers::Configuration::DEFAULTS[:threads])
       @call_with_params = respond_to?(:work_with_params)
       @content_type = opts[:content_type]

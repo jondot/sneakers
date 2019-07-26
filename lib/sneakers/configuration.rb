@@ -21,6 +21,12 @@ module Sneakers
       :arguments => {}
     }.freeze
 
+    CONSUMER_OPTION_DEFAULTS = {
+      :block              => false,
+      :manual_ack         => true,
+      :arguments => {}
+    }.freeze
+
     DEFAULTS = {
       # Set up default handler which just logs the error.
       # Remove this in production if you don't want sensitive data logged.
@@ -40,12 +46,12 @@ module Sneakers
       :prefetch           => 10,
       :threads            => 10,
       :share_threads      => false,
-      :ack                => true,
       :heartbeat          => 30,
       :hooks              => {},
       :exchange           => 'sneakers',
       :exchange_options   => EXCHANGE_OPTION_DEFAULTS,
-      :queue_options      => QUEUE_OPTION_DEFAULTS
+      :queue_options      => QUEUE_OPTION_DEFAULTS,
+      :consumer_options   => CONSUMER_OPTION_DEFAULTS
     }.freeze
 
 
@@ -107,6 +113,7 @@ module Sneakers
       hash = map_deprecated_options_key(:exchange_options, :durable, :durable, false, hash)
       hash = map_deprecated_options_key(:queue_options, :durable, :durable, true, hash)
       hash = map_deprecated_options_key(:queue_options, :arguments, :arguments, true, hash)
+      hash = map_deprecated_options_key(:consumer_options, :ack, :manual_ack, true, hash)
       hash
     end
 

@@ -6,7 +6,7 @@ class BenchmarkWorker
   from_queue 'downloads',
              exchange_options: { durable: false },
              queue_options: { durable: false },
-             :ack => true,
+             consumer_options: { manual_ack: true },
              :threads => 50,
              :prefetch => 50,
              :timeout_job_after => 1,
