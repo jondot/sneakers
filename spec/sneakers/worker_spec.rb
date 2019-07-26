@@ -106,6 +106,18 @@ class MetricsWorker
   end
 end
 
+class QueueWithoutAnExchangeWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+              :ack => true,
+              :exchange => nil
+  
+  def work(msg)
+    msg
+  end
+end
+
+
 class WithParamsWorker
   include Sneakers::Worker
   from_queue 'defaults',
@@ -295,6 +307,10 @@ describe Sneakers::Worker do
       it "should build a queue with given connection" do
         @dummy_q = DummyWorker.new.queue
         @dummy_q.opts[:connection].must_equal(@connection)
+      end
+
+      it "should build a queue without an exchange" do
+        QueueWithoutAnExchangeWorker.new.queue.exchange.must_be_nil
       end
     end
   end
