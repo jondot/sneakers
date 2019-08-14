@@ -40,7 +40,7 @@ module Sneakers
 
 
     def reload_config!
-      Sneakers.logger.warn("Loading runner configuration...")
+      Sneakers.logger.info("Loading runner configuration...")
       config_file = Sneakers::CONFIG[:runner_config_file]
 
       if config_file
