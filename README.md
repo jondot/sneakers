@@ -199,4 +199,4 @@ To all Sneakers [Contributors](https://github.com/jondot/sneakers/graphs/contrib
 
 # Copyright
 
-Copyright (c) 2015-2018 [Dotan Nahum](http://gplus.to/dotan) [@jondot](http://twitter.com/jondot). See [LICENSE](LICENSE.txt) for further details.
+Copyright (c) 2015-2019 [Dotan Nahum](http://gplus.to/dotan) [@jondot](http://twitter.com/jondot). See [LICENSE](LICENSE.txt) for further details.
