@@ -12,8 +12,8 @@ module Sneakers
       @se.run
     end
 
-    def stop
-      @se.stop
+    def stop(stop_graceful=true)
+      @se.stop(stop_graceful)
     end
   end
 
