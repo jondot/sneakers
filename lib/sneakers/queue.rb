@@ -26,7 +26,9 @@ class Sneakers::Queue
     @channel.prefetch(@opts[:prefetch])
 
     exchange_name = @opts[:exchange]
-    @exchange = @channel.exchange(exchange_name, @opts[:exchange_options])
+    unless exchange_name.nil?
+      @exchange = @channel.exchange(exchange_name, @opts[:exchange_options])
+    end
 
     routing_key = @opts[:routing_key] || @name
     routing_keys = [*routing_key]
@@ -39,12 +41,14 @@ class Sneakers::Queue
 
     queue = @channel.queue(@name, @opts[:queue_options])
 
-    if exchange_name.length > 0
-      routing_keys.each do |key|
-        if @opts[:bind_arguments]
-          queue.bind(@exchange, routing_key: key, arguments: @opts[:bind_arguments])
-        else
-          queue.bind(@exchange, routing_key: key)
+    if @exchange
+      if exchange_name.length > 0
+        routing_keys.each do |key|
+          if @opts[:bind_arguments]
+            queue.bind(@exchange, routing_key: key, arguments: @opts[:bind_arguments])
+          else
+            queue.bind(@exchange, routing_key: key)
+          end
         end
       end
     end

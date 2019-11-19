@@ -106,6 +106,17 @@ class MetricsWorker
   end
 end
 
+class QueueWithoutAnExchangeWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+              :ack => true,
+              :exchange => nil
+
+  def work(msg)
+    msg
+  end
+end
+
 class WithParamsWorker
   include Sneakers::Worker
   from_queue 'defaults',
@@ -273,6 +284,10 @@ describe Sneakers::Worker do
           :heartbeat => 30,
           :amqp_heartbeat => 30
         )
+      end
+
+      it "should build a queue without an exchange given nil exchange option is provided" do
+        QueueWithoutAnExchangeWorker.new.queue.exchange.must_be_nil
       end
     end
 
