@@ -17,7 +17,6 @@ module Sneakers
       worker_config.keys.each do |group_name|
         workers = worker_config[group_name]['classes']
         workers = workers.join "," if workers.is_a?(Array)
-        p "WORKER COUNT = #{worker_config[group_name]["workers"].to_s}" 
         @pids << fork do
           @exec_hash = {"WORKERS"=> workers, "WORKER_COUNT" => worker_config[group_name]["workers"].to_s}
           Kernel.exec(@exec_hash, @exec_string)
