@@ -422,6 +422,7 @@ describe Sneakers::Worker do
         @delivery_info = Object.new
         @metadata = Object.new
         stub(@metadata).[](:content_type) { 'some/fake' }
+        stub(@metadata).[](:headers) { }
         @message = Object.new
         @handler = Object.new
       end
@@ -620,18 +621,18 @@ describe Sneakers::Worker do
       @props = { :foo => 1 }
       @handler = Object.new
       @header = Object.new
-
+      @metadata = {:foo => 1, :headers => {:worker_name=>"WithParamsWorker"}}
       @delivery_info = Object.new
 
-      stub(@handler).noop(@delivery_info, {:foo => 1}, :ack)
+      stub(@handler).noop(@delivery_info, @metadata, :ack)
 
       @w = WithParamsWorker.new(@queue, TestPool.new)
       mock(@w.metrics).timing("work.WithParamsWorker.time").yields.once
     end
 
     it 'should call work_with_params and not work' do
-      mock(@w).work_with_params(:ack, @delivery_info, {:foo => 1}).once
-      @w.do_work(@delivery_info, {:foo => 1 }, :ack, @handler)
+      mock(@w).work_with_params(:ack, @delivery_info, @metadata).once
+      @w.do_work(@delivery_info, @metadata, :ack, @handler)
     end
   end
 end
