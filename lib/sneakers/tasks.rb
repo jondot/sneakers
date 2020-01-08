@@ -10,7 +10,11 @@ namespace :sneakers do
     Rake::Task['environment'].invoke
 
     if defined?(::Rails)
-      ::Rails.application.eager_load!
+      if defined?(::Zeitwerk)
+        ::Zeitwerk::Loader.eager_load_all
+      else
+        ::Rails.application.eager_load!
+      end
     end
 
     if ENV["WORKERS"].nil?
