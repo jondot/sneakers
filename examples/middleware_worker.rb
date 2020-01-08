@@ -21,8 +21,10 @@ class DemoMiddleware
 
   def call(deserialized_msg, delivery_info, metadata, handler)
     puts "******** DemoMiddleware - before; args #{@args}"
-    @app.call(deserialized_msg, delivery_info, metadata, handler)
+    res = @app.call(deserialized_msg, delivery_info, metadata, handler)
     puts "******** DemoMiddleware - after"
+    
+    res
   end
 end
 
