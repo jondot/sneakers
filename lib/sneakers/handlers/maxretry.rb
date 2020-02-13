@@ -71,8 +71,11 @@ module Sneakers
         Sneakers.logger.debug do
           "#{log_prefix} creating queue=#{error_name}"
         end
+        error_queue_arguments = {}
+        error_queue_arguments[:'x-message-ttl'] = @opts[:error_queue_ttl] unless @opts[:error_queue_ttl].nil?
         @error_queue = @channel.queue(error_name,
-                                      :durable => queue_durable?)
+                                      :durable => queue_durable?,
+                                      :arguments => error_queue_arguments)
         @error_queue.bind(@error_exchange, :routing_key => '#')
 
         # Finally, bind the worker queue to our requeue exchange
