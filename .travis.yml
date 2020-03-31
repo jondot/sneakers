@@ -12,13 +12,14 @@ before_script:
   - until sudo lsof -i:5672; do echo "Waiting for RabbitMQ to start..."; sleep 1; done
 rvm:
   - ruby-head
-  - "2.6.3"
-  - "2.5.5"
-  - "2.4.6"
+  - "2.7.0"
+  - "2.6.5"
+  - "2.5.7"
+  - "2.4.9"
   - "2.3.8"
 matrix:
   include:
-    - rvm: "2.6.3"
+    - rvm: "2.7.0"
       env: INTEGRATION_LOG=1 INTEGRATION=1
   allow_failures:
     rvm:
