@@ -186,8 +186,8 @@ describe Sneakers::Worker do
     describe "builds an internal queue" do
       it "should build a queue with correct configuration given defaults" do
         @defaults_q = DefaultsWorker.new.queue
-        @defaults_q.name.must_equal('defaults')
-        @defaults_q.opts.to_hash.must_equal(
+        _(@defaults_q.name).must_equal('defaults')
+        _(@defaults_q.opts.to_hash).must_equal(
           :error_reporters => [Sneakers.error_reporters.last],
           :runner_config_file => nil,
           :metrics => nil,
@@ -224,8 +224,8 @@ describe Sneakers::Worker do
 
       it "should build a queue with given configuration" do
         @dummy_q = DummyWorker.new.queue
-        @dummy_q.name.must_equal('downloads')
-        @dummy_q.opts.to_hash.must_equal(
+        _(@dummy_q.name).must_equal('downloads')
+        _(@dummy_q.opts.to_hash).must_equal(
           :error_reporters => [Sneakers.error_reporters.last],
           :runner_config_file => nil,
           :metrics => nil,
@@ -262,8 +262,8 @@ describe Sneakers::Worker do
 
       it "should build a queue with correct configuration given deprecated exchange options" do
         @deprecated_exchange_opts_q = WithDeprecatedExchangeOptionsWorker.new.queue
-        @deprecated_exchange_opts_q.name.must_equal('defaults')
-        @deprecated_exchange_opts_q.opts.to_hash.must_equal(
+        _(@deprecated_exchange_opts_q.name).must_equal('defaults')
+        _(@deprecated_exchange_opts_q.opts.to_hash).must_equal(
           :error_reporters => [Sneakers.error_reporters.last],
           :runner_config_file => nil,
           :metrics => nil,
@@ -301,7 +301,7 @@ describe Sneakers::Worker do
 
     describe "initializes worker" do
       it "should generate a worker id" do
-        DummyWorker.new.id.must_match(/^worker-/)
+        _(DummyWorker.new.id).must_match(/^worker-/)
       end
     end
 
@@ -317,7 +317,7 @@ describe Sneakers::Worker do
 
       it "should build a queue with given connection" do
         @dummy_q = DummyWorker.new.queue
-        @dummy_q.opts[:connection].must_equal(@connection)
+        _(@dummy_q.opts[:connection]).must_equal(@connection)
       end
     end
   end
@@ -623,7 +623,7 @@ describe Sneakers::Worker do
       w = DummyWorker.new(@queue, TestPool.new)
       w.instance_variable_set(:@id, 'worker-id')
       m = w.log_msg('foo')
-      w.log_msg('foo').must_match(/\[worker-id\]\[#<Thread:.*>\]\[test-queue\]\[\{\}\] foo/)
+      _(w.log_msg('foo')).must_match(/\[worker-id\]\[#<Thread:.*>\]\[test-queue\]\[\{\}\] foo/)
     end
 
     describe '#worker_error' do
