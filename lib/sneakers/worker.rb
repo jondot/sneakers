@@ -72,31 +72,34 @@ module Sneakers
           end
           res = block_to_call.call(deserialized_msg, delivery_info, metadata, handler)
         end
-      rescue StandardError, ScriptError => ex
+      rescue SignalException, SystemExit
+        # ServerEngine handles these exceptions, so they are not expected to be raised within the worker.
+        # Nevertheless, they are listed here to ensure that they are not caught by the rescue block below.
+        raise
+      rescue Exception => ex
         res = :error
         error = ex
         worker_error(ex, log_msg: log_msg(msg), class: self.class.name,
                      message: msg, delivery_info: delivery_info, metadata: metadata)
-      end
-
-      if @should_ack
-
-        if res == :ack
-          # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
-          handler.acknowledge(delivery_info, metadata, msg)
-        elsif res == :error
-          handler.error(delivery_info, metadata, msg, error)
-        elsif res == :reject
-          handler.reject(delivery_info, metadata, msg)
-        elsif res == :requeue
-          handler.reject(delivery_info, metadata, msg, true)
-        else
-          handler.noop(delivery_info, metadata, msg)
+      ensure
+        if @should_ack
+          if res == :ack
+            # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
+            handler.acknowledge(delivery_info, metadata, msg)
+          elsif res == :error
+            handler.error(delivery_info, metadata, msg, error)
+          elsif res == :reject
+            handler.reject(delivery_info, metadata, msg)
+          elsif res == :requeue
+            handler.reject(delivery_info, metadata, msg, true)
+          else
+            handler.noop(delivery_info, metadata, msg)
+          end
+          metrics.increment("work.#{self.class.name}.handled.#{res || 'noop'}")
         end
-        metrics.increment("work.#{self.class.name}.handled.#{res || 'noop'}")
-      end
 
-      metrics.increment("work.#{self.class.name}.ended")
+        metrics.increment("work.#{self.class.name}.ended")
+      end
     end
 
     def stop
