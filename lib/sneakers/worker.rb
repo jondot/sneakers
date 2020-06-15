@@ -83,15 +83,12 @@ module Sneakers
                      message: msg, delivery_info: delivery_info, metadata: metadata)
       ensure
         if @should_ack
-          if res == :ack
-            # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
-            handler.acknowledge(delivery_info, metadata, msg)
-          elsif res == :error
-            handler.error(delivery_info, metadata, msg, error)
-          elsif res == :reject
-            handler.reject(delivery_info, metadata, msg)
-          elsif res == :requeue
-            handler.reject(delivery_info, metadata, msg, true)
+          case res
+          # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
+          when :ack then handler.acknowledge(delivery_info, metadata, msg)
+          when :error then handler.error(delivery_info, metadata, msg, error)
+          when :reject then handler.reject(delivery_info, metadata, msg)
+          when :requeue then handler.reject(delivery_info, metadata, msg, true)
           else
             handler.noop(delivery_info, metadata, msg)
           end
