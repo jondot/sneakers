@@ -21,6 +21,10 @@ module Sneakers
       def noop(hdr, props, msg)
 
       end
+
+      def before_work(*args)
+        true
+      end
     end
   end
 end

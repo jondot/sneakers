@@ -92,6 +92,8 @@ module Sneakers
       end
 
       def reject(hdr, props, msg, requeue = false)
+        Sneakers.logger.info{"In maxretry reject. #{props.inspect}"}
+        Sneakers.logger.info{"Maxretry requeue? #{requeue}"}
         if requeue
           # This was explicitly rejected specifying it be requeued so we do not
           # want it to pass through our retry logic.
@@ -110,6 +112,10 @@ module Sneakers
 
       end
 
+      def before_work(*args)
+        true
+      end
+
       # Helper logic for retry handling. This will reject the message if there
       # are remaining retries left on it, otherwise it will publish it to the
       # error exchange along with the reason.
@@ -124,7 +130,7 @@ module Sneakers
         if num_attempts <= @max_retries
           # We call reject which will route the message to the
           # x-dead-letter-exchange (ie. retry exchange) on the queue
-          Sneakers.logger.info do
+          Sneakers.logger.debug do
             "#{log_prefix} msg=retrying, count=#{num_attempts}, headers=#{props[:headers]}"
           end
           @channel.reject(hdr.delivery_tag, false)
@@ -132,7 +138,7 @@ module Sneakers
         else
           # Retried more than the max times
           # Publish the original message with the routing_key to the error exchange
-          Sneakers.logger.info do
+          Sneakers.logger.debug do
             "#{log_prefix} msg=failing, retry_count=#{num_attempts}, reason=#{reason}"
           end
           data = {
