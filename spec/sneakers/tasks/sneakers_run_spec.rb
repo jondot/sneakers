@@ -3,11 +3,10 @@ require 'sneakers'
 require 'rake'
 require 'sneakers/tasks'
 
-describe '' do
+describe 'Worker classes run by rake sneakers:run' do
   class TestWorker
     include Sneakers::Worker
   end
-
   class TestClass1 < TestWorker; end
   class TestClass2 < TestWorker; end
 
@@ -31,6 +30,14 @@ describe '' do
     Sneakers.rake_worker_classes = restore
   end
 
+  def with_sneakers_worker_classes_reset
+    restore = Sneakers::Worker::Classes.clone
+    Sneakers::Worker::Classes.replace([])
+    yield
+  ensure
+    Sneakers::Worker::Classes.replace(restore)
+  end
+
   let(:opts) { {} }
 
   let :runner do
@@ -46,13 +53,18 @@ describe '' do
   end
 
   describe 'without any settings' do
-    let(:expected_workers) { [TestWorker] }
+    let(:expected_workers) { [worker_class] }
+    let(:worker_class) { Class.new.tap { |klass| klass.send(:include, Sneakers::Worker) } }
 
     it 'runs classes directly including the Worker' do
-      Sneakers::Runner.stub :new, runner do
-        run_rake_task
+      with_workers_env(nil) do
+        with_sneakers_worker_classes_reset do
+          Sneakers::Runner.stub :new, runner do
+            run_rake_task
+          end
+          runner.verify
+        end
       end
-      runner.verify
     end
   end
 
@@ -60,11 +72,13 @@ describe '' do
     let(:expected_workers) { [TestClass1, TestClass2] }
 
     it 'runs the classes from the setting' do
-      with_rake_worker_classes([TestClass1, TestClass2]) do
-        Sneakers::Runner.stub :new, runner do
-          run_rake_task
+      with_workers_env(nil) do
+        with_rake_worker_classes([TestClass1, TestClass2]) do
+          Sneakers::Runner.stub :new, runner do
+            run_rake_task
+          end
+          runner.verify
         end
-        runner.verify
       end
     end
   end
@@ -88,11 +102,13 @@ describe '' do
     let(:expected_workers) { [TestClass1] }
 
     it 'runs the classes from the setting' do
-      with_rake_worker_classes(-> { [TestClass1] }) do
-        Sneakers::Runner.stub :new, runner do
-          run_rake_task
+      with_workers_env(nil) do
+        with_rake_worker_classes(-> { [TestClass1] }) do
+          Sneakers::Runner.stub :new, runner do
+            run_rake_task
+          end
+          runner.verify
         end
-        runner.verify
       end
     end
   end
