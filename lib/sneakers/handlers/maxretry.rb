@@ -84,7 +84,11 @@ module Sneakers
 
       def self.configure_queue(name, opts)
         retry_name = opts.fetch(:retry_exchange, "#{name}-retry")
-        opts.merge(arguments: { "x-dead-letter-exchange": retry_name })
+        queue_opts = { arguments: {} }.merge(opts[:queue_options])
+        if queue_opts[:arguments][:'x-dead-letter-exchange'].nil? && queue_opts[:arguments]['x-dead-letter-exchange'].nil?
+          queue_opts[:arguments][:'x-dead-letter-exchange'] = retry_name
+        end
+        queue_opts
       end
 
       def acknowledge(hdr, props, msg)

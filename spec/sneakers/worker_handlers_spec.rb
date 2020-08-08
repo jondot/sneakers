@@ -127,7 +127,7 @@ describe 'Handlers' do
         opts[:retry_max_times] = max_retries unless max_retries.nil?
       end
 
-      mock(queue).name { 'downloads' }
+      stub(queue).name { 'downloads' }
 
       @retry_exchange = Object.new
       @error_exchange = Object.new
@@ -158,10 +158,6 @@ describe 'Handlers' do
       mock(channel).queue('downloads-error',
                           :durable => 'true').once { @error_queue }
       mock(@error_queue).bind(@error_exchange, :routing_key => '#')
-
-      mock(queue).bind(@requeue_exchange, :routing_key => '#')
-
-      @handler = Sneakers::Handlers::Maxretry.new(channel, queue, @opts)
 
       @header = Object.new
       stub(@header).delivery_tag { 37 }
@@ -195,6 +191,10 @@ describe 'Handlers' do
     describe '#do_work' do
       before do
         @now = Time.now
+
+        mock(queue).bind(@requeue_exchange, :routing_key => '#')
+
+        @handler = Sneakers::Handlers::Maxretry.new(channel, queue, @opts)
       end
 
       # Used to stub out the publish method args. Sadly RR doesn't support
@@ -324,6 +324,145 @@ describe 'Handlers' do
 
       it 'should work and handle noops' do
         worker.do_work(@header, @props, :wait, @handler)
+      end
+    end
+
+    describe '.configure_queue' do
+      before do
+        mock(channel).prefetch(10)
+        @mkbunny = Object.new
+        @mkex = Object.new
+        @mkworker = Object.new
+
+        mock(@mkbunny).start {}
+        mock(@mkbunny).create_channel{ channel }
+        mock(Bunny).new(
+          anything,
+          hash_including(:vhost => '/', :heartbeat => 2)
+        ){ @mkbunny }
+
+        mock(channel).exchange("sneakers",
+                               :type => :direct,
+                               :durable => 'true', 
+                               :auto_delete => false, 
+                               :arguments => {}).once { @mkex }
+      end
+
+      describe 'use queue name for retry exchange' do
+        before do
+          Sneakers.clear!
+          Sneakers.configure({
+            :connection => nil,
+            :ack => true,
+            :heartbeat => 2,
+            :vhost => '/',
+            :exchange => "sneakers",
+            :exchange_options => {
+              :type => :direct,
+              durable: 'true'
+            },
+            :queue_options => {
+              :durable => 'true'
+            },
+            :handler => Sneakers::Handlers::Maxretry
+          })
+        end
+
+        describe 'default settings' do
+          before do
+            mock(queue).bind(@requeue_exchange, :routing_key => '#')
+            @worker_opts = Sneakers::CONFIG.merge({})
+            stub(@mkworker).opts { @worker_opts }
+          end
+
+          let(:q) { Sneakers::Queue.new("downloads", @worker_opts) }
+
+          it 'should configure queue with x-dead-letter-exchange' do
+            mock(channel).queue("downloads", { :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-retry" } }).once { queue }
+            mock(queue).bind(@mkex, :routing_key => "downloads")
+            mock(queue).subscribe(:block => false, :manual_ack => true)
+
+            q.subscribe(@mkworker)
+          end
+        end
+
+        describe 'preserve other worker arguments' do
+          before do
+            mock(queue).bind(@requeue_exchange, :routing_key => '#')
+            @worker_opts = Sneakers::CONFIG.merge({ :arguments => { 'x-arg' => 'value' } })
+            stub(@mkworker).opts { @worker_opts }
+          end
+
+          let(:q) { Sneakers::Queue.new("downloads", @worker_opts) }
+
+          it 'should configure queue with x-dead-letter-exchange and other args' do
+            mock(channel).queue("downloads", { :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-retry", 'x-arg' => 'value' } }).once { queue }
+            mock(queue).bind(@mkex, :routing_key => "downloads")
+            mock(queue).subscribe(:block => false, :manual_ack => true)
+
+            q.subscribe(@mkworker)
+          end
+        end
+      end
+
+      describe 'use globally configured retry exchange name' do
+        before do
+          Sneakers.clear!
+          Sneakers.configure({
+            :connection => nil,
+            :ack => true,
+            :heartbeat => 2,
+            :vhost => '/',
+            :exchange => "sneakers",
+            :exchange_options => {
+              :type => :direct,
+              durable: 'true'
+            },
+            :queue_options => {
+              :durable => 'true'
+            },
+            :handler => Sneakers::Handlers::Maxretry,
+            :retry_exchange => "downloads-retry",
+            :retry_error_exchange => "downloads-error",
+            :retry_requeue_exchange => "downloads-retry-requeue"
+          })
+        end
+
+        describe 'use global setup for worker' do
+          before do
+            mock(queue).bind(@requeue_exchange, :routing_key => 'uploads')
+            @worker_opts = Sneakers::CONFIG.merge({ :retry_routing_key => "uploads" })
+            stub(@mkworker).opts { @worker_opts }
+          end
+
+          let(:q) { Sneakers::Queue.new("uploads", @worker_opts) }
+
+          it 'should configure queue with x-dead-letter-exchange (not use queue name)' do
+            mock(channel).queue("uploads", { :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-retry" } }).once { queue }
+            mock(queue).bind(@mkex, :routing_key => "uploads")
+            mock(queue).subscribe(:block => false, :manual_ack => true)
+
+            q.subscribe(@mkworker)
+          end
+        end
+
+        describe 'skip retry and go to error queue' do
+          before do
+            mock(queue).bind(@requeue_exchange, :routing_key => 'uploads')
+            @worker_opts = Sneakers::CONFIG.merge({ :retry_routing_key => "uploads", :arguments => { :"x-dead-letter-exchange" => "downloads-error" } })
+            stub(@mkworker).opts { @worker_opts }
+          end
+
+          let(:q) { Sneakers::Queue.new("uploads", @worker_opts) }
+
+          it 'should configure queue with x-dead-letter-exchange (not use queue name)' do
+            mock(channel).queue("uploads", { :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-error" } }).once { queue }
+            mock(queue).bind(@mkex, :routing_key => "uploads")
+            mock(queue).subscribe(:block => false, :manual_ack => true)
+
+            q.subscribe(@mkworker)
+          end
+        end
       end
     end
   end
