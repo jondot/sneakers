@@ -127,7 +127,7 @@ describe 'Handlers' do
         opts[:retry_max_times] = max_retries unless max_retries.nil?
       end
 
-      stub(queue).name { 'downloads' }
+      mock(queue).name { 'downloads' }
 
       @retry_exchange = Object.new
       @error_exchange = Object.new
@@ -396,7 +396,7 @@ describe 'Handlers' do
           let(:q) { Sneakers::Queue.new("downloads", @worker_opts) }
 
           it 'should configure queue with x-dead-letter-exchange and other args' do
-            mock(channel).queue("downloads", { :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-retry", 'x-arg' => 'value' } }).once { queue }
+            mock(channel).queue("downloads", { :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-retry", :"x-arg" => 'value' } }).once { queue }
             mock(queue).bind(@mkex, :routing_key => "downloads")
             mock(queue).subscribe(:block => false, :manual_ack => true)
 

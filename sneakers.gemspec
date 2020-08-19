@@ -41,5 +41,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'simplecov-rcov-text'
   gem.add_development_dependency 'guard', '~> 2.15'
   gem.add_development_dependency 'guard-minitest', '~> 2.4'
-  gem.add_development_dependency 'pry-byebug', '~> 3.7'
+  gem.add_development_dependency 'pry-byebug', '~> 3.2.0' # keep here for ruby 2.3 compat.
 end
