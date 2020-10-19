@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'gzip_helper'
 require 'sneakers'
 require 'serverengine'
 
@@ -75,6 +76,17 @@ class JSONPublishingWorker
   end
 end
 
+class GzipPublishingWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+             :ack => false,
+             :exchange => 'foochange'
+
+  def work(msg)
+    publish msg, :to_queue => 'target', :content_encoding => 'gzip'
+  end
+end
+
 class LoggingWorker
   include Sneakers::Worker
   from_queue 'defaults',
@@ -90,6 +102,16 @@ class JSONWorker
   from_queue 'defaults',
              :ack => false,
              :content_type => 'application/json'
+
+  def work(msg)
+  end
+end
+
+class GzipWorker
+  include Sneakers::Worker
+  from_queue 'defaults',
+             :ack => false,
+             :content_encoding => 'gzip'
 
   def work(msg)
   end
@@ -152,6 +174,7 @@ describe Sneakers::Worker do
           :routing_key => 'test.routing.key',
           :to_queue    => 'downloads',
           :content_type => nil,
+          :content_encoding => nil,
         })
       end
 
@@ -362,6 +385,38 @@ describe Sneakers::Worker do
       end
     end
 
+    describe 'content encoding based decoding' do
+      before do
+        Sneakers::ContentEncoding.register(
+          content_encoding: 'gzip',
+          encoder: ->(_) {},
+          decoder: ->(payload) { gzip_decompress(payload) },
+        )
+      end
+
+      after do
+        Sneakers::ContentEncoding.reset!
+      end
+
+      it 'should use the registered decoder if the content encoding is in the metadata' do
+        w = DummyWorker.new(@queue, TestPool.new)
+        mock(w).work('foobar').once
+        w.do_work(nil, { content_encoding: 'gzip' }, gzip_compress('foobar'), nil)
+      end
+
+      it 'should use the registered decoder if the content encoding is in the queue options' do
+        w = GzipWorker.new(@queue, TestPool.new)
+        mock(w).work('foobar').once
+        w.do_work(nil, {}, gzip_compress('foobar'), nil)
+      end
+
+      it 'should use the decoder from the queue options even if the metadata has a different content encoding' do
+        w = GzipWorker.new(@queue, TestPool.new)
+        mock(w).work('foobar').once
+        w.do_work(nil, { content_encoding: 'not/real' }, gzip_compress('foobar'), nil)
+      end
+    end
+
     it "should catch runtime exceptions from a bad work" do
       w = AcksWorker.new(@queue, TestPool.new)
       mock(w).work("msg").once{ raise "foo" }
@@ -422,6 +477,7 @@ describe Sneakers::Worker do
         @delivery_info = Object.new
         @metadata = Object.new
         stub(@metadata).[](:content_type) { 'some/fake' }
+        stub(@metadata).[](:content_encoding) { 'some/fake' }
         @message = Object.new
         @handler = Object.new
       end
@@ -530,6 +586,25 @@ describe Sneakers::Worker do
       end
     end
 
+    describe 'content_encoding based encoding' do
+      before do
+        Sneakers::ContentEncoding.register(
+          content_encoding: 'gzip',
+          encoder: ->(payload) { gzip_compress(payload) },
+          decoder: ->(_) {},
+        )
+      end
+
+      after do
+        Sneakers::ContentEncoding.reset!
+      end
+
+      it 'should be able to publish a message from working context' do
+        w = GzipPublishingWorker.new(@queue, TestPool.new)
+        mock(@exchange).publish(gzip_compress('foobar'), :routing_key => 'target', :content_encoding => 'gzip').once
+        w.do_work(nil, {}, 'foobar', nil)
+      end
+    end
   end
 
 
