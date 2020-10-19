@@ -20,6 +20,7 @@ module Sneakers
       @pool = pool || Concurrent::FixedThreadPool.new(opts[:threads] || Sneakers::Configuration::DEFAULTS[:threads])
       @call_with_params = respond_to?(:work_with_params)
       @content_type = opts[:content_type]
+      @content_encoding = opts[:content_encoding]
 
       @queue = queue || Sneakers::Queue.new(
         queue_name,
@@ -38,7 +39,9 @@ module Sneakers
       to_queue = opts.delete(:to_queue)
       opts[:routing_key] ||= to_queue
       return unless opts[:routing_key]
-      @queue.exchange.publish(Sneakers::ContentType.serialize(msg, opts[:content_type]), opts)
+      serialized_msg = Sneakers::ContentType.serialize(msg, opts[:content_type])
+      encoded_msg = Sneakers::ContentEncoding.encode(serialized_msg, opts[:content_encoding])
+      @queue.exchange.publish(encoded_msg, opts)
     end
 
     def do_work(delivery_info, metadata, msg, handler)
@@ -56,7 +59,8 @@ module Sneakers
       begin
         metrics.increment("work.#{self.class.name}.started")
         metrics.timing("work.#{self.class.name}.time") do
-          deserialized_msg = ContentType.deserialize(msg, @content_type || metadata && metadata[:content_type])
+          decoded_msg = ContentEncoding.decode(msg, @content_encoding || metadata && metadata[:content_encoding])
+          deserialized_msg = ContentType.deserialize(decoded_msg, @content_type || metadata && metadata[:content_type])
 
           app = -> (deserialized_msg, delivery_info, metadata, handler) do
             if @call_with_params
@@ -142,6 +146,7 @@ module Sneakers
       def enqueue(msg, opts={})
         opts[:routing_key] ||= @queue_opts[:routing_key]
         opts[:content_type] ||= @queue_opts[:content_type]
+        opts[:content_encoding] ||= @queue_opts[:content_encoding]
         opts[:to_queue] ||= @queue_name
 
         publisher.publish(msg, opts)
