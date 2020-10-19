@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'gzip_helper'
 require 'sneakers'
 require 'serverengine'
 
@@ -154,6 +155,25 @@ describe Sneakers::Publisher do
       p.publish({ 'foo' => 'bar' }, to_queue: 'downloads', content_type: 'application/json')
 
       Sneakers::ContentType.reset!
+    end
+
+    it 'should publish using the content encoding encoder' do
+      Sneakers::ContentEncoding.register(
+        content_encoding: 'gzip',
+        encoder: ->(payload) { gzip_compress(payload) },
+        decoder: ->(_) {},
+      )
+
+      xchg = Object.new
+      mock(xchg).publish(gzip_compress('foobar'), routing_key: 'downloads', content_encoding: 'gzip')
+
+      p = Sneakers::Publisher.new
+      p.instance_variable_set(:@exchange, xchg)
+
+      mock(p).ensure_connection! {}
+      p.publish('foobar', to_queue: 'downloads', content_encoding: 'gzip')
+
+      Sneakers::ContentEncoding.reset!
     end
   end
 end
