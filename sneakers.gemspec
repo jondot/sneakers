@@ -12,7 +12,7 @@ Gem::Specification.new do |gem|
   gem.email         = ['jondotan@gmail.com']
   gem.description   = %q( Fast background processing framework for Ruby and RabbitMQ )
   gem.summary       = %q( Fast background processing framework for Ruby and RabbitMQ )
-  gem.homepage      = 'http://sneakers.io'
+  gem.homepage      = 'https://github.com/jondot/sneakers'
   gem.license       = 'MIT'
   gem.required_ruby_version = Gem::Requirement.new(">= 2.2")
 
