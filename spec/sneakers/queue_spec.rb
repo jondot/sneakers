@@ -21,6 +21,7 @@ describe Sneakers::Queue do
   end
 
   before do
+    Sneakers.clear!
     Sneakers.configure
 
     @mkworker = Object.new

@@ -34,7 +34,7 @@ class Sneakers::Queue
     handler_klass = worker.opts[:handler] || Sneakers::CONFIG.fetch(:handler)
     # Configure options if needed
     if handler_klass.respond_to?(:configure_queue)
-      @opts[:queue_options] = handler_klass.configure_queue(@name, @opts[:queue_options])
+      @opts[:queue_options] = handler_klass.configure_queue(@name, @opts)
     end
 
     queue = @channel.queue(@name, @opts[:queue_options])
