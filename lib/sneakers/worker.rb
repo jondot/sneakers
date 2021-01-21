@@ -56,6 +56,7 @@ module Sneakers
       begin
         metrics.increment("work.#{self.class.name}.started")
         metrics.timing("work.#{self.class.name}.time") do
+          metadata[:headers][:worker_name] = self.class.name if metadata && metadata[:headers]
           deserialized_msg = ContentType.deserialize(msg, @content_type || metadata && metadata[:content_type])
 
           app = -> (deserialized_msg, delivery_info, metadata, handler) do
