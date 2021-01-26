@@ -1,5 +1,6 @@
 require 'sneakers'
 require 'sneakers/runner'
+require 'sneakers/cluster'
 
 task :environment
 
@@ -44,5 +45,23 @@ EOF
     r = Sneakers::Runner.new(workers, opts)
 
     r.run
+  end
+
+  desc "Start in cluster mode (set $SNEAKERS_WORKGROUPS=WG1,WG2)"
+  task :cluster do |task, args|
+    Sneakers.server = true
+    Rake::Task['environment'].invoke
+    ::Rails.application.eager_load! if defined?(::Rails)
+
+    workgroups =
+      if args.to_a.any?
+        args.to_a.map(&:to_sym)
+      elsif (wg_string = ENV["SNEAKERS_WORKGROUPS"])
+        wg_string.split(",").map(&:to_sym)
+      else
+        nil
+      end
+
+    Sneakers::Cluster.start(workgroups)
   end
 end

@@ -147,6 +147,14 @@ module Sneakers
         publisher.publish(msg, opts)
       end
 
+      def workgroup(arg = nil)
+        if arg
+          @_sneakers_workgroup = arg
+        else
+          @_sneakers_workgroup || :default
+        end
+      end
+
       private
 
       def publisher
