@@ -326,5 +326,21 @@ describe 'Handlers' do
         worker.do_work(@header, @props, :wait, @handler)
       end
     end
+
+    describe '.configure_queue' do
+      subject do
+        Sneakers::Handlers::Maxretry.configure_queue('name', { foo: 'bar', arguments: { 'x-max-priority': 10 } })
+      end
+
+      it 'merges with existing queue arguments' do
+        subject.must_equal({
+                             foo: 'bar',
+                             arguments: {
+                               'x-max-priority': 10,
+                               'x-dead-letter-exchange': 'name-retry'
+                             }
+                           })
+      end
+    end
   end
 end
