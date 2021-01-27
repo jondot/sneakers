@@ -41,15 +41,15 @@ describe Sneakers::RunnerConfig do
       end
 
       it "must not have :log key" do
-        runner_config.reload_config!.has_key?(:log).must_equal false
+        _(runner_config.reload_config!.has_key?(:log)).must_equal false
       end
 
       it "must have :logger key as an instance of Logger" do
-        runner_config.reload_config![:logger].is_a?(Logger).must_equal true
+        _(runner_config.reload_config![:logger].is_a?(Logger)).must_equal true
       end
 
       it "must have :connection" do
-        runner_config.reload_config![:connection].is_a?(Object).must_equal true
+        _(runner_config.reload_config![:connection].is_a?(Object)).must_equal true
       end
     end
   end
@@ -59,11 +59,11 @@ describe Sneakers::RunnerConfig do
 
     describe "#reload_config!" do
       it "must not have :log key" do
-        runner_config.reload_config!.has_key?(:log).must_equal false
+        _(runner_config.reload_config!.has_key?(:log)).must_equal false
       end
 
       it "must have :logger key as an instance of Logger" do
-        runner_config.reload_config![:logger].is_a?(Logger).must_equal true
+        _(runner_config.reload_config![:logger].is_a?(Logger)).must_equal true
       end
     end
   end

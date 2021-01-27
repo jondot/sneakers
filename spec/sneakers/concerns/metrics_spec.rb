@@ -14,24 +14,24 @@ describe Sneakers::Concerns::Metrics do
     end
 
     it "should configure a default logger when included" do
-      Foometrics.metrics.must_be_nil
+      _(Foometrics.metrics).must_be_nil
       Foometrics.configure_metrics
-      Foometrics.metrics.wont_be_nil
+      _(Foometrics.metrics).wont_be_nil
     end
 
     it "should supply accessible instance logger" do
-      Foometrics.metrics.must_be_nil
+      _(Foometrics.metrics).must_be_nil
       Foometrics.configure_metrics
       f = Foometrics.new
-      f.metrics.must_equal Foometrics.metrics
-      f.metrics.wont_be_nil
+      _(f.metrics).must_equal Foometrics.metrics
+      _(f.metrics).wont_be_nil
     end
 
     it "should configure a given metrics when specified" do
-      Foometrics.metrics.must_be_nil
+      _(Foometrics.metrics).must_be_nil
       o = Object.new
       Foometrics.configure_metrics(o)
-      Foometrics.metrics.must_equal o
+      _(Foometrics.metrics).must_equal o
     end
   end
 end

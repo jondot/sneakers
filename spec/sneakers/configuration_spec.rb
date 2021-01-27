@@ -10,7 +10,7 @@ describe Sneakers::Configuration do
       with_env('RABBITMQ_URL', url) do
         config = Sneakers::Configuration.new
         config.merge!({ :vhost => 'test_host', :connection => connection })
-        config.has_key?(:vhost).must_equal false
+        _(config.has_key?(:vhost)).must_equal false
       end
     end
 
@@ -18,7 +18,7 @@ describe Sneakers::Configuration do
       url = 'amqp://foo:bar@localhost:5672'
       config = Sneakers::Configuration.new
       config.merge!({ :amqp => url, :connection => connection })
-      config.has_key?(:vhost).must_equal false
+      _(config.has_key?(:vhost)).must_equal false
     end
   end
 
@@ -26,14 +26,14 @@ describe Sneakers::Configuration do
     it 'should assign a default value for :amqp' do
       with_env('RABBITMQ_URL', nil) do
         config = Sneakers::Configuration.new
-        config[:amqp].must_equal 'amqp://guest:guest@localhost:5672'
+        _(config[:amqp]).must_equal 'amqp://guest:guest@localhost:5672'
       end
     end
 
     it 'should assign a default value for :vhost' do
       with_env('RABBITMQ_URL', nil) do
         config = Sneakers::Configuration.new
-        config[:vhost].must_equal '/'
+        _(config[:vhost]).must_equal '/'
       end
     end
 
@@ -41,7 +41,7 @@ describe Sneakers::Configuration do
       url = 'amqp://foo:bar@localhost:5672'
       with_env('RABBITMQ_URL', url) do
         config = Sneakers::Configuration.new
-        config[:amqp].must_equal url
+        _(config[:amqp]).must_equal url
       end
     end
 
@@ -49,7 +49,7 @@ describe Sneakers::Configuration do
       url = 'amqp://foo:bar@localhost:5672/foobarvhost'
       with_env('RABBITMQ_URL', url) do
         config = Sneakers::Configuration.new
-        config[:vhost].must_equal 'foobarvhost'
+        _(config[:vhost]).must_equal 'foobarvhost'
       end
     end
 
@@ -59,7 +59,7 @@ describe Sneakers::Configuration do
         url = 'amqp://foo:bar@localhost:5672/testvhost'
         config = Sneakers::Configuration.new
         config.merge!({ :amqp => url })
-        config[:vhost].must_equal 'testvhost'
+        _(config[:vhost]).must_equal 'testvhost'
       end
     end
 
@@ -67,7 +67,7 @@ describe Sneakers::Configuration do
       url = 'amqp://foo:bar@localhost:5672/foobarvhost'
       config = Sneakers::Configuration.new
       config.merge!({ :amqp => url, :vhost => 'test_host' })
-      config[:vhost].must_equal 'test_host'
+      _(config[:vhost]).must_equal 'test_host'
     end
 
     it 'should use vhost option if it is specified' do
@@ -75,7 +75,7 @@ describe Sneakers::Configuration do
       with_env('RABBITMQ_URL', url) do
         config = Sneakers::Configuration.new
         config.merge!({ :vhost => 'test_host' })
-        config[:vhost].must_equal 'test_host'
+        _(config[:vhost]).must_equal 'test_host'
       end
     end
 
@@ -83,7 +83,7 @@ describe Sneakers::Configuration do
       url = 'amqp://foo:bar@localhost:5672'
       config = Sneakers::Configuration.new
       config.merge!({ :amqp => url })
-      config[:vhost].must_equal '/'
+      _(config[:vhost]).must_equal '/'
     end
   end
 

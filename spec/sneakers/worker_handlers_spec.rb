@@ -233,15 +233,15 @@ describe 'Handlers' do
 
             @error_exchange.extend MockPublish
             worker.do_work(@header, @props_with_x_death, :reject, @handler)
-            @error_exchange.called.must_equal(true)
-            @error_exchange.opts[:routing_key].must_equal('#')
+            _(@error_exchange.called).must_equal(true)
+            _(@error_exchange.opts[:routing_key]).must_equal('#')
             data = JSON.parse(@error_exchange.opts[:headers][:retry_info]) rescue nil
-            data.wont_be_nil
-            data['error'].must_equal('reject')
-            data['num_attempts'].must_equal(2)
-            @error_exchange.data.must_equal(:reject)
-            data['properties'].to_json.must_equal(@props_with_x_death.to_json)
-            Time.parse(data['failed_at']).wont_be_nil
+            _(data).wont_be_nil
+            _(data['error']).must_equal('reject')
+            _(data['num_attempts']).must_equal(2)
+            _(@error_exchange.data).must_equal(:reject)
+            _(data['properties'].to_json).must_equal(@props_with_x_death.to_json)
+            _(Time.parse(data['failed_at'])).wont_be_nil
           end
 
           it 'counts the number of attempts using the count key' do
@@ -250,15 +250,15 @@ describe 'Handlers' do
 
             @error_exchange.extend MockPublish
             worker.do_work(@header, props_with_x_death_count, :reject, @handler)
-            @error_exchange.called.must_equal(true)
-            @error_exchange.opts[:routing_key].must_equal('#')
+            _(@error_exchange.called).must_equal(true)
+            _(@error_exchange.opts[:routing_key]).must_equal('#')
             data = JSON.parse(@error_exchange.opts[:headers][:retry_info]) rescue nil
-            data.wont_be_nil
-            data['error'].must_equal('reject')
-            data['num_attempts'].must_equal(4)
-            @error_exchange.data.must_equal(:reject)
-            data['properties'].to_json.must_equal(props_with_x_death_count.to_json)
-            Time.parse(data['failed_at']).wont_be_nil
+            _(data).wont_be_nil
+            _(data['error']).must_equal('reject')
+            _(data['num_attempts']).must_equal(4)
+            _(@error_exchange.data).must_equal(:reject)
+            _(data['properties'].to_json).must_equal(props_with_x_death_count.to_json)
+            _(Time.parse(data['failed_at'])).wont_be_nil
           end
 
         end
@@ -301,17 +301,17 @@ describe 'Handlers' do
             @error_exchange.extend MockPublish
 
             worker.do_work(@header, @props_with_x_death, StandardError.new('boom!'), @handler)
-            @error_exchange.called.must_equal(true)
-            @error_exchange.opts[:routing_key].must_equal('#')
+            _(@error_exchange.called).must_equal(true)
+            _(@error_exchange.opts[:routing_key]).must_equal('#')
             data = JSON.parse(@error_exchange.opts[:headers][:retry_info]) rescue nil
-            data.wont_be_nil
-            data['error'].must_equal('boom!')
-            data['error_class'].must_equal(StandardError.to_s)
-            data['backtrace'].wont_be_nil
-            data['num_attempts'].must_equal(2)
-            @error_exchange.data.to_s.must_equal('boom!')
-            data['properties'].to_json.must_equal(@props_with_x_death.to_json)
-            Time.parse(data['failed_at']).wont_be_nil
+            _(data).wont_be_nil
+            _(data['error']).must_equal('boom!')
+            _(data['error_class']).must_equal(StandardError.to_s)
+            _(data['backtrace']).wont_be_nil
+            _(data['num_attempts']).must_equal(2)
+            _(@error_exchange.data.to_s).must_equal('boom!')
+            _(data['properties'].to_json).must_equal(@props_with_x_death.to_json)
+            _(Time.parse(data['failed_at'])).wont_be_nil
           end
         end
       end

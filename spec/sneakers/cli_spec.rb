@@ -27,7 +27,7 @@ describe Sneakers::CLI do
           "--require=#{File.expand_path('../fixtures/require_worker.rb', File.dirname(__FILE__))}"
         ]}.join ''
 
-        out.must_match(/Workers.*:.*TitleScraper.*/)
+        _(out).must_match(/Workers.*:.*TitleScraper.*/)
 
       end
 
@@ -38,7 +38,7 @@ describe Sneakers::CLI do
           "--require=#{File.expand_path('../fixtures/require_worker.rb', File.dirname(__FILE__))}"
         ]}.join ''
 
-        out.must_match(/Log.*Console/)
+        _(out).must_match(/Log.*Console/)
       end
 
       it "should be able to run as daemonized process" do
@@ -49,13 +49,13 @@ describe Sneakers::CLI do
           "--require=#{File.expand_path('../fixtures/require_worker.rb', File.dirname(__FILE__))}"
         ]}.join ''
 
-        out.must_match(/sneakers.log/)
+        _(out).must_match(/sneakers.log/)
       end
     end
 
     it "should fail when no workers found" do
       out = capture_io{ Sneakers::CLI.start ['work', 'TitleScraper'] }.join ''
-      out.must_match(/Missing workers: TitleScraper/)
+      _(out).must_match(/Missing workers: TitleScraper/)
     end
 
     it "should run all workers when run without specifying any" do
@@ -64,7 +64,7 @@ describe Sneakers::CLI do
         "--require=#{File.expand_path("../fixtures/require_worker.rb", File.dirname(__FILE__))}"
       ]}.join ''
 
-      out.must_match(/Workers.*:.*TitleScraper.*/)
+      _(out).must_match(/Workers.*:.*TitleScraper.*/)
     end
 
     after do
