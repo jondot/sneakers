@@ -16,7 +16,9 @@ module Sneakers
       to_queue = options.delete(:to_queue)
       options[:routing_key] ||= to_queue
       Sneakers.logger.info {"publishing <#{msg}> to [#{options[:routing_key]}]"}
-      @exchange.publish(ContentType.serialize(msg, options[:content_type]), options)
+      serialized_msg = Sneakers::ContentType.serialize(msg, options[:content_type])
+      encoded_msg = Sneakers::ContentEncoding.encode(serialized_msg, options[:content_encoding])
+      @exchange.publish(encoded_msg, options)
     end
 
     def ensure_connection!
