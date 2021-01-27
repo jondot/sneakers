@@ -55,7 +55,7 @@ class Sneakers::Queue
     # retry queues, etc).
     handler = handler_klass.new(@channel, queue, worker.opts)
 
-    @consumer = queue.subscribe(block: false, manual_ack: @opts[:ack]) do | delivery_info, metadata, msg |
+    @consumer = queue.subscribe(block: false, manual_ack: @opts[:ack], exclusive: @opts[:exclusive]) do | delivery_info, metadata, msg |
       worker.do_work(delivery_info, metadata, msg, handler)
     end
     nil

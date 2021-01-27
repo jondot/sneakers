@@ -6,6 +6,7 @@ describe Sneakers::Queue do
     {
       :prefetch => 25,
       :ack => true,
+      :exclusive => false,
       :heartbeat => 2,
       :vhost => '/',
       :exchange => "sneakers",
@@ -57,7 +58,18 @@ describe Sneakers::Queue do
         q = Sneakers::Queue.new("downloads", queue_vars)
 
         mock(@mkqueue).bind(@mkex, :routing_key => "downloads")
-        mock(@mkqueue).subscribe(:block => false, :manual_ack => true)
+        mock(@mkqueue).subscribe(:block => false, :manual_ack => true, exclusive: false)
+
+        q.subscribe(@mkworker)
+      end
+
+      it "supports exclusive consumers" do
+        mock(@mkchan).queue("downloads", :durable => true) { @mkqueue }
+        q = Sneakers::Queue.new("downloads",
+                                queue_vars.merge(:exclusive => true))
+
+        mock(@mkqueue).bind(@mkex, :routing_key => "downloads")
+        mock(@mkqueue).subscribe(:block => false, :manual_ack => true, exclusive: true)
 
         q.subscribe(@mkworker)
       end
@@ -69,7 +81,7 @@ describe Sneakers::Queue do
 
         mock(@mkqueue).bind(@mkex, :routing_key => "alpha")
         mock(@mkqueue).bind(@mkex, :routing_key => "beta")
-        mock(@mkqueue).subscribe(:block => false, :manual_ack => true)
+        mock(@mkqueue).subscribe(:block => false, :manual_ack => true, exclusive: false)
 
         q.subscribe(@mkworker)
       end
@@ -80,7 +92,7 @@ describe Sneakers::Queue do
                                 queue_vars.merge(:bind_arguments => { "os" => "linux", "cores" => 8 }))
 
         mock(@mkqueue).bind(@mkex, :routing_key => "downloads", :arguments => { "os" => "linux", "cores" => 8 })
-        mock(@mkqueue).subscribe(:block => false, :manual_ack => true)
+        mock(@mkqueue).subscribe(:block => false, :manual_ack => true, exclusive: false)
 
         q.subscribe(@mkworker)
       end
@@ -104,7 +116,7 @@ describe Sneakers::Queue do
         q = Sneakers::Queue.new("test_nondurable", queue_vars)
 
         mock(@mkqueue_nondurable).bind(@mkex, :routing_key => "test_nondurable")
-        mock(@mkqueue_nondurable).subscribe(:block => false, :manual_ack => true)
+        mock(@mkqueue_nondurable).subscribe(:block => false, :manual_ack => true, exclusive: false)
 
         q.subscribe(@mkworker)
         myqueue = q.instance_variable_get(:@queue)
@@ -153,7 +165,7 @@ describe Sneakers::Queue do
         queue_name = 'foo'
         mock(@mkchan).queue(queue_name, :durable => true) { @mkqueue }
         mock(@mkqueue).bind(@mkex, :routing_key => queue_name)
-        mock(@mkqueue).subscribe(:block => false, :manual_ack => true)
+        mock(@mkqueue).subscribe(:block => false, :manual_ack => true, exclusive: false)
 
         my_vars = queue_vars.merge(:connection => @external_connection)
         @q = Sneakers::Queue.new(queue_name, my_vars)
