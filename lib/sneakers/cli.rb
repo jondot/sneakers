@@ -3,7 +3,7 @@ require 'sneakers/runner'
 
 
 #
-# $ sneakers run TitleWorker,FooWorker
+# $ sneakers work TitleWorker,FooWorker
 # $ sneakers stop
 # $ sneakers recycle
 # $ sneakers reload
@@ -64,8 +64,8 @@ module Sneakers
         Error: No workers found.
         Please require your worker classes before specifying in CLI
 
-          $ sneakers run FooWorker
-                         ^- require this in your code
+          $ sneakers work FooWorker
+                          ^- require this in your code
 
         EOF
         return
