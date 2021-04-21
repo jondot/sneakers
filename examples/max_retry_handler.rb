@@ -15,7 +15,7 @@ Sneakers.configure(:handler => Sneakers::Handlers::Maxretry,
 Sneakers.logger.level = Logger::DEBUG
 
 WORKER_OPTIONS = {
-  :ack => true,
+  :consumer_options => { :manual_ack => true },
   :threads => 1,
   :prefetch => 1,
   :timeout_job_after => 60,

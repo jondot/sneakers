@@ -5,7 +5,6 @@ describe Sneakers::Queue do
   let :queue_vars do
     {
       :prefetch => 25,
-      :ack => true,
       :heartbeat => 2,
       :vhost => '/',
       :exchange => "sneakers",
@@ -16,6 +15,10 @@ describe Sneakers::Queue do
       },
       queue_options: {
         durable: true
+      },
+      :consumer_options => {
+        :block => false,
+        :manual_ack => true
       }
     }
   end

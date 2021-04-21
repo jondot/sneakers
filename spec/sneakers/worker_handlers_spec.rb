@@ -11,7 +11,10 @@ require 'json'
 class HandlerTestWorker
   include Sneakers::Worker
   from_queue 'defaults',
-             :ack => true
+             :consumer_options => {
+               :manual_ack => true
+             }
+
 
   def work(msg)
     if msg.is_a?(StandardError)
