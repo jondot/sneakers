@@ -4,11 +4,11 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   tests:
-    name: Tests with Ruby ${{ matrix.ruby-version }}
+    name: Ruby ${{ matrix.ruby-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: [2.6]
+        ruby-version: [2.3, 2.4, 2.5, 2.6]
     steps:
       - uses: actions/checkout@v2
 
