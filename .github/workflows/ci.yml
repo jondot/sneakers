@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: [2.3, 2.4, 2.5, 2.6, 2.7, 3.0]
+        ruby-version: [2.6]
     services:
       redis-server:
         image: redis
@@ -29,10 +29,10 @@ jobs:
       - name: Install dependencies
         run: bundle install
 
-      - name: Execute scripts
-        run: |
-          ./bin/ci/install_on_debian.sh
-          until sudo lsof -i:5672; do echo "Waiting for RabbitMQ to start..."; sleep 1; done
+      #- name: Execute scripts
+      #  run: |
+      #    ./bin/ci/install_on_debian.sh
+      #    until sudo lsof -i:5672; do echo "Waiting for RabbitMQ to start..."; sleep 1; done
 
       - name: Run tests
         run: bundle exec rake
