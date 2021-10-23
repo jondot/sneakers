@@ -1,0 +1,38 @@
+name: CI
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  tests:
+    name: Tests with Ruby ${{ matrix.ruby-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: [2.3, 2.4, 2.5, 2.6, 2.7, 3.0]
+    services:
+      redis-server:
+        image: redis
+        ports:
+          - 6379:6379
+      rabbitmq:
+        image: rabbitmq
+        ports:
+          - 5672:5672
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Execute scripts
+        run: |
+          ./bin/ci/install_on_debian.sh
+          until sudo lsof -i:5672; do echo "Waiting for RabbitMQ to start..."; sleep 1; done
+
+      - name: Run tests
+        run: bundle exec rake
