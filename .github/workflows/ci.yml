@@ -10,7 +10,7 @@ jobs:
       matrix:
         ruby-version: [2.6]
     services:
-      redis-server:
+      redis:
         image: redis
         ports:
           - 6379:6379
