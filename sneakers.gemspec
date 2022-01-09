@@ -36,7 +36,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'minitest', '~> 5.11'
   gem.add_development_dependency 'rr', '~> 1.2.1'
   gem.add_development_dependency 'unparser', '~> 0.2'
-  gem.add_development_dependency 'metric_fu', '~> 4.13'
   gem.add_development_dependency 'simplecov', '~> 0.16'
   gem.add_development_dependency 'simplecov-rcov-text'
   gem.add_development_dependency 'guard', '~> 2.15'
