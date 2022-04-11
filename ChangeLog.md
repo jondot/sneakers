@@ -1,4 +1,12 @@
-# Sneakers Change Log
+# Change Log
+
+## Changes Between 2.12.0 and 2.13.0 (unreleased)
+
+### Minimum Required Ruby Version
+
+Sneakers now requires Ruby 2.5 or later.
+
+###
 
 ## Changes Between 2.10.0 and 2.11.0
 
