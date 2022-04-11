@@ -126,14 +126,14 @@ describe Sneakers::Publisher do
       it 'can handle an existing connection that is offline' do
         p = Sneakers::Publisher.new
         p.publish('test msg', my_vars)
-        p.instance_variable_get(:@bunny).must_equal @existing_session
+        _(p.instance_variable_get(:@bunny)).must_equal @existing_session
       end
 
       it 'can handle an existing connection that is online' do
         mock(@existing_session).connected? { true }
         p = Sneakers::Publisher.new
         p.publish('test msg', my_vars)
-        p.instance_variable_get(:@bunny).must_equal @existing_session
+        _(p.instance_variable_get(:@bunny)).must_equal @existing_session
       end
     end
 

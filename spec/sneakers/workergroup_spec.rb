@@ -59,7 +59,7 @@ describe Sneakers::WorkerGroup do
           engine.run
 
           workers = engine.instance_variable_get('@workers')
-          workers.first.opts[:connection].must_equal(connection)
+          _(workers.first.opts[:connection]).must_equal(connection)
         end
       end
     end

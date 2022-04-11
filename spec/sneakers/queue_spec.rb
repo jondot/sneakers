@@ -161,7 +161,7 @@ describe Sneakers::Queue do
 
       it 'uses that object' do
         @q.subscribe(@mkworker)
-        @q.instance_variable_get(:@bunny).must_equal @external_connection
+        _(@q.instance_variable_get(:@bunny)).must_equal @external_connection
       end
     end
   end
