@@ -1,6 +1,20 @@
 require 'spec_helper'
-require 'gzip_helper'
 require 'sneakers/content_encoding'
+require 'stringio'
+require 'zlib'
+
+# Simple gzip encoder/decoder for testing
+def gzip_encode(s)
+  io = StringIO.new('w')
+  w = Zlib::GzipWriter.new(io)
+  w.write(s)
+  w.close
+  io.string
+end
+
+def gzip_decode(s)
+  Zlib::GzipReader.new(StringIO.new(s, 'rb')).read
+end
 
 describe Sneakers::ContentEncoding do
   after do
@@ -12,10 +26,10 @@ describe Sneakers::ContentEncoding do
       Sneakers::ContentEncoding.register(
         content_encoding: 'gzip',
         encoder: ->(_) {},
-        decoder: ->(payload) { gzip_decompress(payload) },
+        decoder: ->(payload) { gzip_decode(payload) },
       )
 
-      Sneakers::ContentEncoding.decode(gzip_compress('foobar'), 'gzip').must_equal('foobar')
+      Sneakers::ContentEncoding.decode(gzip_encode('foobar'), 'gzip').must_equal('foobar')
     end
   end
 
@@ -23,11 +37,11 @@ describe Sneakers::ContentEncoding do
     it 'uses the given encoder' do
       Sneakers::ContentEncoding.register(
         content_encoding: 'gzip',
-        encoder: ->(payload) { gzip_compress(payload) },
+        encoder: ->(payload) { gzip_encode(payload) },
         decoder: ->(_) {},
       )
 
-      gzip_decompress(Sneakers::ContentEncoding.encode('foobar', 'gzip')).must_equal('foobar')
+      gzip_decode(Sneakers::ContentEncoding.encode('foobar', 'gzip')).must_equal('foobar')
     end
 
     it 'passes the payload through by default' do
@@ -51,12 +65,12 @@ describe Sneakers::ContentEncoding do
     it 'provides a mechnism to register a given encoding' do
       Sneakers::ContentEncoding.register(
         content_encoding: 'gzip',
-        encoder: ->(payload) { gzip_compress(payload) },
-        decoder: ->(payload) { gzip_decompress(payload) },
+        encoder: ->(payload) { gzip_encode(payload) },
+        decoder: ->(payload) { gzip_decode(payload) },
       )
 
-      ce = Sneakers::ContentEncoding
-      ce.decode(ce.encode('hello world', 'gzip'), 'gzip').must_equal('hello world')
+      ct = Sneakers::ContentEncoding
+      ct.decode(ct.encode('hello world', 'gzip'), 'gzip').must_equal('hello world')
     end
 
     it 'requires a content encoding' do
