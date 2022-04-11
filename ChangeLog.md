@@ -6,7 +6,13 @@
 
 Sneakers now requires Ruby 2.5 or later.
 
-###
+### Content Encoding Support
+
+Similar to already supported content type.
+
+Contributed by @ansoncat.
+
+GitHub issue: [#449](https://github.com/jondot/sneakers/pull/449)
 
 ## Changes Between 2.10.0 and 2.11.0
 
