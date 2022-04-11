@@ -16,7 +16,13 @@ module Sneakers
       Sneakers.error_reporters.each do |handler|
         begin
           handler.call(exception, self, context_hash)
-        rescue => inner_exception
+        rescue SignalException, SystemExit
+          # ServerEngine handles these exceptions, so they are not expected
+          # to be raised within the error reporter.
+          # Nevertheless, they are listed here to ensure that they are not
+          # caught by the rescue block below.
+          raise
+        rescue Exception => inner_exception
           Sneakers.logger.error '!!! ERROR REPORTER THREW AN ERROR !!!'
           Sneakers.logger.error inner_exception
           Sneakers.logger.error inner_exception.backtrace.join("\n") unless inner_exception.backtrace.nil?
