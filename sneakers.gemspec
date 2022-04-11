@@ -33,12 +33,12 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rabbitmq_http_api_client'
   gem.add_development_dependency 'redis'
 
-  gem.add_development_dependency 'minitest', '~> 5.11'
-  gem.add_development_dependency 'rr', '~> 1.2.1'
+  gem.add_development_dependency 'minitest', '~> 5.15'
+  gem.add_development_dependency 'rr', '~> 3.0'
   gem.add_development_dependency 'unparser', '~> 0.2'
-  gem.add_development_dependency 'simplecov', '~> 0.16'
+  gem.add_development_dependency 'simplecov', '~> 0.21'
   gem.add_development_dependency 'simplecov-rcov-text'
-  gem.add_development_dependency 'guard', '~> 2.15'
+  gem.add_development_dependency 'guard', '~> 2.18'
   gem.add_development_dependency 'guard-minitest', '~> 2.4'
-  gem.add_development_dependency 'pry-byebug', '~> 3.7'
+  gem.add_development_dependency 'pry-byebug', '~> 3.9'
 end
