@@ -2,6 +2,7 @@ sneakers.yaml
 Gemfile.lock
 *.log
 sneakers.pid
+sneakers.log.*
 pkg/
 coverage/
 tmp/
