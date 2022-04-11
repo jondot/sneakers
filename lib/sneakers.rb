@@ -51,6 +51,14 @@ module Sneakers
     logger.level = loglevel
   end
 
+  def rake_worker_classes=(worker_classes)
+    @rake_worker_classes = worker_classes
+  end
+
+  def rake_worker_classes
+    @rake_worker_classes
+  end
+
   def logger=(logger)
     @logger = logger
   end
