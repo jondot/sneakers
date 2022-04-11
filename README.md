@@ -1,6 +1,6 @@
 # Sneakers
 
-[![Build Status](https://travis-ci.org/jondot/sneakers.svg?branch=master)](https://travis-ci.org/jondot/sneakers)
+[![CI](https://github.com/jondot/sneakers/actions/workflows/ci.yml/badge.svg)](https://github.com/jondot/sneakers/actions/workflows/ci.yml)
 
 ```
       __
