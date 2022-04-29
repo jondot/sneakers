@@ -18,7 +18,7 @@ module Sneakers
       Sneakers.logger.info {"publishing <#{msg}> to [#{options[:routing_key]}]"}
       serialized_msg = Sneakers::ContentType.serialize(msg, options[:content_type])
       encoded_msg = Sneakers::ContentEncoding.encode(serialized_msg, options[:content_encoding])
-      @exchange.publish(encoded_msg, options)
+      @exchange.publish(encoded_msg, **options)
     end
 
     def ensure_connection!
