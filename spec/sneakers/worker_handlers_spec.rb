@@ -378,7 +378,7 @@ describe 'Handlers' do
           let(:q) { Sneakers::Queue.new("downloads", @worker_opts) }
 
           it 'should configure queue with x-dead-letter-exchange' do
-            mock(channel).queue("downloads", { :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-retry" } }).once { queue }
+            mock(channel).queue("downloads", :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-retry" }).once { queue }
             mock(queue).bind(@mkex, :routing_key => "downloads")
             mock(queue).subscribe(:block => false, :manual_ack => true)
 
@@ -396,7 +396,7 @@ describe 'Handlers' do
           let(:q) { Sneakers::Queue.new("downloads", @worker_opts) }
 
           it 'should configure queue with x-dead-letter-exchange and other args' do
-            mock(channel).queue("downloads", { :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-retry", :"x-arg" => 'value' } }).once { queue }
+            mock(channel).queue("downloads", :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-retry", :"x-arg" => 'value' }).once { queue }
             mock(queue).bind(@mkex, :routing_key => "downloads")
             mock(queue).subscribe(:block => false, :manual_ack => true)
 
@@ -438,7 +438,7 @@ describe 'Handlers' do
           let(:q) { Sneakers::Queue.new("uploads", @worker_opts) }
 
           it 'should configure queue with x-dead-letter-exchange (not use queue name)' do
-            mock(channel).queue("uploads", { :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-retry" } }).once { queue }
+            mock(channel).queue("uploads", :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-retry" }).once { queue }
             mock(queue).bind(@mkex, :routing_key => "uploads")
             mock(queue).subscribe(:block => false, :manual_ack => true)
 
@@ -456,7 +456,7 @@ describe 'Handlers' do
           let(:q) { Sneakers::Queue.new("uploads", @worker_opts) }
 
           it 'should configure queue with x-dead-letter-exchange (not use queue name)' do
-            mock(channel).queue("uploads", { :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-error" } }).once { queue }
+            mock(channel).queue("uploads", :durable => 'true', :auto_delete => false, :exclusive => false, :arguments => { :"x-dead-letter-exchange" => "downloads-error" }).once { queue }
             mock(queue).bind(@mkex, :routing_key => "uploads")
             mock(queue).subscribe(:block => false, :manual_ack => true)
 
