@@ -27,13 +27,13 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'bunny', '~> 2.14'
   gem.add_dependency 'concurrent-ruby', '~> 1.0'
   gem.add_dependency 'thor'
-  gem.add_dependency 'rake', '~> 12.3'
+  gem.add_dependency 'rake', '>= 12.3'
 
   # for integration environment (see .travis.yml and integration_spec)
   gem.add_development_dependency 'rabbitmq_http_api_client'
   gem.add_development_dependency 'redis'
 
-  gem.add_development_dependency 'rake', '~> 12.3'
+  gem.add_development_dependency 'rake', '>= 12.3'
   gem.add_development_dependency 'minitest', '~> 5.11'
   gem.add_development_dependency 'rr', '~> 1.2.1'
   gem.add_development_dependency 'unparser', '0.2.2' # keep below 0.2.5 for ruby 2.0 compat.

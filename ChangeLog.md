@@ -1,5 +1,17 @@
 # Sneakers Change Log
 
+## v2.13.0
+
+Remove rack dependency from v12.
+
+## Blinkist Fork @ v2.12.0
+
+Sneakers was blocked at v2.12.0, but that depends on rake to be ~> 12. We have some services (ex: web) running on rake v13, so that causes web to be unable to upgrade Blinkist-bus as it's conflicting with rake v13.
+
+Sneakers seems not to be maintained anymore, and this rake version limit is not being address properly so far. 
+
+More discussion [here](https://github.com/jondot/sneakers/issues/452#issuecomment-878301702) and in other issues in the same repo.
+
 ## Changes Between 2.10.0 and 2.11.0
 
 This releases includes bug fixes, support for more queue-binding options, better

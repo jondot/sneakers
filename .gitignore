@@ -9,3 +9,4 @@ tmp/
 .ruby-gemset
 .bundle/*
 *.gem
+.idea/
