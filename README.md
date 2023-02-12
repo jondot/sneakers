@@ -184,9 +184,10 @@ environment needed locally on your development box.
 
 # Compatibility
 
-* Sneakers 2.7.x and later (using Bunny 2.9) - Ruby 2.2.x
-* Sneakers 1.1.x and later (using Bunny 2.x) - Ruby 2.x
-* Sneakers 1.x.x and earlier - Ruby 1.9.x, 2.x
+* Sneakers main branch: Ruby 3.0+
+* Sneakers 2.7.x and later (using Bunny 2.9): Ruby 2.2.x
+* Sneakers 1.1.x and later (using Bunny 2.x): Ruby 2.x
+* Sneakers 1.x.x and earlier: Ruby 1.9.x, 2.x
 
 # Contributing
 
