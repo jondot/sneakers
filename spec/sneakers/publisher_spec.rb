@@ -25,7 +25,7 @@ describe Sneakers::Publisher do
 
     it 'should publish a message to an exchange' do
       xchg = Object.new
-      mock(xchg).publish('test msg', routing_key: 'downloads')
+      mock(xchg).publish('test msg', { routing_key: 'downloads' })
 
       p = Sneakers::Publisher.new
       p.instance_variable_set(:@exchange, xchg)
@@ -36,7 +36,7 @@ describe Sneakers::Publisher do
 
     it 'should publish with the persistence specified' do
       xchg = Object.new
-      mock(xchg).publish('test msg', routing_key: 'downloads', persistence: true)
+      mock(xchg).publish('test msg', { routing_key: 'downloads', persistence: true })
 
       p = Sneakers::Publisher.new
       p.instance_variable_set(:@exchange, xchg)
@@ -47,7 +47,7 @@ describe Sneakers::Publisher do
 
     it 'should publish with arbitrary metadata specified' do
       xchg = Object.new
-      mock(xchg).publish('test msg', routing_key: 'downloads', expiration: 1, headers: {foo: 'bar'})
+      mock(xchg).publish('test msg', { routing_key: 'downloads', expiration: 1, headers: {foo: 'bar'} })
 
       p = Sneakers::Publisher.new
       p.instance_variable_set(:@exchange, xchg)
@@ -58,7 +58,7 @@ describe Sneakers::Publisher do
 
     it 'should not reconnect if already connected' do
       xchg = Object.new
-      mock(xchg).publish('test msg', routing_key: 'downloads')
+      mock(xchg).publish('test msg', { routing_key: 'downloads' })
 
       p = Sneakers::Publisher.new
       p.instance_variable_set(:@exchange, xchg)
@@ -82,7 +82,7 @@ describe Sneakers::Publisher do
 
       channel = Object.new
       mock(channel).exchange('another_exchange', type: :topic, durable: false, :auto_delete => false, arguments: { 'x-arg' => 'value' }) do
-        mock(Object.new).publish('test msg', routing_key: 'downloads')
+        mock(Object.new).publish('test msg', { routing_key: 'downloads' })
       end
 
       bunny = Object.new
@@ -146,7 +146,7 @@ describe Sneakers::Publisher do
       )
 
       xchg = Object.new
-      mock(xchg).publish('{"foo":"bar"}', routing_key: 'downloads', content_type: 'application/json')
+      mock(xchg).publish('{"foo":"bar"}', { routing_key: 'downloads', content_type: 'application/json' })
 
       p = Sneakers::Publisher.new
       p.instance_variable_set(:@exchange, xchg)
@@ -165,7 +165,7 @@ describe Sneakers::Publisher do
       )
 
       xchg = Object.new
-      mock(xchg).publish(gzip_compress('foobar'), routing_key: 'downloads', content_encoding: 'gzip')
+      mock(xchg).publish(gzip_compress('foobar'), { routing_key: 'downloads', content_encoding: 'gzip' })
 
       p = Sneakers::Publisher.new
       p.instance_variable_set(:@exchange, xchg)

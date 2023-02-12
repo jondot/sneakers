@@ -32,7 +32,7 @@ module Sneakers
       @bunny ||= create_bunny_connection
       @bunny.start
       @channel = @bunny.create_channel
-      @exchange = @channel.exchange(@opts[:exchange], @opts[:exchange_options])
+      @exchange = @channel.exchange(@opts[:exchange], **@opts[:exchange_options])
     end
 
     def connected?

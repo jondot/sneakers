@@ -41,7 +41,7 @@ module Sneakers
       return unless opts[:routing_key]
       serialized_msg = Sneakers::ContentType.serialize(msg, opts[:content_type])
       encoded_msg = Sneakers::ContentEncoding.encode(serialized_msg, opts[:content_encoding])
-      @queue.exchange.publish(encoded_msg, opts)
+      @queue.exchange.publish(encoded_msg, **opts)
     end
 
     def do_work(delivery_info, metadata, msg, handler)

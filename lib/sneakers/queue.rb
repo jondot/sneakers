@@ -26,7 +26,7 @@ class Sneakers::Queue
     @channel.prefetch(@opts[:prefetch])
 
     exchange_name = @opts[:exchange]
-    @exchange = @channel.exchange(exchange_name, @opts[:exchange_options])
+    @exchange = @channel.exchange(exchange_name, **@opts[:exchange_options])
 
     routing_key = @opts[:routing_key] || @name
     routing_keys = [*routing_key]
@@ -37,7 +37,7 @@ class Sneakers::Queue
       @opts[:queue_options] = handler_klass.configure_queue(@name, @opts)
     end
 
-    queue = @channel.queue(@name, @opts[:queue_options])
+    queue = @channel.queue(@name, **@opts[:queue_options])
 
     if exchange_name.length > 0
       routing_keys.each do |key|
@@ -78,10 +78,10 @@ class Sneakers::Queue
   end
 
   def create_bunny_connection
-    Bunny.new(@opts[:amqp], vhost: @opts[:vhost],
+    Bunny.new(@opts[:amqp], { vhost: @opts[:vhost],
                             heartbeat: @opts[:heartbeat],
                             properties: @opts.fetch(:properties, {}),
-                            logger: Sneakers::logger)
+                            logger: Sneakers::logger })
   end
   private :create_bunny_connection
 end
