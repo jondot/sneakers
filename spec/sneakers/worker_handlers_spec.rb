@@ -122,7 +122,8 @@ describe 'Handlers' do
         :exchange => 'sneakers',
         :queue_options => {
           :durable => 'true',
-        }
+        },
+        :error_queue_ttl => 3 * 24 * 60 * 60 * 1000
       }.tap do |opts|
         opts[:retry_max_times] = max_retries unless max_retries.nil?
       end
@@ -156,7 +157,11 @@ describe 'Handlers' do
       mock(@retry_queue).bind(@retry_exchange, :routing_key => '#')
 
       mock(channel).queue('downloads-error',
-                          :durable => 'true').once { @error_queue }
+                          :durable => 'true',
+                          :arguments => {
+                            :'x-message-ttl' => 3 * 24 * 60 * 60 * 1000
+                          }
+                          ).once { @error_queue }
       mock(@error_queue).bind(@error_exchange, :routing_key => '#')
 
       @header = Object.new
