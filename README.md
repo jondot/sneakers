@@ -1,6 +1,13 @@
-# Sneakers
+# Sneakers has a New Home and a New Name
 
-[![CI](https://github.com/jondot/sneakers/actions/workflows/ci.yml/badge.svg)](https://github.com/jondot/sneakers/actions/workflows/ci.yml)
+⚠️⚠️⚠️ Sneakers users have decided to continue with a new repo
+and a new name: meet [ruby-amqp/kicks](https://github.com/ruby-amqp/kicks).
+
+Unfortunately, this repo was abandoned by its original author who has exclusive control
+over the RubyGems project. So the community of users has [decided to move it](https://github.com/jondot/sneakers/issues/452)
+to a different "fork" (continuation) under a new name.
+
+## What is Sneakers
 
 ```
       __
