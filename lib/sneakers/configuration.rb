@@ -41,6 +41,7 @@ module Sneakers
       :threads            => 10,
       :share_threads      => false,
       :ack                => true,
+      :exclusive          => false,
       :heartbeat          => 30,
       :hooks              => {},
       :exchange           => 'sneakers',
