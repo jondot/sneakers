@@ -9,11 +9,15 @@ module Sneakers
     def before_fork
       fbefore = Sneakers::CONFIG[:hooks][:before_fork]
       fbefore.call if fbefore
+    rescue => e
+      stop
     end
 
     def after_fork # note! this is not Serverengine#after_start, this is ours!
       fafter = Sneakers::CONFIG[:hooks][:after_fork]
       fafter.call if fafter
+    rescue => e
+      stop
     end
 
     def run
